@@ -1,42 +1,42 @@
-#ifndef _global_vars_h_
+/*#ifndef _global_vars_h_
 #define _global_vars_h_
 
 #include <MeMegaPi.h>
-#include <Arduino.h>
+#include <Arduino.h> 
 //#include <Servo.h>
 
-#include <Wire.h>
+#include <Wire.h> IN NEW GLOB VAR */
 #include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>
-#include <utility/imumaths.h>
+/*#include <Adafruit_BNO055.h> 
+#include <utility/imumaths.h> IN IMU.H*/
 
-extern "C" {
+/*extern "C" {
 #include "utility/twi.h"  // from Wire library, so we can do bus scanning
-}
-#include "Adafruit_VL53L0X.h"
-#include "Adafruit_TCS34725.h"
+} IN TCA.H*/
+/*#include "Adafruit_VL53L0X.h" IN DISTANCESENSOR.h */
+//#include "Adafruit_TCS34725.h" IN TCS.H
 
 // Function prototypes
-void doTurn(char dir, int deg);
+/*void doTurn(char dir, int deg);
 void goForward(int dist);
 void goForwardTiles(int tiles);
 void getDist(int start);
-void motorControl();
-void sendWallValues(int leftDist, int rightDist, int frontDist);
-void tcaselect(uint8_t i);
-void setupSensors();
-int getSensorReadings(int sensorNum);
-void alignLeft();
+void motorControl(); IN MOTORS.H */
+//void sendWallValues(int leftDist, int rightDist, int frontDist); IN VLX.H
+//void tcaselect(uint8_t i); IN TCA.H
+//void setupSensors(); SPLIT INTO VLX AND TCS.H (NEEDS FIXING UP)
+//int getSensorReadings(int sensorNum); IN VLX.H
+/*void alignLeft();
 void alignRight();
 void alignFront();
-void alignRobot();
+void alignRobot(); IN MOTORS.H*/
 
-Adafruit_VL53L0X lox = Adafruit_VL53L0X();
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
-VL53L0X_RangingMeasurementData_t measure;
+//Adafruit_VL53L0X lox = Adafruit_VL53L0X(); IN VLX.H
+//Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X); in TCS.H
+//VL53L0X_RangingMeasurementData_t measure; IN VLX.H
 
 // I2C address of MUX
-#define TCAADDR 0x70
+//#define TCAADDR 0x70 IN TCA.H
 
 // MegaPi encoder class code
 class MegaPiPort: public MeMegaPiDCMotor {
