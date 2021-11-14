@@ -6,7 +6,7 @@
 //#include <Servo.h>
 
 #include <Wire.h> IN NEW GLOB VAR */
-#include <Adafruit_Sensor.h>
+//#include <Adafruit_Sensor.h> IN NEW GLOB VAR
 /*#include <Adafruit_BNO055.h> 
 #include <utility/imumaths.h> IN IMU.H*/
 
@@ -39,7 +39,7 @@ void alignRobot(); IN MOTORS.H*/
 //#define TCAADDR 0x70 IN TCA.H
 
 // MegaPi encoder class code
-class MegaPiPort: public MeMegaPiDCMotor {
+/*class MegaPiPort: public MeMegaPiDCMotor {
   public:
     // Volatile used on class variables to read them from memory in case they changed since the last read
     bool  backwards; // For when the motor needs to be reversed
@@ -59,29 +59,27 @@ class MegaPiPort: public MeMegaPiDCMotor {
       // Run specified speed
       MeMegaPiDCMotor::run(true_speed);
     };
-};
+}; IN MOTOR.H */
 
 // ports[0] = port1 on the board
-volatile  MegaPiPort ports[] = { {PORT1B, 18, 31}, {PORT2B, 19, 38}, {PORT3B, 3, 49}, {PORT4B, 2, A1}};
+/*volatile  MegaPiPort ports[] = { {PORT1B, 18, 31}, {PORT2B, 19, 38}, {PORT3B, 3, 49}, {PORT4B, 2, A1}};
 
 // macro to attach the interrupt to the port
-#define INIT_INTERRUPT(index)   attachInterrupt(digitalPinToInterrupt(ports[index].intPin), motorinterrupt<index>, RISING)
+#define INIT_INTERRUPT(index)   attachInterrupt(digitalPinToInterrupt(ports[index].intPin), motorinterrupt<index>, RISING) IN MOTOR.H */
 
-#define LEFT 1
+/*#define LEFT 1
 #define RIGHT 0
 
 // For Turns and Movement
 float WB = 23.285;
-float D = 6.45;
+float D = 6.45; IN MOTOR.H */
 
 // For Serial Communication
-char message[4] = {'a', 'a', 'a', 'a'};
-
+//char message[4] = {'a', 'a', 'a', 'a'}; IN MOTOR.H
 // For Servo
-Servo myservo;  // create servo object to control a servo
+/*Servo myservo;  // create servo object to control a servo
 // twelve servo objects can be created on most boards
 //int pos = 0;    // variable to store the servo position
 bool shouldRun = true;
-int ct = 0;
-
-#endif
+int ct = 0; IN RESCUESERVO.H */
+//#endif

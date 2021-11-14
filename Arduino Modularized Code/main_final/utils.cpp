@@ -4,8 +4,8 @@
 #include "global_vars.h"
 
 // This function updates motor encoder count every time goes high. Ex: going from low to high increases encoder count
-template <int PN> // PN represents an index in the object array "MegaPiPort Motor" of the motor being run
-void motorinterrupt() {
+//template <int PN> // PN represents an index in the object array "MegaPiPort Motor" of the motor being run IN MOTOR.H
+/*void motorinterrupt() {
   if (ports[PN].backwards)
     (digitalRead(ports[PN].encPin)) ? ports[PN].count++ : ports[PN].count--;
   else
@@ -167,9 +167,9 @@ void motorControl() {
     alignRobot();
     Serial.println("c");
   }
-}
+} IN MOTOR.CPP */
 
-void sendWallValues(int leftDist, int rightDist, int frontDist) {
+/*void sendWallValues(int leftDist, int rightDist, int frontDist) {
   char walls[3] = {'0', '0', '0'};
   int minimumDist = 30; // Minimum distance to determine if there is a wall on the side
 
@@ -189,17 +189,17 @@ void sendWallValues(int leftDist, int rightDist, int frontDist) {
   }
 
   Serial2.write(walls, 3);
-}
+} IN VLX.CPP */
 
-void tcaselect(uint8_t i) {
+/*void tcaselect(uint8_t i) {
   if (i > 7) return;
 
   Wire.beginTransmission(TCAADDR);
   Wire.write(1 << i);
   Wire.endTransmission();
-}
+}IN TCA.CPP*/
 
-void setupSensors() {
+/*void setupSensors() {
   tcaselect(0);
   if (!lox.begin()) {
     Serial.println("Failed to boot VL53L0X (0)");
@@ -232,9 +232,9 @@ void setupSensors() {
     Serial.println("No TCS34725 found ... check your connections");
     while (1);
   }
-}
+} IN TCS and VLX.cpp*/
 
-int getSensorReadings(int sensorNum) {
+/*int getSensorReadings(int sensorNum) {
   tcaselect(sensorNum);
   lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
 
@@ -244,9 +244,9 @@ int getSensorReadings(int sensorNum) {
   //Serial.print('L'); Serial.print(sensorNum); Serial.print(": "); Serial.print("OOR"); Serial.println(" ");
   //}
   return measure.RangeMilliMeter / 10;
-}
+} IN VLX.CPP */
 
-void alignLeft() {
+/*void alignLeft() {
   while (abs(getSensorReadings(3) - getSensorReadings(1)) > 0) {
     //Serial.println(abs(getSensorReadings(3) - getSensorReadings(1)));
     if (getSensorReadings(3) > getSensorReadings(1)) {
@@ -362,9 +362,9 @@ void alignToTile() {
   }
   if (getSensorReadings(2) < 30)
     alignFront();
-}
+} IN MOTOR.CPP */
 
-bool stuckTest(int target) {
+/*bool stuckTest(int target) {
   int ang = myservo.read();
   //Serial.println(ang);
   if (!(ang > target - 1 && ang < target + 1)) {
@@ -411,6 +411,6 @@ void turnRight() {
   //Serial.print(myservo.read());
   wiggle(173, 5);
   ct++;
-}
+} IN RESCUESERVO.CPP */
 
 #endif

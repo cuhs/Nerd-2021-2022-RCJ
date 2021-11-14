@@ -1,4 +1,10 @@
-#include "global_vars.h"
+#include "new_global_vars.h"
+#include "Distance_Sensor.h"
+#include "IMU.h"
+#include "TCA.h"
+#include "TCS.h"
+#include "motors.h"
+#include "rescueServo.h"
 
 void setup() {
   delay(1);
