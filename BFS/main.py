@@ -13,7 +13,7 @@ from util import packet
 from util import options
 
 if options.inputMode == 2:
-    import everythingDetect
+    import display
 
 BFS.init()
 print("BFS START")
