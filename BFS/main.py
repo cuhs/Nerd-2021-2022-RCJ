@@ -39,7 +39,6 @@ print("\nrunning...")
 
 # set start tile walls
 util.setWalls()
-print("here")
 
 # time calculation
 ot = 0
