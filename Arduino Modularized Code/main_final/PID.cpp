@@ -4,6 +4,6 @@ float PID(float error, float &pastError, float &integral, float kp, float ki, fl
   integral = integral + error;
 
   pastError = error;
-  return((kp*error)+(ki*integral)+(kd*deritvative))
+  return((kp*error)+(ki*integral)+(kd*derivative))
  
 }
