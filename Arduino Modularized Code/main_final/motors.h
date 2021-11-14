@@ -1,11 +1,14 @@
+#ifndef _MOTOR_H_
+#define _MOTOR_H_
 #define LEFT 1
 #define RIGHT 0
 #include "new_global_vars.h"
 #include "Distance_Sensor.h"
 #include <MeMegaPi.h>
 // For Turns and Movement
-float WB = 23.285;
-float D = 6.45;
+const float WB = 23.285;
+const float D = 6.45;
+
 void doTurn(char dir, int deg);
 void goForward(int dist);
 void goForwardTiles(int tiles);
@@ -16,6 +19,7 @@ void alignRight();
 void alignFront();
 void alignRobot();
 void alignToTile();
+
 class MegaPiPort: public MeMegaPiDCMotor {
   public:
     // Volatile used on class variables to read them from memory in case they changed since the last read
@@ -37,8 +41,12 @@ class MegaPiPort: public MeMegaPiDCMotor {
       MeMegaPiDCMotor::run(true_speed);
     };
 };
-volatile  MegaPiPort ports[] = { {PORT1B, 18, 31}, {PORT2B, 19, 38}, {PORT3B, 3, 49}, {PORT4B, 2, A1}};
-char message[4] = {'a', 'a', 'a', 'a'};
+extern MegaPiPort ports[];
+extern char message[4];
 // macro to attach the interrupt to the port
-#define INIT_INTERRUPT(index)   attachInterrupt(digitalPinToInterrupt(ports[index].intPin), motorinterrupt<index>, RISING)
-template <int PN>
+#define INIT_INTERRUPT_LEFT   attachInterrupt(digitalPinToInterrupt(ports[LEFT].intPin), motorinterruptleft, RISING)
+#define INIT_INTERRUPT_RIGHT   attachInterrupt(digitalPinToInterrupt(ports[RIGHT].intPin), motorinterruptleft, RISING)
+//template <int PN>
+void motorinterruptleft();
+void motorinterruptright();
+#endif

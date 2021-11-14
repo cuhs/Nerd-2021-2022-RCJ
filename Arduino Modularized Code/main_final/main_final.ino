@@ -13,8 +13,8 @@ void setup() {
   Wire.begin();
   Serial2.write('a');
   pinMode(A6, OUTPUT);
-  INIT_INTERRUPT(LEFT);
-  INIT_INTERRUPT(RIGHT);
+  INIT_INTERRUPT_LEFT;
+  INIT_INTERRUPT_RIGHT;
   ports[RIGHT].backwards = true;
   Serial.println("--------------------STARTING NOW--------------------");
   setupSensors();

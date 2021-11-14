@@ -1,4 +1,6 @@
 #include "Distance_Sensor.h"
+Adafruit_VL53L0X lox = Adafruit_VL53L0X();
+VL53L0X_RangingMeasurementData_t measure;
 void sendWallValues(int leftDist, int rightDist, int frontDist) {
   char walls[3] = {'0', '0', '0'};
   int minimumDist = 30; // Minimum distance to determine if there is a wall on the side

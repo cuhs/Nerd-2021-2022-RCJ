@@ -1,4 +1,7 @@
 #include "rescueServo.h"
+Servo myservo;
+bool shouldRun = true;
+int ct = 0;
  bool stuckTest(int target) {
   int ang = myservo.read();
   //Serial.println(ang);

@@ -1,11 +1,6 @@
 #include "motors.h"
-void motorinterrupt() {
-  if (ports[PN].backwards)
-    (digitalRead(ports[PN].encPin)) ? ports[PN].count++ : ports[PN].count--;
-  else
-    (digitalRead(ports[PN].encPin)) ? ports[PN].count-- : ports[PN].count++;
-}
-
+char message[4] = {'a', 'a', 'a', 'a'};
+MegaPiPort ports[] = { {PORT1B, 18, 31}, {PORT2B, 19, 38}, {PORT3B, 3, 49}, {PORT4B, 2, A1}};
 void doTurn(char dir, int deg) {
   ports[RIGHT].count = 0;
   if (dir == 'L') {
@@ -278,4 +273,18 @@ void alignToTile() {
   }
   if (getSensorReadings(2) < 30)
     alignFront();
+}
+//template <int PN>
+void motorinterruptleft() {
+  if (ports[LEFT].backwards)
+    (digitalRead(ports[LEFT].encPin)) ? ports[LEFT].count++ : ports[LEFT].count--;
+  else
+    (digitalRead(ports[LEFT].encPin)) ? ports[LEFT].count-- : ports[LEFT].count++;
+}
+
+void motorinterruptright() {
+  if (ports[RIGHT].backwards)
+    (digitalRead(ports[RIGHT].encPin)) ? ports[RIGHT].count++ : ports[RIGHT].count--;
+  else
+    (digitalRead(ports[RIGHT].encPin)) ? ports[RIGHT].count-- : ports[RIGHT].count++;
 }
