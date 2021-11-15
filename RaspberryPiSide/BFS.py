@@ -1,7 +1,7 @@
 import util
 import sys
 from util import np
-from util import options
+from util import config
 
 def init():
     util.maze = np.zeros((util.mazeSize * util.mazeSize, 5), dtype=np.int8)  # maze[tile][state], read util
@@ -21,16 +21,16 @@ def init():
     util.maze[util.tile][util.visited] = 1
 
     # increase recursion limit for large mazes
-    sys.setrecursionlimit(options.recursionLimit)
+    sys.setrecursionlimit(config.recursionLimit)
 
 # return next tile to visit recursively
 def nextTile(cTile):
-    if options.debug is True:
+    if config.debug is True:
         print("\tRaspberryPiSide - Tile: " + str(cTile) + " is visited: " + str(util.maze[util.tile][util.visited]))
     # recursive loop until returned
     if util.maze[cTile][util.visited] == 0:
         util.q.clear()
-        if options.debug is True:
+        if config.debug is True:
             print("\tRaspberryPiSide - END, Tile:\t" + str(cTile))
         return cTile
 
@@ -69,7 +69,7 @@ def nextTile(cTile):
             util.q.append(util.westTile(cTile))
         possibleTiles[3] = 1
 
-    if options.debug is True:
+    if config.debug is True:
         print("\tQueue:\t" + str(util.q))
 
     # recursively finds unvisited tiles

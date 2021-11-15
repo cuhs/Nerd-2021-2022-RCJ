@@ -1,13 +1,13 @@
 import numpy as np
 import packet
-import options
+import config
 
 # two different types of directions
 # True North is the starting direction, and all other directions are the "true" equivalent
 # "North" means the bot's north, or where the bot is facing. All other directions are relative to the bot
 
 # maze size = 20 -> maze size = 20x20 tiles, must be even   !integrate
-mazeSize = options.mazeSideLen
+mazeSize = config.mazeSideLen
 
 # NESW -> 0123 True North is starting direction
 N = 0
@@ -48,7 +48,7 @@ def adjustDirections(facing):
 # detects walls if sensor value is below a certain threshold
 # direction must be adjusted from bot to the maze
 def setWalls():
-    sensorData[:] = packet.getData(options.inputMode, tile, direction)
+    sensorData[:] = packet.getData(config.inputMode, tile, direction)
     if sensorData[4] != -1:
         adjustedDirections = adjustDirections(direction)
     else:
@@ -61,7 +61,7 @@ def setWalls():
         maze[tile][adjustedDirections[S]] = 1
     if sensorData[W] == 1:
         maze[tile][adjustedDirections[W]] = 1
-    if options.debug is True:
+    if config.debug is True:
         print("\tTile Array: " + str(maze[tile]))
 
 # returns tiles to true direction of given tile
@@ -84,7 +84,7 @@ def leftTurn(facing):
     else:
         facing -= 1
     packet.sData += "mL90;"
-    if options.inputMode == 2:
+    if config.inputMode == 2:
         packet.ser.write(bytes("mL90;".encode("ascii", "ignore")))
     return facing
 
@@ -94,13 +94,13 @@ def rightTurn(facing):
     else:
         facing += 1
     packet.sData += "mR90;"
-    if options.inputMode == 2:
+    if config.inputMode == 2:
         packet.ser.write(bytes("mR90;".encode("ascii", "ignore")))
     return facing
 
 # send forward message
 def forwardTile(cTile):
-    if options.inputMode == 2:
+    if config.inputMode == 2:
         packet.ser.write(bytes("mFT1;".encode("ascii", "ignore")))
     packet.sData += "mFT1;"
     if direction is N:

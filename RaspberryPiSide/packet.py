@@ -1,12 +1,12 @@
 import numpy as np
-import options
+import config
 import serial
 import time
 
 # serial port
 rate = 9600
-sp = options.port
-if options.inputMode == 2:
+sp = config.port
+if config.inputMode == 2:
     ser = serial.Serial(sp, rate)
 
 # directions
@@ -15,9 +15,9 @@ directions = ['N', 'E', 'S', 'W']
 rData = ""
 sData = ""
 
-s = open(options.fpTXT + "raspPacket", "a", encoding='utf-8')
-r = open(options.fpTXT + "mazeInput", "r", encoding='utf-8')
-e = open(options.fpTXT + "saveMaze", "a", encoding='utf-8')
+s = open(config.fpTXT + "raspPacket", "a", encoding='utf-8')
+r = open(config.fpTXT + "mazeInput", "r", encoding='utf-8')
+e = open(config.fpTXT + "saveMaze", "a", encoding='utf-8')
 inputData = None
 
 # function to reroute setup based on input/output
