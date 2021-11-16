@@ -8,7 +8,7 @@ from util import config
 def generateMaze():
     # maze values holds the maze generated from picture
     mazeValues = np.zeros((util.mazeSize * util.mazeSize, 5), dtype=np.int8)
-    img = cv2.imread(config.fpIMG + "maze50.png", cv2.IMREAD_COLOR)
+    img = cv2.imread(config.fpIMG + "maze" + str(util.mazeSize) + ".png", cv2.IMREAD_COLOR)
 
     # variable sizes, works with any even sided maze
     gMazeSize = util.mazeSize

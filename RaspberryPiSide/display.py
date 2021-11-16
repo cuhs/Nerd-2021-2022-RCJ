@@ -3,8 +3,7 @@ import cv2
 import numpy as np
 from util import config
 
-vid = []
-imageSize = util.mazeSize*(config.displaySize + 1)
+imageSize = util.mazeSize*config.displaySize
 img = np.zeros((imageSize, imageSize, 3), dtype=np.uint8)
 
 def imgSetup():
@@ -46,5 +45,4 @@ def show(target, gMaze, ms):
     displayMaze(target, gMaze)
     cv2.imshow("maze", img)
     cv2.waitKey(ms)
-    cv2.destroyAllWindows()
 

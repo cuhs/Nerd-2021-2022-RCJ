@@ -1,6 +1,7 @@
 import BFS
 import display
 import numpy as np
+import cv2
 import time
 import mazeToText
 from BFS import util
@@ -118,11 +119,12 @@ while nextTile is not None:
     nextTile = BFS.nextTile(util.tile)
 
     if config.debug is True:
-        print("RaspberryPiSide START")
+        print("BFS START")
 
 # print out entire path the robot took traversing the maze and how long the algorithm took
 end = time.time()
-print("\nTotal Path: " + str(packet.sData) + "\nRaspberryPiSide Done! All tiles visited in: " + format((end-start)*1000, '.4f') + "ms ")
+print("\nTotal Path: " + str(packet.sData) + "\nBFS Done! All tiles visited in: " + format((end-start)*1000, '.4f') + "ms ")
 display.show(-1, util.maze, 0)
+cv2.destroyAllWindows()
 packet.s.close()
 packet.r.close()

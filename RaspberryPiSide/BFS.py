@@ -8,7 +8,7 @@ def init():
     util.tile = int(((util.mazeSize * util.mazeSize) / 2) + (util.mazeSize / 2))  # creates start tile in the middle of size x size area
     util.direction = util.N  # starting direction is set to north
 
-    # queue (just a list) and parent array for RaspberryPiSide
+    # queue (just a list) and parent array for BFS
     util.q = []
     util.parent = np.zeros(util.mazeSize * util.mazeSize, dtype=np.int16)
     util.parent.fill(-1)
@@ -26,12 +26,12 @@ def init():
 # return next tile to visit recursively
 def nextTile(cTile):
     if config.debug is True:
-        print("\tRaspberryPiSide - Tile: " + str(cTile) + " is visited: " + str(util.maze[util.tile][util.visited]))
+        print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[util.tile][util.visited]))
     # recursive loop until returned
     if util.maze[cTile][util.visited] == 0:
         util.q.clear()
         if config.debug is True:
-            print("\tRaspberryPiSide - END, Tile:\t" + str(cTile))
+            print("\tBFS - END, Tile:\t" + str(cTile))
         return cTile
 
     # stores how many tiles are unvisited
