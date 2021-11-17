@@ -19,7 +19,10 @@ display.imgSetup()
 
 # packet setup
 if config.inputMode == 1:
-    mazeToText.generateMaze("open", util.mazeSize)
+    if config.genFromImage:
+        mazeToText.genMazeFromImage()
+    else:
+        mazeToText.generateMaze("open", util.mazeSize)
     ret = packet.setupInput(config.inputMode)
     if ret is not None:  # maze in file is generated maze, values must be stored
         packet.inputData = np.zeros((util.mazeSize * util.mazeSize, 5), dtype=np.int8)

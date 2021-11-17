@@ -8,6 +8,9 @@ recursionLimit = (mazeSideLen * mazeSideLen) + 10  # buffer of 10
 tilePercentage = 10  # in percentage
 tilePercentage = int(100/tilePercentage)
 
+if inputMode == 1:
+    genFromImage = True
+
 displayMode = 1  # 0 no display, 1 is display
 displayRate = 50  # in milliseconds, 0 for until click
 displaySize = 750  # display size, range from (0 - 1000), see line below
