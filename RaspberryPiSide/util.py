@@ -119,3 +119,6 @@ def setBlackTile(cTile):
     maze[eastTile(cTile)][W] = 1
     maze[southTile(cTile)][N] = 1
     maze[westTile(cTile)][E] = 1
+
+def isBlackTile(cTile):
+    return maze[cTile][0:4].all() == 1

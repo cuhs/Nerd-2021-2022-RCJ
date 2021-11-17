@@ -73,6 +73,8 @@ def generateMaze(mazeType, length):
                 if i - 1 >= 0:
                     maze[i - 1][1] = 1
 
+
+
     if config.displayMode != 0:
         display.show(-1, maze, 0)
         cv2.destroyAllWindows()

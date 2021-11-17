@@ -29,6 +29,9 @@ def displayMaze(target, gMaze):
             # adds target tile as red
             if tile == target:
                 cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 255), -1)
+            # black tiles are black
+            # if util.isBlackTile(tile):
+            #    cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), -1)
 
             # adds walls for the tile
             if gMaze[tile][util.N] == 1:
