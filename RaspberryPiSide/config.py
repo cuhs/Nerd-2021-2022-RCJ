@@ -5,7 +5,7 @@ mazeSideLen = 40  # must be even
 inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen * mazeSideLen) + 10  # buffer of 10
 
-tilePercentage = 25  # in percentage
+tilePercentage = 20  # in percentage
 tilePercentage = int(100/tilePercentage)
 
 if inputMode == 1:
