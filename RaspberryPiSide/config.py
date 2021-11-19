@@ -5,8 +5,7 @@ mazeSideLen = 20  # must be even
 inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen * mazeSideLen) + 10  # buffer of 10
 
-tilePercentage = 20  # in percentage
-tilePercentage = int(100/tilePercentage)
+tilePercentage = 15  # percentage of tiles that should be walls for random generation of maze
 
 if inputMode == 1:
     genFromImage = False  # if false, will get random

@@ -57,23 +57,11 @@ def genRandMaze():
         maze[i][2] = 1
 
     # generate random walls
-    for i in range(0, config.mazeSideLen * config.mazeSideLen):
-        if random.randint(0, config.tilePercentage - 1) == 0:
-            maze[i][0] = 1
-            if i - config.mazeSideLen >= 0:
-                maze[i - config.mazeSideLen][2] = 1
-        if random.randint(0, config.tilePercentage - 1) == 0:
-            maze[i][1] = 1
-            if i + 1 < config.mazeSideLen * config.mazeSideLen:
-                maze[i + 1][3] = 1
-        if random.randint(0, config.tilePercentage - 1) == 0:
-            maze[i][2] = 1
-            if i + config.mazeSideLen < config.mazeSideLen * config.mazeSideLen:
-                maze[i + config.mazeSideLen][0] = 1
-        if random.randint(0, config.tilePercentage - 1) == 0:
-            maze[i][3] = 1
-            if i - 1 >= 0:
-                maze[i - 1][1] = 1
+    for i in range(0, config.mazeSideLen * config.mazeSideLen * 4):
+        if random.randint(0, (100 // config.tilePercentage) - 1) == 0:
+            maze[i // 4][i % 4] = 1
+            if 0 <= i // 4 + util.nTiles[i % 4] < config.mazeSideLen**2:
+                maze[i // 4 + util.nTiles[i % 4]][util.oppositeDir(i % 4)] = 1
 
     if config.displayMode != 0:
         display.show(-1, maze, 0)

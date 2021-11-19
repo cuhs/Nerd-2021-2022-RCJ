@@ -47,6 +47,8 @@ def dirBefore(d):
     return d - 1 if d != 0 else 3
 def dirAfter(d):
     return d + 1 if d != 3 else 0
+def oppositeDir(d):
+    return dirAfter(dirAfter(d))
 
 # detects walls if sensor value is below a certain threshold
 # direction must be adjusted from bot to the maze

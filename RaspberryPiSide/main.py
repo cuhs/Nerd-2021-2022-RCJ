@@ -8,14 +8,11 @@ from BFS import util
 from util import packet
 from util import config
 
-if config.inputMode == 2:
-    import display
-
-BFS.init()
 print("RaspberryPiSide START")
 
 # display setup
 display.imgSetup()
+BFS.init()
 
 # packet setup
 if config.inputMode == 1:
