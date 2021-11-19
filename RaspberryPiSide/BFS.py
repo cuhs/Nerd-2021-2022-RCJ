@@ -37,37 +37,13 @@ def nextTile(cTile):
     # stores how many tiles are unvisited
     possibleTiles = [0, 0, 0, 0]
 
-    # check if wall at true north
-    if util.maze[cTile][util.Dir.N.value] == 0:
-        # no walls north
-        if util.parent[util.NTile(cTile)] == -1:
-            util.parent[util.NTile(cTile)] = cTile
-            util.q.append(util.NTile(cTile))
-        possibleTiles[0] = 1
-
-    # check if wall at true east
-    if util.maze[cTile][util.Dir.E.value] == 0:
-        # no walls east
-        if util.parent[util.ETile(cTile)] == -1:
-            util.parent[util.ETile(cTile)] = cTile
-            util.q.append(util.ETile(cTile))
-        possibleTiles[1] = 1
-
-    # check if wall at true south
-    if util.maze[cTile][util.Dir.S.value] == 0:
-        # no walls south
-        if util.parent[util.STile(cTile)] == -1:
-            util.parent[util.STile(cTile)] = cTile
-            util.q.append(util.STile(cTile))
-        possibleTiles[2] = 1
-
-    # check if wall at true west
-    if util.maze[cTile][util.Dir.W.value] == 0:
-        # no walls west
-        if util.parent[util.WTile(cTile)] == -1:
-            util.parent[util.WTile(cTile)] = cTile
-            util.q.append(util.WTile(cTile))
-        possibleTiles[3] = 1
+    for i in range(0, 4):
+        if util.maze[cTile][i] == 0:
+            # no walls north
+            if util.parent[util.nTiles[i] + cTile] == -1:
+                util.parent[util.nTiles[i] + cTile] = cTile
+                util.q.append(util.nTiles[i] + cTile)
+            possibleTiles[i] = 1
 
     if config.debug is True:
         print("\tQueue:\t" + str(util.q))

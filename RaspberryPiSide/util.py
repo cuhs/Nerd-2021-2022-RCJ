@@ -17,6 +17,8 @@ class Dir(Enum):
     S = 2
     W = 3
 
+nTiles = [mazeSize, 1, -1 * mazeSize, -1] # neighboring tiles
+
 # tile states are true NESW for getting walls, and vis for checking if visited
 visited = 4
 
@@ -58,18 +60,6 @@ def setWalls():
     if config.debug is True:
         print("\tTile Array: " + str(maze[tile]))
 
-def NTile(cTile):
-    return cTile - mazeSize
-
-def ETile(cTile):
-    return cTile + 1
-
-def STile(cTile):
-    return cTile + mazeSize
-
-def WTile(cTile):
-    return cTile - 1
-
 # both are 90 degree turns
 def leftTurn(facing):
     if facing == Dir.N.value:
@@ -96,13 +86,13 @@ def forwardTile(cTile):
     if config.inputMode == 2:
         packet.ser.write(bytes("mFT1;".encode("ascii", "ignore")))
     packet.sData += "mFT1;"
-    return globals()[Dir(direction).name + "Tile"](cTile)
+    return cTile + nTiles[direction]
 
 def setBlackTile(cTile):
     for x in range(0, 5):
         maze[cTile][x] = 1
     for x in range(0, 4):
-        maze[0][adjustDirections(Dir.S.value)[x]] = 1
+        maze[cTile][adjustDirections(Dir.S.value)[x]] = 1
 
 def isBlackTile(cTile):
     return maze[cTile][0:4].all() == 1
