@@ -34,13 +34,13 @@ def displayMaze(target, gMaze):
             #    cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), -1)
 
             # adds walls for the tile
-            if gMaze[tile][util.N] == 1:
+            if gMaze[tile][util.Dir.N.value] == 1:
                 cv2.line(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel), (0, 0, 0), 2)
-            if gMaze[tile][util.E] == 1:
+            if gMaze[tile][util.Dir.E.value] == 1:
                 cv2.line(img, (xPixel + config.displaySize, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), 2)
-            if gMaze[tile][util.S] == 1:
+            if gMaze[tile][util.Dir.S.value] == 1:
                 cv2.line(img, (xPixel, yPixel + config.displaySize), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), 2)
-            if gMaze[tile][util.W] == 1:
+            if gMaze[tile][util.Dir.W.value] == 1:
                 cv2.line(img, (xPixel, yPixel), (xPixel, yPixel + config.displaySize), (0, 0, 0), 2)
 
 def show(target, gMaze, ms):

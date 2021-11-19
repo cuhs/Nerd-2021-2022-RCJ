@@ -6,7 +6,7 @@ from util import config
 def init():
     util.maze = np.zeros((util.mazeSize * util.mazeSize, 5), dtype=np.int8)  # maze[tile][state], read util
     util.tile = int(((util.mazeSize * util.mazeSize) / 2) + (util.mazeSize / 2))  # creates start tile in the middle of size x size area
-    util.direction = util.N  # starting direction is set to north
+    util.direction = util.Dir.N.value  # starting direction is set to north
 
     # queue (just a list) and parent array for BFS
     util.q = []
@@ -38,7 +38,7 @@ def nextTile(cTile):
     possibleTiles = [0, 0, 0, 0]
 
     # check if wall at true north
-    if util.maze[cTile][util.N] == 0:
+    if util.maze[cTile][util.Dir.N.value] == 0:
         # no walls north
         if util.parent[util.northTile(cTile)] == -1:
             util.parent[util.northTile(cTile)] = cTile
@@ -46,7 +46,7 @@ def nextTile(cTile):
         possibleTiles[0] = 1
 
     # check if wall at true east
-    if util.maze[cTile][util.E] == 0:
+    if util.maze[cTile][util.Dir.E.value] == 0:
         # no walls east
         if util.parent[util.eastTile(cTile)] == -1:
             util.parent[util.eastTile(cTile)] = cTile
@@ -54,7 +54,7 @@ def nextTile(cTile):
         possibleTiles[1] = 1
 
     # check if wall at true south
-    if util.maze[cTile][util.S] == 0:
+    if util.maze[cTile][util.Dir.S.value] == 0:
         # no walls south
         if util.parent[util.southTile(cTile)] == -1:
             util.parent[util.southTile(cTile)] = cTile
@@ -62,7 +62,7 @@ def nextTile(cTile):
         possibleTiles[2] = 1
 
     # check if wall at true west
-    if util.maze[cTile][util.W] == 0:
+    if util.maze[cTile][util.Dir.W.value] == 0:
         # no walls west
         if util.parent[util.westTile(cTile)] == -1:
             util.parent[util.westTile(cTile)] = cTile
@@ -91,30 +91,30 @@ def pathToTile(cTile, target):
 def turnToTile(target, facing):
     # target == north of tile
     if target == util.northTile(util.tile):
-        if facing == util.W:
+        if facing == util.Dir.W.value:
             facing = util.rightTurn(facing)
         else:
-            while facing != util.N:
+            while facing != util.Dir.N.value:
                 facing = util.leftTurn(facing)
     # target == east of tile
     if target == util.eastTile(util.tile):
-        if facing == util.N:
+        if facing == util.Dir.N.value:
             facing = util.rightTurn(facing)
         else:
-            while facing != util.E:
+            while facing != util.Dir.E.value:
                 facing = util.leftTurn(facing)
     # target == south of tile
     if target == util.southTile(util.tile):
-        if facing == util.E:
+        if facing == util.Dir.E.value:
             facing = util.rightTurn(facing)
         else:
-            while facing != util.S:
+            while facing != util.Dir.S.value:
                 facing = util.leftTurn(facing)
     # target == west of tile
     if target == util.westTile(util.tile):
-        if facing == util.S:
+        if facing == util.Dir.S.value:
             facing = util.rightTurn(facing)
         else:
-            while facing != util.W:
+            while facing != util.Dir.W.value:
                 facing = util.leftTurn(facing)
     return facing

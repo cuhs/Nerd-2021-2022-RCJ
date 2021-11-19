@@ -1,6 +1,7 @@
 import numpy as np
 import packet
 import config
+from enum import Enum
 
 # two different types of directions
 # True North is the starting direction, and all other directions are the "true" equivalent
@@ -10,10 +11,11 @@ import config
 mazeSize = config.mazeSideLen
 
 # NESW -> 0123 True North is starting direction
-N = 0
-E = 1
-S = 2
-W = 3
+class Dir(Enum):
+    N = 0
+    E = 1
+    S = 2
+    W = 3
 
 # tile states are true NESW for getting walls, and vis for checking if visited
 visited = 4
@@ -34,15 +36,12 @@ pathLen = None
 # getting sensorData[N] will get north,
 # this adjusts it to true north, and all other directions
 def adjustDirections(facing):
-    adjustedDirections = np.zeros(4, dtype=np.int8)
-    if facing is N:
-        adjustedDirections = [N, E, S, W]
-    if facing is E:
-        adjustedDirections = [E, S, W, N]
-    if facing is S:
-        adjustedDirections = [S, W, N, E]
-    if facing is W:
-        adjustedDirections = [W, N, E, S]
+    adjustedDirections = np.array([], dtype=np.int8)
+    for i in range(0, 4):
+        if facing == 4:
+            facing = 0
+        adjustedDirections = np.append(adjustedDirections, facing)
+        facing += 1
     return adjustedDirections
 
 # detects walls if sensor value is below a certain threshold
@@ -52,15 +51,10 @@ def setWalls():
     if sensorData[4] != -1:
         adjustedDirections = adjustDirections(direction)
     else:
-        adjustedDirections = adjustDirections(N)
-    if sensorData[N] == 1:
-        maze[tile][adjustedDirections[N]] = 1
-    if sensorData[E] == 1:
-        maze[tile][adjustedDirections[E]] = 1
-    if sensorData[S] == 1:
-        maze[tile][adjustedDirections[S]] = 1
-    if sensorData[W] == 1:
-        maze[tile][adjustedDirections[W]] = 1
+        adjustedDirections = adjustDirections(Dir.N.value)
+    for i in range(0, 4):
+        if sensorData[i] == 1:
+            maze[tile][adjustedDirections[i]] = 1
     if config.debug is True:
         print("\tTile Array: " + str(maze[tile]))
 
@@ -79,8 +73,8 @@ def westTile(cTile):
 
 # both are 90 degree turns
 def leftTurn(facing):
-    if facing is N:
-        facing = W
+    if facing == Dir.N.value:
+        facing = Dir.W.value
     else:
         facing -= 1
     packet.sData += "mL90;"
@@ -89,8 +83,8 @@ def leftTurn(facing):
     return facing
 
 def rightTurn(facing):
-    if facing is W:
-        facing = N
+    if facing == Dir.W.value:
+        facing = Dir.N.value
     else:
         facing += 1
     packet.sData += "mR90;"
@@ -103,22 +97,22 @@ def forwardTile(cTile):
     if config.inputMode == 2:
         packet.ser.write(bytes("mFT1;".encode("ascii", "ignore")))
     packet.sData += "mFT1;"
-    if direction is N:
+    if direction == Dir.N.value:
         return northTile(cTile)
-    if direction is E:
+    if direction == Dir.E.value:
         return eastTile(cTile)
-    if direction is S:
+    if direction == Dir.S.value:
         return southTile(cTile)
-    if direction is W:
+    if direction == Dir.W.value:
         return westTile(cTile)
 
 def setBlackTile(cTile):
     for x in range(5):
         maze[cTile][x] = 1
-    maze[northTile(cTile)][S] = 1
-    maze[eastTile(cTile)][W] = 1
-    maze[southTile(cTile)][N] = 1
-    maze[westTile(cTile)][E] = 1
+    maze[northTile(cTile)][Dir.S.value] = 1
+    maze[eastTile(cTile)][Dir.W.value] = 1
+    maze[southTile(cTile)][Dir.N.value] = 1
+    maze[westTile(cTile)][Dir.E.value] = 1
 
 def isBlackTile(cTile):
     return maze[cTile][0:4].all() == 1
