@@ -17,6 +17,8 @@ class Dir(Enum):
     S = 2
     W = 3
 
+nTiles = [mazeSize, 1, -1 * mazeSize, -1]
+
 # tile states are true NESW for getting walls, and vis for checking if visited
 visited = 4
 
@@ -58,7 +60,6 @@ def setWalls():
     if config.debug is True:
         print("\tTile Array: " + str(maze[tile]))
 
-# returns tiles to true direction of given tile
 def northTile(cTile):
     return cTile - mazeSize
 
@@ -97,22 +98,13 @@ def forwardTile(cTile):
     if config.inputMode == 2:
         packet.ser.write(bytes("mFT1;".encode("ascii", "ignore")))
     packet.sData += "mFT1;"
-    if direction == Dir.N.value:
-        return northTile(cTile)
-    if direction == Dir.E.value:
-        return eastTile(cTile)
-    if direction == Dir.S.value:
-        return southTile(cTile)
-    if direction == Dir.W.value:
-        return westTile(cTile)
+    return cTile + nTiles[direction]
 
 def setBlackTile(cTile):
-    for x in range(5):
+    for x in range(0, 5):
         maze[cTile][x] = 1
-    maze[northTile(cTile)][Dir.S.value] = 1
-    maze[eastTile(cTile)][Dir.W.value] = 1
-    maze[southTile(cTile)][Dir.N.value] = 1
-    maze[westTile(cTile)][Dir.E.value] = 1
+    for x in range(0, 4):
+        maze[cTile + nTiles[x]][adjustDirections(Dir.S.value)[x]] = 1
 
 def isBlackTile(cTile):
     return maze[cTile][0:4].all() == 1
