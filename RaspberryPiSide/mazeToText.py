@@ -47,17 +47,17 @@ def genRandMaze():
     maze = np.zeros((config.mazeSideLen * config.mazeSideLen, 5), dtype=np.int8)
 
     # create maze borders
-    for i in range(0, config.mazeSideLen):
+    for i in range(config.mazeSideLen):
         maze[i][0] = 1
     for i in range(config.mazeSideLen - 1, config.mazeSideLen * config.mazeSideLen, config.mazeSideLen):
         maze[i][1] = 1
-    for i in range(0, config.mazeSideLen * config.mazeSideLen, config.mazeSideLen):
+    for i in range(config.mazeSideLen * config.mazeSideLen, config.mazeSideLen):
         maze[i][3] = 1
     for i in range(((config.mazeSideLen * config.mazeSideLen) - config.mazeSideLen), config.mazeSideLen * config.mazeSideLen):
         maze[i][2] = 1
 
     # generate random walls
-    for i in range(0, config.mazeSideLen * config.mazeSideLen * 4):
+    for i in range((config.mazeSideLen ** 2) * 4):
         if random.randint(0, (100 // config.tilePercentage) - 1) == 0:
             maze[i // 4][i % 4] = 1
             if 0 <= i // 4 + util.nTiles[i % 4] < config.mazeSideLen**2:

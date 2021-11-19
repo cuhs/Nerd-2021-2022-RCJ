@@ -37,7 +37,7 @@ pathLen = None
 # this adjusts it to true north, and all other directions
 def adjustDirections(facing):
     adjustedDirections = np.array([], dtype=np.int8)
-    for i in range(0, 4):
+    for i in range(4):
         adjustedDirections = np.append(adjustedDirections, facing)
         facing = dirAfter(facing)
     return adjustedDirections
@@ -58,7 +58,7 @@ def setWalls():
         adjustedDirections = adjustDirections(direction)
     else:
         adjustedDirections = adjustDirections(Dir.N.value)
-    for i in range(0, 4):
+    for i in range(4):
         if sensorData[i] == 1:
             maze[tile][adjustedDirections[i]] = 1
     if config.debug is True:
@@ -87,9 +87,9 @@ def forwardTile(cTile):
     return cTile + nTiles[direction]
 
 def setBlackTile(cTile):
-    for x in range(0, 5):
+    for x in range(5):
         maze[cTile][x] = 1
-    for x in range(0, 4):
+    for x in range(4):
         maze[cTile][adjustDirections(Dir.S.value)[x]] = 1
 
 def isBlackTile(cTile):
