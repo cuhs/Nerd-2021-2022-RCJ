@@ -42,9 +42,11 @@ def genMazeFromImage():
 
     print("Maze write finished!")
 
+# generate maze from random walls
 def genRandMaze():
     maze = np.zeros((util.mazeSize * util.mazeSize, 5), dtype=np.int8)
 
+    # create maze borders
     for i in range(0, util.mazeSize):
         maze[i][0] = 1
     for i in range(util.mazeSize - 1, util.mazeSize * util.mazeSize, util.mazeSize):
@@ -54,6 +56,7 @@ def genRandMaze():
     for i in range(((util.mazeSize * util.mazeSize) - util.mazeSize), util.mazeSize * util.mazeSize):
         maze[i][2] = 1
 
+    # generate random walls
     for i in range(0, util.mazeSize * util.mazeSize):
         if random.randint(0, config.tilePercentage - 1) == 0:
             maze[i][0] = 1

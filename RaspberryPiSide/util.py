@@ -17,7 +17,8 @@ class Dir(Enum):
     S = 2
     W = 3
 
-nTiles = [mazeSize, 1, -1 * mazeSize, -1] # neighboring tiles
+# neighboring tiles as: N E S W, to get neighbor do: Tile + nTiles[0] for tile north of Tile
+nTiles = [-mazeSize, 1, mazeSize, -1]
 
 # tile states are true NESW for getting walls, and vis for checking if visited
 visited = 4
@@ -40,11 +41,15 @@ pathLen = None
 def adjustDirections(facing):
     adjustedDirections = np.array([], dtype=np.int8)
     for i in range(0, 4):
-        if facing == 4:
-            facing = 0
         adjustedDirections = np.append(adjustedDirections, facing)
-        facing += 1
+        facing = dirAfter(facing)
     return adjustedDirections
+
+# returns directions after and before passed direction
+def dirBefore(d):
+    return d - 1 if d != 0 else 3
+def dirAfter(d):
+    return d + 1 if d != 3 else 0
 
 # detects walls if sensor value is below a certain threshold
 # direction must be adjusted from bot to the maze
@@ -62,20 +67,14 @@ def setWalls():
 
 # both are 90 degree turns
 def leftTurn(facing):
-    if facing == Dir.N.value:
-        facing = Dir.W.value
-    else:
-        facing -= 1
+    facing = dirBefore(facing)
     packet.sData += "mL90;"
     if config.inputMode == 2:
         packet.ser.write(bytes("mL90;".encode("ascii", "ignore")))
     return facing
 
 def rightTurn(facing):
-    if facing == Dir.W.value:
-        facing = Dir.N.value
-    else:
-        facing += 1
+    facing = dirAfter(facing)
     packet.sData += "mR90;"
     if config.inputMode == 2:
         packet.ser.write(bytes("mR90;".encode("ascii", "ignore")))

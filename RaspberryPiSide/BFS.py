@@ -37,9 +37,9 @@ def nextTile(cTile):
     # stores how many tiles are unvisited
     possibleTiles = [0, 0, 0, 0]
 
-    for i in range(0, 4):
+    for i in range(4):
         if util.maze[cTile][i] == 0:
-            # no walls north
+            # no wall in direction i
             if util.parent[util.nTiles[i] + cTile] == -1:
                 util.parent[util.nTiles[i] + cTile] = cTile
                 util.q.append(util.nTiles[i] + cTile)
@@ -65,32 +65,11 @@ def pathToTile(cTile, target):
 
 # changes direction being faced
 def turnToTile(target, facing):
-    # target == north of tile
-    if target == util.NTile(util.tile):
-        if facing == util.Dir.W.value:
-            facing = util.rightTurn(facing)
-        else:
-            while facing != util.Dir.N.value:
-                facing = util.leftTurn(facing)
-    # target == east of tile
-    if target == util.ETile(util.tile):
-        if facing == util.Dir.N.value:
-            facing = util.rightTurn(facing)
-        else:
-            while facing != util.Dir.E.value:
-                facing = util.leftTurn(facing)
-    # target == south of tile
-    if target == util.STile(util.tile):
-        if facing == util.Dir.E.value:
-            facing = util.rightTurn(facing)
-        else:
-            while facing != util.Dir.S.value:
-                facing = util.leftTurn(facing)
-    # target == west of tile
-    if target == util.WTile(util.tile):
-        if facing == util.Dir.S.value:
-            facing = util.rightTurn(facing)
-        else:
-            while facing != util.Dir.W.value:
-                facing = util.leftTurn(facing)
+    for i in range(4):
+        if target == util.nTiles[i] + util.tile:
+            if facing == util.dirBefore(i):
+                facing = util.rightTurn(facing)
+            else:
+                while facing != i:
+                    facing = util.leftTurn(facing)
     return facing
