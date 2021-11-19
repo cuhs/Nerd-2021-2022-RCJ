@@ -4,13 +4,13 @@ from util import np
 from util import config
 
 def init():
-    util.maze = np.zeros((util.mazeSize * util.mazeSize, 5), dtype=np.int8)  # maze[tile][state], read util
-    util.tile = int(((util.mazeSize * util.mazeSize) / 2) + (util.mazeSize / 2))  # creates start tile in the middle of size x size area
+    util.maze = np.zeros((config.mazeSideLen * config.mazeSideLen, 5), dtype=np.int8)  # maze[tile][state], read util
+    util.tile = int(((config.mazeSideLen * config.mazeSideLen) / 2) + (config.mazeSideLen / 2))  # creates start tile in the middle of size x size area
     util.direction = util.Dir.N.value  # starting direction is set to north
 
     # queue (just a list) and parent array for BFS
     util.q = []
-    util.parent = np.zeros(util.mazeSize * util.mazeSize, dtype=np.int16)
+    util.parent = np.zeros(config.mazeSideLen * config.mazeSideLen, dtype=np.int16)
     util.parent.fill(-1)
 
     # stack (just a list) for path to tile

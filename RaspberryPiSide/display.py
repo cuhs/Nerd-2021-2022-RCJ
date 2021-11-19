@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from util import config
 
-imageSize = util.mazeSize*config.displaySize
+imageSize = config.mazeSideLen * config.displaySize
 img = np.zeros((imageSize, imageSize, 3), dtype=np.uint8)
 
 def imgSetup():
@@ -13,9 +13,9 @@ def imgSetup():
 # displays a passed maze with cv2
 def displayMaze(target, gMaze):
     # parses maze by column
-    for x in range(util.mazeSize):
-        for y in range(util.mazeSize):
-            tile = (x + (util.mazeSize * y))
+    for x in range(config.mazeSideLen):
+        for y in range(config.mazeSideLen):
+            tile = (x + (config.mazeSideLen * y))
             xPixel = x * config.displaySize
             yPixel = y * config.displaySize
 

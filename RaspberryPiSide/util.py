@@ -7,9 +7,6 @@ from enum import Enum
 # True North is the starting direction, and all other directions are the "true" equivalent
 # "North" means the bot's north, or where the bot is facing. All other directions are relative to the bot
 
-# maze size = 20 -> maze size = 20x20 tiles, must be even   !integrate
-mazeSize = config.mazeSideLen
-
 # NESW -> 0123 True North is starting direction
 class Dir(Enum):
     N = 0
@@ -18,13 +15,13 @@ class Dir(Enum):
     W = 3
 
 # neighboring tiles as: N E S W, to get neighbor do: Tile + nTiles[0] for tile north of Tile
-nTiles = [-mazeSize, 1, mazeSize, -1]
+nTiles = [-config.mazeSideLen, 1, config.mazeSideLen, -1]
 
 # tile states are true NESW for getting walls, and vis for checking if visited
 visited = 4
 
-# threshold for walls. If below this number, there is a wall      !integrate
-# sensorData is a filler for sensor data storage                  !integrate
+# threshold for walls. If below this number, there is a wall
+# sensorData is a filler for sensor data storage
 sensorData = np.zeros(5)
 
 maze = None

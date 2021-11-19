@@ -25,8 +25,8 @@ if config.inputMode == 1:
         mazeToText.genRandMaze()
     ret = packet.setupInput(config.inputMode)
     if ret is not None:  # maze in file is generated maze, values must be stored
-        packet.inputData = np.zeros((util.mazeSize * util.mazeSize, 5), dtype=np.int8)
-        for x in range(util.mazeSize * util.mazeSize):
+        packet.inputData = np.zeros((config.mazeSideLen * config.mazeSideLen, 5), dtype=np.int8)
+        for x in range(config.mazeSideLen * config.mazeSideLen):
             cTile = ret[x]
             for y in range(4):
                 packet.inputData[x][y] = cTile[y]
