@@ -3,6 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/RaspberryPiSide" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/RaspberryPiSide/venv" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.7 (Nerd-2021-2022-RCJ)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
