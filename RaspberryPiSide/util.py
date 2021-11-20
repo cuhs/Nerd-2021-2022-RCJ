@@ -42,7 +42,7 @@ def adjustDirections(facing):
         facing = dirAfter(facing)
     return adjustedDirections
 
-# returns directions after and before passed direction
+# returns directions after and before passed direction in N -> E -> S -> W order
 def dirBefore(d):
     return d - 1 if d != 0 else 3
 def dirAfter(d):

@@ -1,9 +1,7 @@
 import BFS
 import display
-import numpy as np
 import cv2
 import time
-import mazeToText
 from BFS import util
 from util import packet
 from util import config
@@ -66,6 +64,18 @@ while nextTile is not None:
 
     if config.debug is True:
         print("BFS START")
+
+# maze is done at this point, every tile has been visited, going back to start
+BFS.pathToTile(util.tile, int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2)))
+if config.displayMode == 1:
+    display.show(int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2)), util.maze, config.displayRate)
+
+while util.path:
+    if config.debug is True:
+        print("\tPath: " + str(util.path))
+
+    util.direction = BFS.turnToTile(util.path.pop(), util.direction)
+    util.tile = util.forwardTile(util.tile)
 
 # print out entire path the robot took traversing the maze and how long the algorithm took
 end = time.time()

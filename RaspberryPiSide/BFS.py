@@ -52,7 +52,8 @@ def init():
 def nextTile(cTile):
     if config.debug is True:
         print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[util.tile][util.visited]))
-    # recursive loop until returned
+
+    # base case, BFS done and cTile is target tile
     if util.maze[cTile][util.visited] == 0:
         util.q.clear()
         if config.debug is True:
