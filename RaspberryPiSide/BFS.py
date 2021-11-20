@@ -4,15 +4,15 @@ from util import np
 from util import config
 
 def init():
-    if config.mazeSideLen % 2 != 0 or config.mazeSideLen > 80 or config.mazeSideLen < 2:
+    if config.mazeSideLen % 2 != 0 or not(2 <= config.mazeSideLen <= 80):
         raise ValueError("Invalid Maze Size (check config!)")
-    util.maze = np.zeros((config.mazeSideLen * config.mazeSideLen, 5), dtype=np.int8)  # maze[tile][state], read util
-    util.tile = int(((config.mazeSideLen * config.mazeSideLen) / 2) + (config.mazeSideLen / 2))  # creates start tile in the middle of size x size area
+    util.maze = np.zeros((config.mazeSideLen ** 2, 5), dtype=np.int8)  # maze[tile][state], read util
+    util.tile = int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))  # creates start tile in the middle of size x size area
     util.direction = util.Dir.N.value  # starting direction is set to north
 
     # queue (just a list) and parent array for BFS
     util.q = []
-    util.parent = np.zeros(config.mazeSideLen * config.mazeSideLen, dtype=np.int16)
+    util.parent = np.zeros(config.mazeSideLen ** 2, dtype=np.int16)
     util.parent.fill(-1)
 
     # stack (just a list) for path to tile
