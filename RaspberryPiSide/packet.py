@@ -3,9 +3,11 @@ import config
 import serial
 import time
 
-# sp = config.port
+# serial port
+rate = 9600
+sp = config.port
 if config.inputMode == 2:
-    ser = serial.Serial(config.port, config.rate)
+    ser = serial.Serial(sp, rate)
 
 # directions
 directions = ['N', 'E', 'S', 'W']
@@ -93,7 +95,7 @@ def setupSerial():
         time.sleep(0.01)
 
     ser.read()  # do this to clean the buffer
-    return config.port
+    return sp
 
 # request and receive wall positions through serial
 def requestData():
