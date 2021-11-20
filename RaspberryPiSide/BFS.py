@@ -1,5 +1,8 @@
 import util
 import sys
+import mazeToText
+import packet
+import display
 from util import np
 from util import config
 
@@ -24,6 +27,26 @@ def init():
 
     # increase recursion limit for large mazes
     sys.setrecursionlimit(config.recursionLimit)
+
+    # packet setup
+    if config.inputMode == 1:
+        if config.genFromImage:
+            mazeToText.genMazeFromImage()
+        else:
+            mazeToText.genRandMaze()
+        ret = packet.setupInput(config.inputMode)
+        if ret is not None:  # maze in file is generated maze, values must be stored
+            packet.inputData = np.zeros((config.mazeSideLen ** 2, 5), dtype=np.int8)
+            for x in range(config.mazeSideLen ** 2):
+                cTile = ret[x]
+                for y in range(4):
+                    packet.inputData[x][y] = cTile[y]
+                    packet.inputData[x][4] = -1
+    else:
+        packet.setupInput(config.inputMode)
+
+    # display setup
+    display.imgSetup()
 
 # return next tile to visit recursively
 def nextTile(cTile):

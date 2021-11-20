@@ -119,9 +119,3 @@ def sendSerial(pathLen):
     print("Sending: " + str(sData[pathLen:]) + "$")  # $ symbolizes the end of a send
     send_message = sData[pathLen:] + "$"
     ser.write(bytes(send_message.encode("ascii", "ignore")))
-
-def sendToFile(gMaze):
-    e.truncate(0)
-    e.write(+"")
-    for x in range(gMaze.length):
-        e.write("G")

@@ -8,30 +8,10 @@ from BFS import util
 from util import packet
 from util import config
 
-print("RaspberryPiSide START")
-
-# display setup
-display.imgSetup()
+print("\nRaspberryPiSide START")
 BFS.init()
 
-# packet setup
-if config.inputMode == 1:
-    if config.genFromImage:
-        mazeToText.genMazeFromImage()
-    else:
-        mazeToText.genRandMaze()
-    ret = packet.setupInput(config.inputMode)
-    if ret is not None:  # maze in file is generated maze, values must be stored
-        packet.inputData = np.zeros((config.mazeSideLen ** 2, 5), dtype=np.int8)
-        for x in range(config.mazeSideLen ** 2):
-            cTile = ret[x]
-            for y in range(4):
-                packet.inputData[x][y] = cTile[y]
-                packet.inputData[x][4] = -1
-else:
-    packet.setupInput(config.inputMode)
-
-print("\nrunning...")
+print("Setup Finished\n\nrunning...")
 
 # set start tile walls
 util.setWalls()
@@ -63,41 +43,7 @@ while nextTile is not None:
 
         # set direction to the direction to be turned
         util.direction = BFS.turnToTile(util.path.pop(), util.direction)
-
-        # check for victims after done turning
-        if config.inputMode == 2:
-            while not packet.ser.inWaiting():
-                everythingDetect.getVideo()
-            if packet.ser.read().decode() == 'd':
-                if not util.maze[util.tile][util.visited] == 2:
-                    everythingDetect.sendVictims()
-
-        # using serial, check for black tiles
-        if config.inputMode == 2:
-            # not last forward / going to new tile
-            if util.path:
-                # set tile to the tile in front
-                util.tile = util.forwardTile(util.tile)
-            else:
-                # last forward in sequence, checking for black tile
-                packet.ser.write(bytes("mFT1;$".encode("ascii", "ignore")))
-                while not packet.ser.inWaiting():
-                    everythingDetect.getVideo()
-                if packet.ser.read().decode() == 'y':
-                    util.tile = util.forwardTile(util.tile)
-                else:
-                    util.setBlackTile(util.forwardTile(util.tile))
-
-        else:
-            # set tile to the tile in front
-            util.tile = util.forwardTile(util.tile)
-
-        if config.inputMode == 2:
-            while not packet.ser.inWaiting():
-                everythingDetect.getVideo()
-            if packet.ser.read().decode() == 'd':
-                if not util.maze[util.tile][util.visited] == 2:
-                    everythingDetect.sendVictims()
+        util.tile = util.forwardTile(util.tile)
 
     if config.inputMode != 2:
         packet.sendData(config.inputMode, util.pathLen)

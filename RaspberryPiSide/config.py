@@ -1,14 +1,13 @@
 # options file, as some settings might want to be
 # changed while debugging or on different systems/computers
 
-mazeSideLen = 20  # must be even
+mazeSideLen = 10  # must be even
 inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) + 10  # buffer of 10
 
 tilePercentage = 15  # percentage of tiles that should be walls for random generation of maze
 
-if inputMode == 1:
-    genFromImage = False  # if false, will get random
+genFromImage = False  # if false, will generate random maze
 
 displayMode = 1  # 0 no display, 1 is display
 displayRate = 10  # in milliseconds, 0 for until click
