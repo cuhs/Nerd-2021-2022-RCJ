@@ -1,13 +1,14 @@
 import cv2
 import numpy as np
+import config
 
 class KNN():
     
     def __init__(self):
         
         self.knn = cv2.ml.KNearest_create()
-        features = np.loadtxt("features.txt", dtype = np.float32)
-        labels = np.loadtxt("labels.txt",dtype = np.float32)
+        features = np.loadtxt(config.fpKNN + "features.txt", dtype = np.float32)
+        labels = np.loadtxt(config.fpKNN + "labels.txt",dtype = np.float32)
 
         self.knn.train(features,cv2.ml.ROW_SAMPLE,labels)
                 
