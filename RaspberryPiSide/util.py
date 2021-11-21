@@ -18,7 +18,19 @@ class Dir(Enum):
 nTiles = [-config.mazeSideLen, 1, config.mazeSideLen, -1]
 
 # tile states are true NESW for getting walls, and vis for checking if visited
+# maze[tile][5] -> return visited. 0 = not visited, 1 = visited.
 visited = 4
+
+# tile states for victims
+# maze[tile][6] -> what victim on north wall of tile. "H" "S" "U" or NoneType
+nVictim = 5
+eVictim = 6
+sVictim = 7
+wVictim = 8
+
+# tile type, normal, black, or checkpoint
+# maze[tile][9] -> special tile features: 0 = normal, 1 = black, 2 = checkpoint
+tileType = 9
 
 # threshold for walls. If below this number, there is a wall
 # sensorData is a filler for sensor data storage

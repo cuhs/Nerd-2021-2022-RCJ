@@ -30,7 +30,7 @@ while nextTile is not None:
         print("\tTiles To Target Tile: " + str(len(util.path)))
 
     # display the maze
-    if config.displayMode == 1:
+    if config.showDisplay:
         display.show(nextTile, util.maze, config.displayRate)
 
     # send driving instructions and do victim and do obstacle and do black tiles
@@ -67,7 +67,7 @@ while nextTile is not None:
 
 # maze is done at this point, every tile has been visited, going back to start
 BFS.pathToTile(util.tile, int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2)))
-if config.displayMode == 1:
+if config.showDisplay:
     display.show(int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2)), util.maze, config.displayRate)
 
 while util.path:

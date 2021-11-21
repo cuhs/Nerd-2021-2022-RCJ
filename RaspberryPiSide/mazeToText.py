@@ -26,7 +26,7 @@ def genMazeFromImage():
             mazeValues[x + (config.mazeSideLen * y)][3] = (1 if (img.item(yPixel, xPixel - 8, 0) < 100) else 0)
 
     # displays check for correct
-    if config.displayMode != 0:
+    if config.showDisplay:
         cv2.imshow('original', img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -62,7 +62,7 @@ def genRandMaze():
             if 0 <= i // 4 + util.nTiles[i % 4] < config.mazeSideLen**2:
                 maze[i // 4 + util.nTiles[i % 4]][util.oppositeDir(i % 4)] = 1
 
-    if config.displayMode != 0:
+    if config.showDisplay:
         display.show(-1, maze, 0)
         cv2.destroyAllWindows()
 
