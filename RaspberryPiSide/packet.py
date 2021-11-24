@@ -15,7 +15,6 @@ sData = ""
 
 s = open(config.fpTXT + "raspPacket", "a", encoding='utf-8')
 r = open(config.fpTXT + "mazeInput", "r", encoding='utf-8')
-e = open(config.fpTXT + "saveMaze", "a", encoding='utf-8')
 inputData = None
 
 # function to reroute setup based on input/output
