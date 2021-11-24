@@ -10,7 +10,7 @@ def init():
     if config.mazeSideLen % 2 != 0 or not(2 <= config.mazeSideLen <= 80):
         raise ValueError("Invalid Maze Size (check config!)")
     util.maze = np.zeros((config.mazeSideLen ** 2, 10), dtype=np.int8)  # maze[tile][attributes], read util
-    util.tile = int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))  # creates start tile in the middle of size x size area
+    util.tile = util.startTile()  # creates start tile in the middle of size x size area
     util.direction = util.Dir.N.value  # starting direction is set to north
 
     # queue (just a list) and parent array for BFS

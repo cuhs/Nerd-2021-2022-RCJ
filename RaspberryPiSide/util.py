@@ -44,6 +44,10 @@ parent = None
 path = None
 pathLen = None
 
+# returns home/starting tile
+def startTile():
+    return int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))
+
 # adjust which position is facing true north
 # getting sensorData[N] will get north,
 # this adjusts it to true north, and all other directions
@@ -99,10 +103,10 @@ def forwardTile(cTile):
     return cTile + nTiles[direction]
 
 def setBlackTile(cTile):
-    for x in range(5):
+    for x in range(4):
         maze[cTile][x] = 1
     for x in range(4):
-        maze[cTile][adjustDirections(Dir.S.value)[x]] = 1
+        maze[nTiles[x]][adjustDirections(Dir.S.value)[x]] = 1
     maze[cTile][tileType] = 1
 
 def isBlackTile(cTile):

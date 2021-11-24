@@ -66,9 +66,9 @@ while nextTile is not None:
         print("BFS START")
 
 # maze is done at this point, every tile has been visited, going back to start
-BFS.pathToTile(util.tile, int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2)))
+BFS.pathToTile(util.tile, util.startTile())
 if config.showDisplay:
-    display.show(int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2)), util.maze, config.displayRate)
+    display.show(util.startTile(), util.maze, config.displayRate)
 
 while util.path:
     if config.debug is True:

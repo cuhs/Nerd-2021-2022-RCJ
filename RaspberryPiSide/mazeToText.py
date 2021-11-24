@@ -2,6 +2,7 @@ import util
 import numpy as np
 import cv2
 import random
+import packet
 import display
 from util import config
 
@@ -33,17 +34,16 @@ def genMazeFromImage():
         display.show(-1, mazeValues, 0)
 
     # writes maze values to "mazeInput.txt"
-    r = open(config.fpTXT + "mazeInput", "a", encoding='utf-8')
-    r.truncate(0)
-    r.write("GENERATED\n")
+    packet.r.truncate(0)
+    packet.r.write("GENERATED\n")
     for x in range(config.mazeSideLen ** 2):
-        r.write(str(int(mazeValues[x][0])) + str(int(mazeValues[x][1])) + str(int(mazeValues[x][2])) + str(int(mazeValues[x][3])) + "\n")
+        packet.r.write(str(int(mazeValues[x][0])) + str(int(mazeValues[x][1])) + str(int(mazeValues[x][2])) + str(int(mazeValues[x][3])) + "00000\n")
 
     print("Maze write finished!")
 
 # generate maze from random walls
 def genRandMaze():
-    maze = np.zeros((config.mazeSideLen ** 2, 5), dtype=np.int8)
+    maze = np.zeros((config.mazeSideLen ** 2, 10), dtype=np.int8)
 
     # create maze borders
     for i in range(config.mazeSideLen):
@@ -62,13 +62,27 @@ def genRandMaze():
             if 0 <= i // 4 + util.nTiles[i % 4] < config.mazeSideLen**2:
                 maze[i // 4 + util.nTiles[i % 4]][util.oppositeDir(i % 4)] = 1
 
+    for i in range(config.blackTileCount):
+        r = random.randint(0, config.mazeSideLen ** 2 - 1)
+        while maze[r][util.tileType] == 1:
+            r = random.randint(0, config.mazeSideLen ** 2 - 1)
+
+        maze[r][util.tileType] = 1
+        for x in range(4):
+            maze[r][x] = 1
+        for x in range(4):
+            maze[util.nTiles[x]][util.adjustDirections(util.Dir.S.value)[x]] = 1
+        maze[r][util.tileType] = 1
+
     if config.showDisplay:
         display.show(-1, maze, 0)
         cv2.destroyAllWindows()
 
     # writes maze values to "mazeInput.txt"
-    r = open(config.fpTXT + "mazeInput", "a", encoding='utf-8')
-    r.truncate(0)
-    r.write("GENERATED\n")
-    for x in range(config.mazeSideLen * config.mazeSideLen):
-        r.write(str(int(maze[x][0])) + str(int(maze[x][1])) + str(int(maze[x][2])) + str(int(maze[x][3])) + "\n")
+    packet.r.truncate(0)
+    packet.r.write("GENERATED\n")
+    for x in range(config.mazeSideLen ** 2):
+        s = ""
+        for i in range(10):
+            s += str(maze[x][i])
+        packet.r.write(str(s) + "\n")
