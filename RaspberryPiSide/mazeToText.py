@@ -34,10 +34,11 @@ def genMazeFromImage():
         display.show(-1, mazeValues, 0)
 
     # writes maze values to "mazeInput.txt"
-    packet.r.truncate(0)
-    packet.r.write("GENERATED\n")
+    r = open(config.fpTXT + "mazeInput", "a", encoding='utf-8')
+    r.truncate(0)
+    r.write("GENERATED\n")
     for x in range(config.mazeSideLen ** 2):
-        packet.r.write(str(int(mazeValues[x][0])) + str(int(mazeValues[x][1])) + str(int(mazeValues[x][2])) + str(int(mazeValues[x][3])) + "00000\n")
+        r.write(str(int(mazeValues[x][0])) + str(int(mazeValues[x][1])) + str(int(mazeValues[x][2])) + str(int(mazeValues[x][3])) + "00000\n")
 
     print("Maze write finished!")
 
@@ -79,10 +80,11 @@ def genRandMaze():
         cv2.destroyAllWindows()
 
     # writes maze values to "mazeInput.txt"
-    packet.r.truncate(0)
-    packet.r.write("GENERATED\n")
+    r = open(config.fpTXT + "mazeInput", "a", encoding='utf-8')
+    r.truncate(0)
+    r.write("GENERATED\n")
     for x in range(config.mazeSideLen ** 2):
         s = ""
         for i in range(10):
             s += str(maze[x][i])
-        packet.r.write(str(s) + "\n")
+        r.write(str(s) + "\n")

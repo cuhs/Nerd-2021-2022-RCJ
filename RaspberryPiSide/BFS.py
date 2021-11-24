@@ -39,7 +39,7 @@ def init():
             packet.inputData = np.zeros((config.mazeSideLen ** 2, 10), dtype=np.int8)
             for x in range(config.mazeSideLen ** 2):
                 cTile = ret[x]
-                for y in range(10):
+                for y in range(9):
                     packet.inputData[x][y] = cTile[y]
     else:
         packet.setupInput(config.inputMode)
