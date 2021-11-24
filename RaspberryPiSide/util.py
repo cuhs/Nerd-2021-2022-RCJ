@@ -103,6 +103,13 @@ def setBlackTile(cTile):
         maze[cTile][x] = 1
     for x in range(4):
         maze[cTile][adjustDirections(Dir.S.value)[x]] = 1
+    maze[cTile][tileType] = 1
 
 def isBlackTile(cTile):
-    return maze[cTile][0:4].all() == 1
+    return bool(maze[cTile][tileType])
+
+def setCheckpoint(cTile):
+    maze[cTile][tileType] = 2
+
+def isCheckpoint(cTile):
+    return maze[cTile][tileType] == 2
