@@ -34,7 +34,7 @@ tileType = 9
 
 # threshold for walls. If below this number, there is a wall
 # sensorData is a filler for sensor data storage
-sensorData = np.zeros(5)
+sensorData = np.zeros(10)
 
 maze = None
 tile = None

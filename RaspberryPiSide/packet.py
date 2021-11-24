@@ -13,8 +13,8 @@ directions = ['N', 'E', 'S', 'W']
 rData = ""
 sData = ""
 
-s = open(config.fpTXT + "raspPacket", "a", encoding='utf-8')
-r = open(config.fpTXT + "mazeInput", "a", encoding='utf-8')
+s = open(config.fpTXT + "raspPacket", "r+", encoding='utf-8')
+r = open(config.fpTXT + "mazeInput", "r+", encoding='utf-8')
 inputData = None
 
 # function to reroute setup based on input/output
