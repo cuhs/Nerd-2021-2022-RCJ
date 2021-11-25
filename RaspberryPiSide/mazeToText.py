@@ -37,9 +37,10 @@ def genMazeFromImage():
     r = packet.inputFile("a")
     r.truncate(0)
     r.write("IMAGE\n")
-    for x in range(config.mazeSideLen ** 2):
-        r.write(str(int(mazeValues[x][0])) + str(int(mazeValues[x][1])) + str(int(mazeValues[x][2])) + str(int(mazeValues[x][3])) + "100000\n")
+    for i in range(config.mazeSideLen ** 2):
+        r.write(str(''.join(str(j) for j in mazeValues[i])) + "100000\n")
 
+    r.close()
     print("Maze write finished!")
 
 # generate maze from random walls
@@ -63,28 +64,22 @@ def genRandMaze():
             if 0 <= i // 4 + util.nTiles[i % 4] < config.mazeSideLen**2:
                 maze[i // 4 + util.nTiles[i % 4]][util.oppositeDir(i % 4)] = 1
 
-    for i in range(config.blackTileCount):
-        r = random.randint(0, config.mazeSideLen ** 2 - 1)
-        while maze[r][util.tileType] == 1:
-            r = random.randint(0, config.mazeSideLen ** 2 - 1)
-
-        maze[r][util.tileType] = 1
-        for x in range(4):
-            maze[r][x] = 1
-        for x in range(4):
-            maze[util.nTiles[x]][util.adjustDirections(util.Dir.S.value)[x]] = 1
-        maze[r][util.tileType] = 1
+    for i in range(config.mazeSideLen ** 2):
+        maze[i][util.visited] = 1
 
     if config.showDisplay:
         display.show(-1, maze, 0)
         cv2.destroyAllWindows()
 
     # writes maze values to "mazeInput.txt"
-    r = open(config.fpTXT + "mazeInput", "a", encoding='utf-8')
+    r = packet.inputFile("a")
     r.truncate(0)
     r.write("GENERATED\n")
-    for x in range(config.mazeSideLen ** 2):
+    for i in range(config.mazeSideLen ** 2):
         s = ""
-        for i in range(10):
-            s += str(maze[x][i])
+        for j in range(10):
+            s += str(maze[i][j])
         r.write(str(s) + "\n")
+
+    r.close()
+    print("Maze write finished!")
