@@ -61,8 +61,22 @@ def genRandMaze():
     for i in range((config.mazeSideLen ** 2) * 4):
         if random.randint(0, (100 // config.wallPercentage) - 1) == 0:
             maze[i // 4][i % 4] = 1
-            if 0 <= i // 4 + util.nTiles[i % 4] < config.mazeSideLen**2:
-                maze[i // 4 + util.nTiles[i % 4]][util.oppositeDir(i % 4)] = 1
+            if 0 <= i // 4 + util.adjTiles[i % 4] < config.mazeSideLen**2:
+                maze[i // 4 + util.adjTiles[i % 4]][util.oppositeDir(i % 4)] = 1
+
+    for i in range(config.blackTileCount):
+        r = random.randint(0, config.mazeSideLen ** 2 - 1)
+        # making sure not overwriting black tile or starting tile
+        while maze[r][util.tileType] == 1 and r != util.startTile():
+            r = random.randint(0, config.mazeSideLen ** 2 - 1)
+
+        maze[r][util.tileType] = 1
+        for x in range(4):
+            maze[r][x] = 1
+        for x in range(4):
+            maze[util.adjTiles[x]][util.adjustDirections(util.Dir.S.value)[x]] = 1
+
+        maze = util.setBlackTile(maze, r, False)
 
     for i in range(config.mazeSideLen ** 2):
         maze[i][util.visited] = 1

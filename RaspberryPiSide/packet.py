@@ -10,7 +10,6 @@ if config.inputMode == 2:
 # directions
 directions = ['N', 'E', 'S', 'W']
 
-rData = ""
 sData = ""
 
 # get file editors

@@ -79,6 +79,6 @@ while util.path:
 
 # print out entire path the robot took traversing the maze and how long the algorithm took
 end = time.time()
-print("\nTotal Path: " + str(packet.sData) + "\nBFS Done! All tiles visited in: " + format((end-start)*1000, '.4f') + "ms ")
+print("\nTotal Path: " + str(packet.sData) + "\nBFS Done! All tiles visited in: " + format((end-start)*1000, '.2f') + "ms ")
 display.show(-1, util.maze, 0)
 cv2.destroyAllWindows()

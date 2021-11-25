@@ -11,7 +11,7 @@ def imgSetup():
     img[:] = (255, 255, 255)
 
 # displays a passed maze with cv2
-def displayMaze(target, gMaze):
+def displayMaze(target, cMaze):
     # parses maze by column
     for x in range(config.mazeSideLen):
         for y in range(config.mazeSideLen):
@@ -30,22 +30,22 @@ def displayMaze(target, gMaze):
             if tile == target:
                 cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 255), -1)
             # black tiles are black
-            # if util.isBlackTile(tile):
-            #    cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), -1)
+            if util.isBlackTile(cMaze, tile):
+                cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), -1)
 
             # adds walls for the tile
-            if gMaze[tile][util.Dir.N.value] == 1:
+            if cMaze[tile][util.Dir.N.value] == 1:
                 cv2.line(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel), (0, 0, 0), 2)
-            if gMaze[tile][util.Dir.E.value] == 1:
+            if cMaze[tile][util.Dir.E.value] == 1:
                 cv2.line(img, (xPixel + config.displaySize, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), 2)
-            if gMaze[tile][util.Dir.S.value] == 1:
+            if cMaze[tile][util.Dir.S.value] == 1:
                 cv2.line(img, (xPixel, yPixel + config.displaySize), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), 2)
-            if gMaze[tile][util.Dir.W.value] == 1:
+            if cMaze[tile][util.Dir.W.value] == 1:
                 cv2.line(img, (xPixel, yPixel), (xPixel, yPixel + config.displaySize), (0, 0, 0), 2)
 
-def show(target, gMaze, ms):
+def show(target, cMaze, ms):
     imgSetup()
-    displayMaze(target, gMaze)
+    displayMaze(target, cMaze)
     cv2.imshow("maze", img)
     cv2.waitKey(ms)
 

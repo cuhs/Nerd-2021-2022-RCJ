@@ -15,7 +15,7 @@ class Dir(Enum):
     W = 3
 
 # neighboring tiles as: N E S W, to get neighbor do: Tile + nTiles[0] for tile north of Tile
-nTiles = [-config.mazeSideLen, 1, config.mazeSideLen, -1]
+adjTiles = [-config.mazeSideLen, 1, config.mazeSideLen, -1]
 
 # tile states are true NESW for getting walls, and vis for checking if visited
 # maze[tile][5] -> return visited. 0 = not visited, 1 = visited.
@@ -98,20 +98,23 @@ def forwardTile(cTile):
     if config.inputMode == 2:
         packet.ser.write(bytes("mFT1;".encode("ascii", "ignore")))
     packet.sData += "mFT1;"
-    return cTile + nTiles[direction]
+    return cTile + adjTiles[direction]
 
-def setBlackTile(cTile):
-    for x in range(4):
-        maze[cTile][x] = 1
-    for x in range(4):
-        maze[nTiles[x]][adjustDirections(Dir.S.value)[x]] = 1
-    maze[cTile][tileType] = 1
+def setBlackTile(cMaze, cTile, setBorders):
+    if setBorders:
+        for x in range(4):
+            cMaze[cTile][x] = 1
+        for x in range(4):
+            cMaze[adjTiles[x]][adjustDirections(Dir.S.value)[x]] = 1
+    cMaze[cTile][tileType] = 1
+    return cMaze
 
-def isBlackTile(cTile):
-    return bool(maze[cTile][tileType])
+def isBlackTile(cMaze, cTile):
+    return bool(cMaze[cTile][tileType])
 
-def setCheckpoint(cTile):
-    maze[cTile][tileType] = 2
+def setCheckpoint(cMaze, cTile):
+    cMaze[cTile][tileType] = 2
+    return cMaze
 
-def isCheckpoint(cTile):
-    return maze[cTile][tileType] == 2
+def isCheckpoint(cMaze, cTile):
+    return cMaze[cTile][tileType] == 2
