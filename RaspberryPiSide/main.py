@@ -41,7 +41,7 @@ while nextTile is not None:
 
         # set direction to the direction to be turned
         util.direction = BFS.turnToTile(util.path.pop(), util.direction)
-        util.tile = util.forwardTile(util.tile)
+        util.tile = util.goForward(util.tile)
 
     if config.inputMode != 2:
         packet.sendData(config.inputMode, util.pathLen)
@@ -56,26 +56,37 @@ while nextTile is not None:
     util.maze[util.tile][util.visited] = 1
     util.parent.fill(-1)
 
-    # get sensor/wall values and calculate next tile
+    # get sensor/wall values
     util.setWalls()
+
+    # check if tile is a black tile
+    if util.isBlackTile(util.maze, util.tile):
+        if config.debug is True:
+            print("\tTile " + str(util.tile) + " is a black tile, going back")
+
+        util.maze = util.setBlackTile(util.maze, util.tile, setBorders=True)
+        util.tile = util.goBackward(util.tile)
+
+        if config.debug is True:
+            print("\tTile now " + str(util.tile) + " after black tile")
 
     # calculate next tile
     nextTile = BFS.nextTile(util.tile)
 
     if config.debug is True:
-        print("BFS START")
+        print("BFS START " + str(nextTile))
 
 # maze is done at this point, every tile has been visited, going back to start
-BFS.pathToTile(util.tile, util.startTile())
+BFS.pathToTile(util.tile, util.startTile)
 if config.showDisplay:
-    display.show(util.startTile(), util.maze, config.displayRate)
+    display.show(util.startTile, util.maze, config.displayRate)
 
 while util.path:
     if config.debug is True:
         print("\tPath: " + str(util.path))
 
     util.direction = BFS.turnToTile(util.path.pop(), util.direction)
-    util.tile = util.forwardTile(util.tile)
+    util.tile = util.goForward(util.tile)
 
 # print out entire path the robot took traversing the maze and how long the algorithm took
 end = time.time()

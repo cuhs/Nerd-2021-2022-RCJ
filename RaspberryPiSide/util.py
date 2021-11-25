@@ -35,10 +35,6 @@ tileType = 9
 # length of attributes for each tile, for maze & array creation
 tileLen = 10
 
-# threshold for walls. If below this number, there is a wall
-# sensorData is a filler for sensor data storage
-sensorData = np.zeros(tileLen)
-
 maze = None
 tile = None
 direction = None
@@ -47,9 +43,8 @@ parent = None
 path = None
 pathLen = None
 
-# returns home/starting tile
-def startTile():
-    return int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))
+#  home/starting tile
+startTile = int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))
 
 # adjust which position is facing true north
 # getting sensorData[N] will get north,
@@ -69,24 +64,27 @@ def dirAfter(d):
 def oppositeDir(d):
     return dirAfter(dirAfter(d))
 
-# detects walls if sensor value is below a certain threshold
 # direction must be adjusted from bot to the maze
 def setWalls():
-    sensorData[:] = packet.getData(config.inputMode, tile, direction)
+    sensorData = packet.getData(config.inputMode, tile, direction)
     for i in range(tileLen):
         maze[tile][i] = sensorData[i]
+        # prevents overwriting of black tile
+        if (i < 4) and (0 <= tile + adjTiles[oppositeDir(i)] < config.mazeSideLen ** 2) and (maze[tile + adjTiles[oppositeDir(i)]][tileType] == 1):
+            maze[tile][i] = 1
+
     if config.debug is True:
         print("\tTile Array: " + str(maze[tile]))
 
 # both are 90 degree turns
-def leftTurn(facing):
+def turnLeft(facing):
     facing = dirBefore(facing)
     packet.sData += "mL90;"
     if config.inputMode == 2:
         packet.ser.write(bytes("mL90;".encode("ascii", "ignore")))
     return facing
 
-def rightTurn(facing):
+def turnRight(facing):
     facing = dirAfter(facing)
     packet.sData += "mR90;"
     if config.inputMode == 2:
@@ -94,18 +92,25 @@ def rightTurn(facing):
     return facing
 
 # send forward message
-def forwardTile(cTile):
+def goForward(cTile):
     if config.inputMode == 2:
         packet.ser.write(bytes("mFT1;".encode("ascii", "ignore")))
     packet.sData += "mFT1;"
     return cTile + adjTiles[direction]
+
+def goBackward(cTile):
+    if config.inputMode == 2:
+        packet.ser.write(bytes("mBT1;".encode("ascii", "ignore")))
+    packet.sData += "mBT1;"
+    return cTile + adjTiles[oppositeDir(direction)]
 
 def setBlackTile(cMaze, cTile, setBorders):
     if setBorders:
         for x in range(4):
             cMaze[cTile][x] = 1
         for x in range(4):
-            cMaze[adjTiles[x]][adjustDirections(Dir.S.value)[x]] = 1
+            if 0 <= cTile + adjTiles[x] < config.mazeSideLen ** 2:
+                cMaze[cTile + adjTiles[x]][adjustDirections(Dir.S.value)[x]] = 1
     cMaze[cTile][tileType] = 1
     return cMaze
 

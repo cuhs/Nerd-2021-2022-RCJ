@@ -66,17 +66,12 @@ def genRandMaze():
 
     for i in range(config.blackTileCount):
         r = random.randint(0, config.mazeSideLen ** 2 - 1)
-        # making sure not overwriting black tile or starting tile
-        while maze[r][util.tileType] == 1 and r != util.startTile():
+
+        # making sure not overwriting another black tile or starting tile
+        while maze[r][util.tileType] == 1 or r == util.startTile:
             r = random.randint(0, config.mazeSideLen ** 2 - 1)
 
-        maze[r][util.tileType] = 1
-        for x in range(4):
-            maze[r][x] = 1
-        for x in range(4):
-            maze[util.adjTiles[x]][util.adjustDirections(util.Dir.S.value)[x]] = 1
-
-        maze = util.setBlackTile(maze, r, False)
+        maze = util.setBlackTile(maze, r, setBorders=False)
 
     for i in range(config.mazeSideLen ** 2):
         maze[i][util.visited] = 1

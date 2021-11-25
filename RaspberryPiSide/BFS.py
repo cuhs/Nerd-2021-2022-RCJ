@@ -10,7 +10,7 @@ def init():
     if config.mazeSideLen % 2 != 0 or not(2 <= config.mazeSideLen <= 80):
         raise ValueError("Invalid Maze Size (check config!)")
     util.maze = np.zeros((config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
-    util.tile = util.startTile()  # creates start tile in the middle of size x size area
+    util.tile = util.startTile  # creates start tile in the middle of size x size area
     util.direction = util.Dir.N.value  # starting direction is set to north
 
     # queue (just a list) and parent array for BFS
@@ -56,7 +56,7 @@ def nextTile(cTile):
     possibleTiles = [0, 0, 0, 0]
 
     for i in range(4):
-        if util.maze[cTile][i] == 0:
+        if util.maze[cTile][i] == 0 and (0 <= cTile + util.adjTiles[i] <= config.mazeSideLen ** 2 and util.maze[cTile + util.adjTiles[i]][util.tileType] != 1):
             # no wall in direction i
             if util.parent[util.adjTiles[i] + cTile] == -1:
                 util.parent[util.adjTiles[i] + cTile] = cTile
@@ -86,8 +86,8 @@ def turnToTile(target, facing):
     for i in range(4):
         if target == util.adjTiles[i] + util.tile:
             if facing == util.dirBefore(i):
-                facing = util.rightTurn(facing)
+                facing = util.turnRight(facing)
             else:
                 while facing != i:
-                    facing = util.leftTurn(facing)
+                    facing = util.turnLeft(facing)
     return facing
