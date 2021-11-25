@@ -70,13 +70,8 @@ def oppositeDir(d):
 # direction must be adjusted from bot to the maze
 def setWalls():
     sensorData[:] = packet.getData(config.inputMode, tile, direction)
-    if sensorData[4] != -1:
-        adjustedDirections = adjustDirections(direction)
-    else:
-        adjustedDirections = adjustDirections(Dir.N.value)
-    for i in range(4):
-        if sensorData[i] == 1:
-            maze[tile][adjustedDirections[i]] = 1
+    for i in range(10):
+        maze[tile][i] = sensorData[i]
     if config.debug is True:
         print("\tTile Array: " + str(maze[tile]))
 

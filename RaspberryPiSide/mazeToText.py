@@ -9,7 +9,7 @@ from util import config
 # generates a maze based on a png of one from mazegenerator.net
 def genMazeFromImage():
     # maze values holds the maze generated from picture
-    mazeValues = np.zeros((config.mazeSideLen ** 2, 5), dtype=np.int8)
+    mazeValues = np.zeros((config.mazeSideLen ** 2, 4), dtype=np.int8)
     img = cv2.imread(config.fpIMG + "maze" + str(config.mazeSideLen) + ".png", cv2.IMREAD_COLOR)
 
     # variable sizes, works with any even sided maze
@@ -34,11 +34,11 @@ def genMazeFromImage():
         display.show(-1, mazeValues, 0)
 
     # writes maze values to "mazeInput.txt"
-    r = open(config.fpTXT + "mazeInput", "a", encoding='utf-8')
+    r = packet.inputFile("a")
     r.truncate(0)
-    r.write("GENERATED\n")
+    r.write("IMAGE\n")
     for x in range(config.mazeSideLen ** 2):
-        r.write(str(int(mazeValues[x][0])) + str(int(mazeValues[x][1])) + str(int(mazeValues[x][2])) + str(int(mazeValues[x][3])) + "00000\n")
+        r.write(str(int(mazeValues[x][0])) + str(int(mazeValues[x][1])) + str(int(mazeValues[x][2])) + str(int(mazeValues[x][3])) + "100000\n")
 
     print("Maze write finished!")
 

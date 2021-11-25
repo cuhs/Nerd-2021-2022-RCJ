@@ -13,16 +13,22 @@ directions = ['N', 'E', 'S', 'W']
 rData = ""
 sData = ""
 
-s = open(config.fpTXT + "raspPacket", "a", encoding='utf-8')
-r = open(config.fpTXT + "mazeInput", "r", encoding='utf-8')
-inputData = None
+# get file editors
+def outputFile(mode):
+    return open(config.fpTXT + "raspPacket", str(mode), encoding='utf-8')
+def inputFile(mode):
+    return open(config.fpTXT + "mazeInput", str(mode), encoding='utf-8')
 
 # function to reroute setup based on input/output
 def setupInput(mode):
+    # manual or from file
     if mode == 1 or mode == 0:
-        s.truncate(0)
+        # clear output file
+        outputFile("a").truncate(0)
+    # from file
     if mode == 1:
-        return setupInputFile()
+        setupInputFile()
+    # serial
     if mode == 2:
         return setupSerial()
 
@@ -53,34 +59,28 @@ def getManualData(tile, facing):
     walls[4] = 0
     return walls
 
-# sets up file input, determined whether from gen or input
+# sets up file input, determines whether from generated or image
 def setupInputFile():
-    inputType = r.readline()
+    inputType = inputFile("r").readline()
     if inputType == "GENERATED\n":
         print("File input is a generated maze")
-        return r.read().splitlines()
-    if inputType == "INPUT\n":
-        print("File input is manual values")
-    return None
+    elif inputType == "IMAGE\n":
+        print("File input is a maze from image")
+    else:
+        raise ValueError("Invalid Input File Type!\nExpected: \"GENERATED\" or \"IMAGE\"\nGot: " + str(inputType))
 
 # gets data from file depending whether from gen or input
 def getFileData(tile):
-    if inputData is not None:
-        return inputData[tile]  # generated
-    else:
-        inputStr = r.readline()  # input
-        walls = np.zeros(5, dtype=np.int8)
-        walls[0] = int(inputStr[2])
-        walls[1] = int(inputStr[1])
-        walls[2] = 0
-        walls[3] = int(inputStr[0])
-        walls[4] = 0
-        return walls
+    # skips until desired tile
+    f = inputFile("r")
+    for i in range(tile + 1):
+        f.readline()
+    return [int(j) for j in str(f.readline())[:10]]
 
 # writes path to file
 def sendFileData(pathLen):
-    s.write(sData[pathLen:] + "\n")
-    s.flush()
+    outputFile("a").write(sData[pathLen:] + "\n")
+    outputFile("a").flush()
 
 # sets up serial communication
 def setupSerial():

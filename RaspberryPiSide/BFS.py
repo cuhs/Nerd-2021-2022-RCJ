@@ -34,13 +34,6 @@ def init():
             mazeToText.genMazeFromImage()
         else:
             mazeToText.genRandMaze()
-        ret = packet.setupInput(config.inputMode)
-        if ret is not None:  # maze in file is generated maze, values must be stored
-            packet.inputData = np.zeros((config.mazeSideLen ** 2, 10), dtype=np.int8)
-            for x in range(config.mazeSideLen ** 2):
-                cTile = ret[x]
-                for y in range(9):
-                    packet.inputData[x][y] = cTile[y]
     else:
         packet.setupInput(config.inputMode)
 
