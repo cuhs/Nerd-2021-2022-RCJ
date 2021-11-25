@@ -73,7 +73,7 @@ def setWalls():
         if (i < 4) and (0 <= tile + adjTiles[oppositeDir(i)] < config.mazeSideLen ** 2) and (maze[tile + adjTiles[oppositeDir(i)]][tileType] == 1):
             maze[tile][i] = 1
 
-    if config.debug is True:
+    if config.debug:
         print("\tTile Array: " + str(maze[tile]))
 
 # both are 90 degree turns

@@ -42,13 +42,13 @@ def init():
 
 # return next tile to visit recursively
 def nextTile(cTile):
-    if config.debug is True:
+    if config.debug:
         print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[util.tile][util.visited]))
 
     # base case, BFS done and cTile is target tile
     if util.maze[cTile][util.visited] == 0:
         util.q.clear()
-        if config.debug is True:
+        if config.debug:
             print("\tBFS - END, Tile:\t" + str(cTile))
         return cTile
 
@@ -63,7 +63,7 @@ def nextTile(cTile):
                 util.q.append(util.adjTiles[i] + cTile)
             possibleTiles[i] = 1
 
-    if config.debug is True:
+    if config.debug:
         print("\tQueue:\t" + str(util.q))
 
     # recursively finds unvisited tiles

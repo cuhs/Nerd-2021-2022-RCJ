@@ -22,11 +22,11 @@ start = time.time()
 nextTile = BFS.nextTile(util.tile)
 
 while nextTile is not None:
-    if config.debug is True:
+    if config.debug:
         print("\tCurrent Tile:\t" + str(util.tile) + "\n\tNext Tile:\t" + str(nextTile))
     # calculate path to target tile
     BFS.pathToTile(util.tile, nextTile)
-    if config.debug is True:
+    if config.debug:
         print("\tTiles To Target Tile: " + str(len(util.path)))
 
     # display the maze
@@ -36,7 +36,7 @@ while nextTile is not None:
     # send driving instructions and do victim and do obstacle and do black tiles
     while util.path:
         # calculate driving instructions from path to next tile
-        if config.debug is True:
+        if config.debug:
             print("\tPath: " + str(util.path))
 
         # set direction to the direction to be turned
@@ -47,7 +47,7 @@ while nextTile is not None:
         packet.sendData(config.inputMode, util.pathLen)
 
     # print out path to only the next tile
-    if config.debug is True:
+    if config.debug:
         print("\tPath To Tile: " + str(packet.sData[util.pathLen:]))
         print()
     util.pathLen = len(packet.sData)
@@ -61,20 +61,20 @@ while nextTile is not None:
 
     # check if tile is a black tile
     if util.isBlackTile(util.maze, util.tile):
-        if config.debug is True:
+        if config.debug:
             print("\tTile " + str(util.tile) + " is a black tile, going back")
 
         util.maze = util.setBlackTile(util.maze, util.tile, setBorders=True)
         util.tile = util.goBackward(util.tile)
 
-        if config.debug is True:
+        if config.debug:
             print("\tTile now " + str(util.tile) + " after black tile")
 
     # calculate next tile
     nextTile = BFS.nextTile(util.tile)
 
-    if config.debug is True:
-        print("BFS START " + str(nextTile))
+    if config.debug:
+        print("BFS START")
 
 # maze is done at this point, every tile has been visited, going back to start
 BFS.pathToTile(util.tile, util.startTile)
@@ -82,7 +82,7 @@ if config.showDisplay:
     display.show(util.startTile, util.maze, config.displayRate)
 
 while util.path:
-    if config.debug is True:
+    if config.debug:
         print("\tPath: " + str(util.path))
 
     util.direction = BFS.turnToTile(util.path.pop(), util.direction)
