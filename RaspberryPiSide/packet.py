@@ -23,7 +23,7 @@ def setupInput(mode):
     # manual or from file
     if mode == 1 or mode == 0:
         # clear output file
-        outputFile("a").truncate(0)
+        inputFile("a").truncate(0)
     # from file
     if mode == 1:
         setupInputFile()
@@ -78,7 +78,7 @@ def getFileData(tile):
 
 # writes path to file
 def sendFileData(pathLen):
-    outputFile("a").write(sData[pathLen:] + "\n")
+    outputFile("a").write(sData[pathLen:] + config.serialMessages[5] + "\n")
     outputFile("a").flush()
 
 # sets up serial communication
@@ -114,6 +114,6 @@ def requestData():
 
 # send path instructions through serial
 def sendSerial(pathLen):
-    print("Sending: " + str(sData[pathLen:]) + "$")  # $ symbolizes the end of a send
+    print("Sending: " + str(sData[pathLen:]) + config.serialMessages[5])  # * symbolizes the end of a send
     send_message = sData[pathLen:] + "$"
     ser.write(bytes(send_message.encode("ascii", "ignore")))

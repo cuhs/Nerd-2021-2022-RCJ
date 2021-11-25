@@ -78,30 +78,34 @@ def setWalls():
 
 # both are 90 degree turns
 def turnLeft(facing):
+    msg = config.serialMessages[1] + config.serialMessages[4]
     facing = dirBefore(facing)
-    packet.sData += "mL90;"
+    packet.sData += msg
     if config.inputMode == 2:
-        packet.ser.write(bytes("mL90;".encode("ascii", "ignore")))
+        packet.ser.write(bytes(msg.encode("ascii", "ignore")))
     return facing
 
 def turnRight(facing):
+    msg = config.serialMessages[2] + config.serialMessages[4]
     facing = dirAfter(facing)
-    packet.sData += "mR90;"
+    packet.sData += msg
     if config.inputMode == 2:
-        packet.ser.write(bytes("mR90;".encode("ascii", "ignore")))
+        packet.ser.write(bytes(msg.encode("ascii", "ignore")))
     return facing
 
 # send forward message
 def goForward(cTile):
+    msg = config.serialMessages[0] + config.serialMessages[4]
     if config.inputMode == 2:
-        packet.ser.write(bytes("mFT1;".encode("ascii", "ignore")))
-    packet.sData += "mFT1;"
+        packet.ser.write(bytes(msg.encode("ascii", "ignore")))
+    packet.sData += msg
     return cTile + adjTiles[direction]
 
 def goBackward(cTile):
+    msg = config.serialMessages[3] + config.serialMessages[4]
     if config.inputMode == 2:
-        packet.ser.write(bytes("mBT1;".encode("ascii", "ignore")))
-    packet.sData += "mBT1;"
+        packet.ser.write(bytes(msg.encode("ascii", "ignore")))
+    packet.sData += msg
     return cTile + adjTiles[oppositeDir(direction)]
 
 def setBlackTile(cMaze, cTile, setBorders):
