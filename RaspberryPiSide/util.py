@@ -32,9 +32,12 @@ wVictim = 8
 # maze[tile][9] -> special tile features: 0 = normal, 1 = black, 2 = checkpoint
 tileType = 9
 
+# length of attributes for each tile, for maze & array creation
+tileLen = 10
+
 # threshold for walls. If below this number, there is a wall
 # sensorData is a filler for sensor data storage
-sensorData = np.zeros(10)
+sensorData = np.zeros(tileLen)
 
 maze = None
 tile = None
@@ -70,7 +73,7 @@ def oppositeDir(d):
 # direction must be adjusted from bot to the maze
 def setWalls():
     sensorData[:] = packet.getData(config.inputMode, tile, direction)
-    for i in range(10):
+    for i in range(tileLen):
         maze[tile][i] = sensorData[i]
     if config.debug is True:
         print("\tTile Array: " + str(maze[tile]))

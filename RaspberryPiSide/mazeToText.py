@@ -77,7 +77,7 @@ def genRandMaze():
     r.write("GENERATED\n")
     for i in range(config.mazeSideLen ** 2):
         s = ""
-        for j in range(10):
+        for j in range(util.tileLen):
             s += str(maze[i][j])
         r.write(str(s) + "\n")
 
