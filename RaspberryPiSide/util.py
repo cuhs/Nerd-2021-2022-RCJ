@@ -68,13 +68,12 @@ def oppositeDir(d):
 def setWalls():
     sensorData = packet.getData(config.inputMode, tile, direction)
     for i in range(tileLen):
-        maze[tile][i] = sensorData[i]
         # prevents overwriting of black tile
-        if (i < 4) and (0 <= tile + adjTiles[oppositeDir(i)] < config.mazeSideLen ** 2) and (maze[tile + adjTiles[oppositeDir(i)]][tileType] == 1):
-            maze[tile][i] = 1
+        if maze[tile][i] == 0:
+            maze[tile][i] = sensorData[i]
 
     if config.debug:
-        print("\tTile Array: " + str(maze[tile]))
+        print("\tTile Array for tile " + str(tile) + ": " + str(maze[tile]))
 
 # both are 90 degree turns
 def turnLeft(facing):
