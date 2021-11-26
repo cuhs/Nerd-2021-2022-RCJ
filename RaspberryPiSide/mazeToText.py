@@ -64,7 +64,8 @@ def genRandMaze():
             if 0 <= i // 4 + util.adjTiles[i % 4] < config.mazeSideLen**2:
                 maze[i // 4 + util.adjTiles[i % 4]][util.oppositeDir(i % 4)] = 1
 
-    for i in range(config.blackTileCount):
+    # generate black tiles
+    for i in range(int(((config.mazeSideLen ** 2)/100) * config.blackTilePercentage)):
         r = random.randint(0, config.mazeSideLen ** 2 - 1)
 
         # making sure not overwriting another black tile or starting tile
