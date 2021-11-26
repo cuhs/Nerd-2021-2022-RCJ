@@ -28,14 +28,14 @@ def init():
     # increase recursion limit for large mazes
     sys.setrecursionlimit(config.recursionLimit)
 
-    # packet setup
     if config.inputMode == 1:
         if config.genFromImage:
             mazeToText.genMazeFromImage()
         else:
             mazeToText.genRandMaze()
-    else:
-        packet.setupInput(config.inputMode)
+
+    # packet setup
+    packet.setupInput(config.inputMode)
 
     # display setup
     display.imgSetup()

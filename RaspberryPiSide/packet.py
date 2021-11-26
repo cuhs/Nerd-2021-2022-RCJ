@@ -23,7 +23,7 @@ def setupInput(mode):
     # manual or from file
     if mode == 1 or mode == 0:
         # clear output file
-        inputFile("a").truncate(0)
+        outputFile("r+").truncate(0)
     # from file
     if mode == 1:
         setupInputFile()
