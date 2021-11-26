@@ -3,7 +3,7 @@ import display
 import cv2
 import time
 from BFS import util
-from util import packet
+from util import IO
 from util import config
 
 print("\nRaspberryPiSide START")
@@ -34,7 +34,7 @@ while nextTile is not None or util.tile != util.startTile:
         display.show(nextTile, util.maze, config.displayRate)
 
     # start of driving instructions
-    packet.sData += config.serialMessages[5]
+    IO.sData += config.serialMessages[5]
 
     # send driving instructions and do victim and do obstacle and do black tiles
     while util.path:
@@ -47,28 +47,28 @@ while nextTile is not None or util.tile != util.startTile:
         util.tile = util.goForward(util.tile)
 
     # driving instructions calculated, add terminating character and send
-    packet.sData += config.serialMessages[6]
+    IO.sData += config.serialMessages[6]
     if config.inputMode == 1:
-        packet.sendFileData(util.pathLen)
+        IO.sendFileData(util.pathLen)
 
     # send driving instructions and do KNN  TODO: integrate w/ andy
     if config.inputMode == 2:
-        packet.sendSerial(packet.sData[util.pathLen])
+        IO.sendSerial(IO.sData[util.pathLen])
         util.pathLen += 1
-        while util.pathLen < len(packet.sData) - 1:
-            packet.sendSerial(packet.sData[util.pathLen:(util.pathLen + 2)])
+        while util.pathLen < len(IO.sData) - 1:
+            IO.sendSerial(IO.sData[util.pathLen:(util.pathLen + 2)])
 
             # victim goes here  TODO: send message if victim detected, add to maze
 
             util.pathLen += 2
 
-        packet.sendSerial(packet.sData[-1])
+        IO.sendSerial(IO.sData[-1])
 
     # print out path to only the next tile, reset length
     if config.debug:
-        print("\tPath To Tile: " + str(packet.sData[util.pathLen:]))
+        print("\tPath To Tile: " + str(IO.sData[util.pathLen:]))
         print()
-    util.pathLen = len(packet.sData)
+    util.pathLen = len(IO.sData)
 
     # set tile new tile to visited, clear parent array
     util.maze[util.tile][util.visited] = 1
@@ -102,6 +102,6 @@ while nextTile is not None or util.tile != util.startTile:
 
 # print out entire path the robot took traversing the maze and how long the algorithm took
 end = time.time()
-print("\nTotal Path: " + str(packet.sData) + "\nBFS Done! All tiles visited in: " + format((end-start)*1000, '.2f') + "ms ")
+print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - start) * 1000, '.2f') + "ms ")
 display.show(-1, util.maze, 0)
 cv2.destroyAllWindows()

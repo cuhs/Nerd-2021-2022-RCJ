@@ -1,7 +1,7 @@
 import util
 import sys
 import mazeToText
-import packet
+import IO
 import display
 from util import np
 from util import config
@@ -35,7 +35,7 @@ def init():
             mazeToText.genRandMaze()
 
     # packet setup
-    packet.setupInput(config.inputMode)
+    IO.setupInput(config.inputMode)
 
     # display setup
     display.imgSetup()

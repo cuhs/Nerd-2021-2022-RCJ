@@ -1,5 +1,5 @@
 import numpy as np
-import packet
+import IO
 import config
 from enum import Enum
 
@@ -66,7 +66,7 @@ def oppositeDir(d):
 
 # direction must be adjusted from bot to the maze
 def setWalls():
-    sensorData = packet.getData(config.inputMode, tile, direction)
+    sensorData = IO.getData(config.inputMode, tile, direction)
     for i in range(tileLen):
         # prevents overwriting of black tile
         if maze[tile][i] == 0:
@@ -79,23 +79,23 @@ def setWalls():
 def turnLeft(facing):
     msg = config.serialMessages[1] + config.serialMessages[4]
     facing = dirBefore(facing)
-    packet.sData += msg
+    IO.sData += msg
     if config.inputMode == 2:
-        packet.ser.write(bytes(msg.encode("ascii", "ignore")))
+        IO.ser.write(bytes(msg.encode("ascii", "ignore")))
     return facing
 
 def turnRight(facing):
     msg = config.serialMessages[2] + config.serialMessages[4]
     facing = dirAfter(facing)
-    packet.sData += msg
+    IO.sData += msg
     if config.inputMode == 2:
-        packet.ser.write(bytes(msg.encode("ascii", "ignore")))
+        IO.ser.write(bytes(msg.encode("ascii", "ignore")))
     return facing
 
 # send forward message
 def goForward(cTile):
     msg = config.serialMessages[0] + config.serialMessages[4]
-    packet.sData += msg
+    IO.sData += msg
     return cTile + adjTiles[direction]
 
 def goBackward(cTile):

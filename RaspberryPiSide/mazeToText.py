@@ -2,7 +2,7 @@ import util
 import numpy as np
 import cv2
 import random
-import packet
+import IO
 import display
 from util import config
 
@@ -34,7 +34,7 @@ def genMazeFromImage():
         display.show(-1, mazeValues, 0)
 
     # writes maze values to "mazeInput.txt"
-    r = packet.inputFile("a")
+    r = IO.inputFile("a")
     r.truncate(0)
     r.write("IMAGE\n")
     for i in range(config.mazeSideLen ** 2):
@@ -82,7 +82,7 @@ def genRandMaze():
         cv2.destroyAllWindows()
 
     # writes maze values to "mazeInput.txt"
-    r = packet.inputFile("a")
+    r = IO.inputFile("a")
     r.truncate(0)
     r.write("GENERATED\n")
     for i in range(config.mazeSideLen ** 2):

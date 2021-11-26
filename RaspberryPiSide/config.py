@@ -28,5 +28,5 @@ serialMessages = ["F", "L", "R", "B", ";", "{", "}"]
 # fp -> file path
 fpALL = "../RaspberryPiSide/"
 fpKNN = fpALL + "KNN/"
-fpTXT = fpALL + "IO/"
-fpIMG = fpALL + "IO/"
+fpTXT = fpALL + "IOFiles/"
+fpIMG = fpALL + "IOFiles/"
