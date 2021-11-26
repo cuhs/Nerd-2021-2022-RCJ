@@ -20,10 +20,10 @@ port = "/dev/ttyS0"  # serial port path
 rate = 9600  # serial port rate
 
 # serial messages in order for:
-# forward, left, right, back, EOI, (end of single instruction), EOD (end of directions)
-# example: if ["a", "b", "c", "d", ".", "$"], directions for forward, left, left, forward would be:
-# a.b.b.a.$, and will be sent individually as "a.", "b." etc.
-serialMessages = ["F", "L", "R", "B", ";", "*"]
+# forward, left, right, back, EOI, (end of single instruction), EOD (end of directions), SOD (start of dir.)
+# example: if ["a", "b", "c", "d", ".", "$", "%"], directions for forward, left, left, forward would be:
+# %a.b.b.a.$ and will be sent individually as "%", "a.", "b." etc.      ALL MESSAGES MUST BE ONE CHAR
+serialMessages = ["F", "L", "R", "B", ";", "{", "}"]
 
 # fp -> file path
 fpALL = "../RaspberryPiSide/"

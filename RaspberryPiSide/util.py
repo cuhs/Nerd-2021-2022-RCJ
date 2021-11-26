@@ -95,16 +95,12 @@ def turnRight(facing):
 # send forward message
 def goForward(cTile):
     msg = config.serialMessages[0] + config.serialMessages[4]
-    if config.inputMode == 2:
-        packet.ser.write(bytes(msg.encode("ascii", "ignore")))
     packet.sData += msg
     return cTile + adjTiles[direction]
 
 def goBackward(cTile):
-    msg = config.serialMessages[3] + config.serialMessages[4]
-    if config.inputMode == 2:
-        packet.ser.write(bytes(msg.encode("ascii", "ignore")))
-    packet.sData += msg
+    # msg = config.serialMessages[3] + config.serialMessages[4]
+    # packet.sData += msg
     return cTile + adjTiles[oppositeDir(direction)]
 
 def setBlackTile(cMaze, cTile, setBorders):

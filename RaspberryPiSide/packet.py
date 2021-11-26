@@ -40,13 +40,6 @@ def getData(mode, tile, facing):
     if mode == 2:
         return requestData()
 
-# function to reroute where output is sent
-def sendData(mode, pathLen):
-    if mode == 1 or mode == 0:
-        sendFileData(pathLen)
-    if mode == 2:
-        sendSerial(pathLen)
-
 # receiving manual data from console
 def getManualData(tile, facing):
     walls = np.zeros(5, dtype=np.int8)
@@ -78,7 +71,7 @@ def getFileData(tile):
 
 # writes path to file
 def sendFileData(pathLen):
-    outputFile("a").write(sData[pathLen:] + config.serialMessages[5] + "\n")
+    outputFile("a").write(sData[pathLen:] + "\n")
     outputFile("a").flush()
 
 # sets up serial communication
@@ -113,7 +106,7 @@ def requestData():
     return walls
 
 # send path instructions through serial
-def sendSerial(pathLen):
-    print("Sending: " + str(sData[pathLen:]) + config.serialMessages[5])  # * symbolizes the end of a send
-    send_message = sData[pathLen:] + "$"
-    ser.write(bytes(send_message.encode("ascii", "ignore")))
+def sendSerial(msg):
+    if config.debug:
+        print("Sending: " + msg)  # send msg over serial
+    ser.write(bytes(msg.encode("ascii", "ignore")))

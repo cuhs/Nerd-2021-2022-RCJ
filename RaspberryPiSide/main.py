@@ -33,6 +33,9 @@ while nextTile is not None:
     if config.showDisplay:
         display.show(nextTile, util.maze, config.displayRate)
 
+    # start of driving instructions
+    packet.sData += config.serialMessages[5]
+
     # send driving instructions and do victim and do obstacle and do black tiles
     while util.path:
         # calculate driving instructions from path to next tile
@@ -43,15 +46,30 @@ while nextTile is not None:
         util.direction = BFS.turnToTile(util.path.pop(), util.direction)
         util.tile = util.goForward(util.tile)
 
-    if config.inputMode != 2:
-        packet.sendData(config.inputMode, util.pathLen)
+    # driving instructions calculated, add terminating character and send
+    packet.sData += config.serialMessages[6]
+    if config.inputMode == 1:
+        packet.sendFileData(util.pathLen)
 
-    # print out path to only the next tile
+    # send driving instructions and do KNN  TODO: integrate w/ andy
+    if config.inputMode == 2:
+        packet.sendSerial(packet.sData[util.pathLen])
+        util.pathLen += 1
+        while util.pathLen < len(packet.sData) - 1:
+            packet.sendSerial(packet.sData[util.pathLen:(util.pathLen + 2)])
+
+            # victim goes here  TODO: send message if victim detected, add to maze
+
+            util.pathLen += 2
+
+        packet.sendSerial(packet.sData[-1])
+
+    # print out path to only the next tile, reset length
     if config.debug:
         print("\tPath To Tile: " + str(packet.sData[util.pathLen:]))
         print()
     util.pathLen = len(packet.sData)
-                    
+
     # set tile new tile to visited, clear parent array
     util.maze[util.tile][util.visited] = 1
     util.parent.fill(-1)
