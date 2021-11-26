@@ -21,7 +21,7 @@ start = time.time()
 # calculate next tile
 nextTile = BFS.nextTile(util.tile)
 
-while nextTile is not None:
+while nextTile is not None or util.tile != util.startTile:
     if config.debug:
         print("\tCurrent Tile:\t" + str(util.tile) + "\n\tNext Tile:\t" + str(nextTile))
     # calculate path to target tile
@@ -94,17 +94,11 @@ while nextTile is not None:
     if config.debug:
         print("BFS START")
 
-# maze is done at this point, every tile has been visited, going back to start
-BFS.pathToTile(util.tile, util.startTile)
-if config.showDisplay:
-    display.show(util.startTile, util.maze, config.displayRate)
-
-while util.path:
-    if config.debug:
-        print("\tPath: " + str(util.path))
-
-    util.direction = BFS.turnToTile(util.path.pop(), util.direction)
-    util.tile = util.goForward(util.tile)
+    # go back to start
+    if nextTile is None and util.tile != util.startTile:
+        if config.debug:
+            print("Maze fully traversed! Going back to start tile")
+        nextTile = util.startTile
 
 # print out entire path the robot took traversing the maze and how long the algorithm took
 end = time.time()
