@@ -9,7 +9,7 @@ from util import config
 # generates a maze based on a png of one from mazegenerator.net
 def genMazeFromImage():
     # maze values holds the maze generated from picture
-    mazeValues = np.zeros((config.mazeSideLen ** 2, 4), dtype=np.int8)
+    mazeValues = np.zeros((config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)
     img = cv2.imread(config.fpIMG + "maze" + str(config.mazeSideLen) + ".png", cv2.IMREAD_COLOR)
 
     # variable sizes, works with any even sided maze
