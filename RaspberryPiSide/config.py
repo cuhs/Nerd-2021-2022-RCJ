@@ -1,7 +1,7 @@
 # options file, as some settings might want to be
 # changed while debugging or on different systems/computers
 
-mazeSideLen = 4  # must be even
+mazeSideLen = 20  # must be even
 inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) + 10  # buffer of 10
 

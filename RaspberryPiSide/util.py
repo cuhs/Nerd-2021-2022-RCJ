@@ -64,6 +64,10 @@ def dirAfter(d):
 def oppositeDir(d):
     return dirAfter(dirAfter(d))
 
+# returns whether tile exists / is in maze
+def tileExists(cTile):
+    return 0 <= cTile < config.mazeSideLen ** 2
+
 # direction must be adjusted from bot to the maze
 def setWalls():
     sensorData = IO.getData(config.inputMode, tile)
@@ -108,7 +112,7 @@ def setBlackTile(cMaze, cTile, setBorders):
         for x in range(4):
             cMaze[cTile][x] = 1
         for x in range(4):
-            if 0 <= cTile + adjTiles[x] < config.mazeSideLen ** 2:
+            if tileExists(cTile + adjTiles[x]) and not (x == 1 and (cTile + 1) % config.mazeSideLen == 0):
                 cMaze[cTile + adjTiles[x]][adjustDirections(Dir.S.value)[x]] = 1
     cMaze[cTile][tileType] = 1
     return cMaze

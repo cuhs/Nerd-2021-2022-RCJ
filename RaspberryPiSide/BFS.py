@@ -58,7 +58,7 @@ def nextTile(cTile):
     possibleTiles = [0, 0, 0, 0]
 
     for i in range(4):
-        if util.maze[cTile][i] == 0 and (0 <= cTile + util.adjTiles[i] <= config.mazeSideLen ** 2 and util.maze[cTile + util.adjTiles[i]][util.tileType] != 1):
+        if util.maze[cTile][i] == 0:
             # no wall in direction i
             if util.parent[util.adjTiles[i] + cTile] == -1:
                 util.parent[util.adjTiles[i] + cTile] = cTile
@@ -83,7 +83,7 @@ def pathToTile(cTile, target):
         util.path.append(int(x))
         x = util.parent[int(x)]
 
-# changes direction being faced
+# changes direction being faced, favors left turns
 def turnToTile(target, facing):
     for i in range(4):
         if target == util.adjTiles[i] + util.tile:
