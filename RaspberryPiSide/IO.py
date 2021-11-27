@@ -32,23 +32,23 @@ def setupInput(mode):
         return setupSerial()
 
 # function to reroute where input is coming from
-def getData(mode, tile, facing):
+def getData(mode, tile):
     if mode == 0:
-        return getManualData(tile, facing)
+        return getManualData(tile)
     if mode == 1:
         return getFileData(tile)
     if mode == 2:
         return requestData()
 
 # receiving manual data from console
-def getManualData(tile, facing):
-    walls = np.zeros(5, dtype=np.int8)
-    inputStr = input("\tEnter MegaPi input data for Tile " + str(tile) + " and Direction " + directions[facing] + ": ")  # 1010
-    walls[0] = int(inputStr[2])
-    walls[1] = int(inputStr[1])
-    walls[2] = 0
-    walls[3] = int(inputStr[0])
-    walls[4] = 0
+def getManualData(tile):
+    walls = np.zeros(10, dtype=np.int8)
+    inputStr = input("\tEnter MegaPi input data for Tile " + str(tile) + ": ")  # 1010 -> 1010100000
+    for i in range(4):
+        walls[i] = int(inputStr[i])
+    walls[4] = 1
+    for i in range(5, 10):
+        walls[i] = 0
     return walls
 
 # sets up file input, determines whether from generated or image

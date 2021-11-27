@@ -9,6 +9,8 @@ from util import config
 def init():
     if config.mazeSideLen % 2 != 0 or not(2 <= config.mazeSideLen <= 80):
         raise ValueError("Invalid Maze Size (check config!)")
+    if config.inputMode == 0 and config.displayRate is not 0:
+        raise ValueError("displayRate must be 0 for manual input!")
     util.maze = np.zeros((config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
     util.tile = util.startTile  # creates start tile in the middle of size x size area
     util.direction = util.Dir.N.value  # starting direction is set to north

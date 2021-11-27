@@ -66,7 +66,7 @@ def oppositeDir(d):
 
 # direction must be adjusted from bot to the maze
 def setWalls():
-    sensorData = IO.getData(config.inputMode, tile, direction)
+    sensorData = IO.getData(config.inputMode, tile)
     for i in range(tileLen):
         # prevents overwriting of black tile
         if maze[tile][i] == 0:
