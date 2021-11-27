@@ -28,7 +28,7 @@ def init():
     # increase recursion limit for large mazes
     sys.setrecursionlimit(config.recursionLimit)
 
-    if config.inputMode == 1:
+    if config.inputMode == 1 and not config.redoLastMaze:
         if config.genFromImage:
             mazeToText.genMazeFromImage()
         else:

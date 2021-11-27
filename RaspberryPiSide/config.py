@@ -8,6 +8,7 @@ recursionLimit = (mazeSideLen ** 2) + 10  # buffer of 10
 wallPercentage = 15  # percentage of tiles that should be walls for random generation of maze
 blackTilePercentage = 5  # percent of black tiles when randomly generating a maze
 genFromImage = False  # if false, will generate random maze
+redoLastMaze = False  # this setting allows you to rerun the last maze, maybe if a bug or problem occurred in it
 
 showDisplay = True  # 0 no display, 1 is display
 displayRate = 10  # in milliseconds, 0 for until click
