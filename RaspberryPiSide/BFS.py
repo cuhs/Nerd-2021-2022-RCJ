@@ -87,7 +87,7 @@ def pathToTile(cTile, target):
 def turnToTile(target, facing):
     for i in range(4):
         if target == util.adjTiles[i] + util.tile:
-            if facing == util.dirBefore(i):
+            if facing == util.dirToLeft(i):
                 facing = util.turnRight(facing)
             else:
                 while facing != i:

@@ -53,16 +53,16 @@ def adjustDirections(facing):
     adjustedDirections = np.array([], dtype=np.int8)
     for i in range(4):
         adjustedDirections = np.append(adjustedDirections, facing)
-        facing = dirAfter(facing)
+        facing = dirToRight(facing)
     return adjustedDirections
 
 # returns directions after and before passed direction in N -> E -> S -> W order
-def dirBefore(d):
+def dirToLeft(d):
     return d - 1 if d != 0 else 3
-def dirAfter(d):
+def dirToRight(d):
     return d + 1 if d != 3 else 0
 def oppositeDir(d):
-    return dirAfter(dirAfter(d))
+    return dirToRight(dirToRight(d))
 
 # returns whether tile exists / is in maze
 def tileExists(cTile):
@@ -82,7 +82,7 @@ def setWalls():
 # both are 90 degree turns
 def turnLeft(facing):
     msg = config.serialMessages[1] + config.serialMessages[4]
-    facing = dirBefore(facing)
+    facing = dirToLeft(facing)
     IO.sData += msg
     if config.inputMode == 2:
         IO.ser.write(bytes(msg.encode("ascii", "ignore")))
@@ -90,7 +90,7 @@ def turnLeft(facing):
 
 def turnRight(facing):
     msg = config.serialMessages[2] + config.serialMessages[4]
-    facing = dirAfter(facing)
+    facing = dirToRight(facing)
     IO.sData += msg
     if config.inputMode == 2:
         IO.ser.write(bytes(msg.encode("ascii", "ignore")))
