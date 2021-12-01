@@ -5,8 +5,8 @@ mazeSideLen = 10  # must be even
 inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) + 10  # buffer of 10
 
-wallPercentage = 5  # percentage of tiles that should be walls for random generation of maze
-blackTilePercentage = 5  # percent of black tiles when randomly generating a maze
+wallPercentage = 50  # percentage of tiles that should be walls for random generation of maze
+blackTilePercentage = 0  # percent of black tiles when randomly generating a maze
 genFromImage = False  # if false, will generate random maze
 redoLastMaze = False  # this setting allows you to rerun the last maze, maybe if a bug or problem occurred in it
 
