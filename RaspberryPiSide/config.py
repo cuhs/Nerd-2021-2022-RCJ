@@ -1,11 +1,11 @@
 # options file, as some settings might want to be
 # changed while debugging or on different systems/computers
 
-mazeSideLen = 30  # must be even
+mazeSideLen = 10  # must be even
 inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) + 10  # buffer of 10
 
-wallPercentage = 15  # percentage of tiles that should be walls for random generation of maze
+wallPercentage = 5  # percentage of tiles that should be walls for random generation of maze
 blackTilePercentage = 5  # percent of black tiles when randomly generating a maze
 genFromImage = False  # if false, will generate random maze
 redoLastMaze = False  # this setting allows you to rerun the last maze, maybe if a bug or problem occurred in it

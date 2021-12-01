@@ -36,6 +36,15 @@ def init():
         else:
             mazeToText.genRandMaze()
 
+    # display maze when repeating
+    elif config.redoLastMaze:
+        dMaze = np.copy(util.maze)
+        r = IO.inputFile("r")
+        r.readline()
+        for i in range(config.mazeSideLen ** 2):
+            dMaze[i][:] = [int(j) for j in str(r.readline())[:10]]
+        display.show(-1, dMaze, 0)
+
     # packet setup
     IO.setupInput(config.inputMode)
 
