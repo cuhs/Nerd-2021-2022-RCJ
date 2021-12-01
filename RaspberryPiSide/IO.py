@@ -14,9 +14,9 @@ sData = ""
 
 # get file editors
 def outputFile(mode):
-    return open(config.fpTXT + "raspPacket", str(mode), encoding='utf-8')
+    return open(config.fpTXT + "outputDirections", str(mode), encoding='utf-8')
 def inputFile(mode):
-    return open(config.fpTXT + "mazeInput", str(mode), encoding='utf-8')
+    return open(config.fpTXT + "generatedMaze", str(mode), encoding='utf-8')
 
 # function to reroute setup based on input/output
 def setupInput(mode):

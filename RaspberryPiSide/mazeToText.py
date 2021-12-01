@@ -36,7 +36,7 @@ def genMazeFromImage():
         cv2.destroyAllWindows()
         display.show(-1, maze, 0)
 
-    # writes maze values to "mazeInput.txt"
+    # writes maze values to "generatedMaze.txt"
     r = IO.inputFile("a")
     r.truncate(0)
     r.write("IMAGE\n")
@@ -84,7 +84,7 @@ def genRandMaze():
         display.show(-1, maze, 0)
         cv2.destroyAllWindows()
 
-    # writes maze values to "mazeInput.txt"
+    # writes maze values to "generatedMaze.txt"
     r = IO.inputFile("a")
     r.truncate(0)
     r.write("GENERATED\n")
