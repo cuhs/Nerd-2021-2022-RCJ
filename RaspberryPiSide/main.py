@@ -93,7 +93,7 @@ while nextTile is not None or util.tile != util.startTile:
             print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
 
         lastCheckpoint = util.tile
-        IO.writeMaze(IO.saveFile("a"), util.tile, util.maze, True)
+        IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction], util.maze, True)
 
     # check if tile is a black tile
     if util.isBlackTile(util.maze, util.tile):

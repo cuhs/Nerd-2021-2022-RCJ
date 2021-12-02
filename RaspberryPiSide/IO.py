@@ -85,6 +85,14 @@ def writeMaze(file, header, maze, delete):
         file.write(str(''.join(str(j) for j in maze[i])) + "\n")
     file.close()
 
+def readMaze(file):
+    maze = np.zeros((config.mazeSideLen ** 2, 10), dtype=np.int8)
+    header = file.readline()
+    for i in range(config.mazeSideLen ** 2):
+        maze[i][:] = file.readline()
+    file.close()
+    return header[:len(header) - 1], maze
+
 # sets up serial communication
 def setupSerial():
     print("SETTING UP SERIAL")
