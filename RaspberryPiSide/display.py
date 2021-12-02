@@ -30,12 +30,14 @@ def displayMaze(target, cMaze):
             # adds target tile as red
             if tile == target:
                 cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 255), -1)
-
             # black tiles are black
             if util.isBlackTile(cMaze, tile):
                 cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), -1)
+            # grey tiles are grey
+            if util.isCheckpoint(cMaze, tile):
+                cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (175, 175, 175), -1)
 
-            # adds walls for the tile
+            # adds walls    for the tile
             if cMaze[tile][util.Dir.N.value] == 1:
                 cv2.line(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel), (0, 0, 0), s)
             if cMaze[tile][util.Dir.E.value] == 1:
