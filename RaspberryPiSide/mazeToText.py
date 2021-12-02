@@ -45,7 +45,7 @@ def genMazeFromImage():
 def genRandMaze():
     maze = np.zeros((config.mazeSideLen ** 2, 10), dtype=np.int8)
 
-    # create maze borders
+    # create maze borders/edges
     for i in range(config.mazeSideLen):
         maze[i][0] = 1
     for i in range(config.mazeSideLen - 1, config.mazeSideLen ** 2, config.mazeSideLen):
@@ -67,13 +67,20 @@ def genRandMaze():
         r = random.randint(0, config.mazeSideLen ** 2 - 1)
 
         # making sure not overwriting another black tile or starting tile
-        while maze[r][util.tileType] == 1 or r == util.startTile:
+        while maze[r][util.tileType] > 0 or r == util.startTile:
             r = random.randint(0, config.mazeSideLen ** 2 - 1)
 
         maze = util.setBlackTile(maze, r, setBorders=False)
 
-    for i in range(config.mazeSideLen ** 2):
-        maze[i][util.visited] = 1
+    # generate silver tiles
+    for i in range(int(((config.mazeSideLen ** 2)/100) * config.silverTilePercentage)):
+        r = random.randint(0, config.mazeSideLen ** 2 - 1)
+
+        # making sure not overwriting another black tile or starting tile
+        while maze[r][util.tileType] > 0 or r == util.startTile:
+            r = random.randint(0, config.mazeSideLen ** 2 - 1)
+
+        maze = util.setCheckpoint(maze, r)
 
     if config.showDisplay:
         display.show(-1, maze, 0)
