@@ -20,6 +20,10 @@ def displayMaze(target, cMaze):
             xPixel = x * config.displaySize
             yPixel = y * config.displaySize
 
+            # silver tiles are grey
+            if util.isCheckpoint(cMaze, tile):
+                cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (175, 175, 175), -1)
+
             # adds current tile as green
             if tile == util.tile:
                 cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 255, 0), -1)
@@ -33,11 +37,12 @@ def displayMaze(target, cMaze):
             # black tiles are black
             if util.isBlackTile(cMaze, tile):
                 cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), -1)
-            # grey tiles are grey
-            if util.isCheckpoint(cMaze, tile):
-                cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (175, 175, 175), -1)
 
-            # adds walls    for the tile
+            # small grey center for seeing grey tiles when overwritten
+            if util.isCheckpoint(cMaze, tile):
+                cv2.rectangle(img, (xPixel + config.displaySize//4, yPixel + config.displaySize // 4), (xPixel + (config.displaySize//4)*3, yPixel + (config.displaySize//4)*3), (175, 175, 175), -1)
+
+            # adds walls for the tile
             if cMaze[tile][util.Dir.N.value] == 1:
                 cv2.line(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel), (0, 0, 0), s)
             if cMaze[tile][util.Dir.E.value] == 1:
