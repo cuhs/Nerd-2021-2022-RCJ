@@ -118,7 +118,7 @@ def setBlackTile(cMaze, cTile, setBorders):
     return cMaze
 
 def isBlackTile(cMaze, cTile):
-    return bool(cMaze[cTile][tileType])
+    return cMaze[cTile][tileType] == 1
 
 def setCheckpoint(cMaze, cTile):
     cMaze[cTile][tileType] = 2

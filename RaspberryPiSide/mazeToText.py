@@ -37,13 +37,8 @@ def genMazeFromImage():
         display.show(-1, maze, 0)
 
     # writes maze values to "generatedMaze.txt"
-    r = IO.inputFile("a")
-    r.truncate(0)
-    r.write("IMAGE\n")
-    for i in range(config.mazeSideLen ** 2):
-        r.write(str(''.join(str(j) for j in maze[i])) + "\n")
+    IO.writeMaze(IO.inputFile("a"), "IMAGE", maze, True)
 
-    r.close()
     print("Maze write finished!")
 
 # generate maze from random walls
@@ -85,11 +80,6 @@ def genRandMaze():
         cv2.destroyAllWindows()
 
     # writes maze values to "generatedMaze.txt"
-    r = IO.inputFile("a")
-    r.truncate(0)
-    r.write("GENERATED\n")
-    for i in range(config.mazeSideLen ** 2):
-        r.write(str(''.join(str(j) for j in maze[i])) + "\n")
+    IO.writeMaze(IO.inputFile("a"), "GENERATED", maze, True)
 
-    r.close()
     print("Maze write finished!")

@@ -31,8 +31,6 @@ start = time.time()
 nextTile = BFS.nextTile(util.tile)
 lastCheckpoint = -1
 
-# util.maze[3][util.tileType] = 2
-
 while nextTile is not None or util.tile != util.startTile:
     if config.debug:
         print("\tCurrent Tile:\t" + str(util.tile) + "\n\tNext Tile:\t" + str(nextTile))
@@ -93,12 +91,9 @@ while nextTile is not None or util.tile != util.startTile:
     if util.isCheckpoint(util.maze, util.tile):
         if config.debug:
             print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
-        lastCheckpoint = util.tile
 
-        f = IO.saveFile("r+")
-        f.truncate(0)
-        for i in range(config.mazeSideLen ** 2):
-            f.write(str(''.join(str(i) for i in util.maze[i])) + "\n")
+        lastCheckpoint = util.tile
+        IO.writeMaze(IO.saveFile("a"), util.tile, util.maze, True)
 
     # check if tile is a black tile
     if util.isBlackTile(util.maze, util.tile):

@@ -76,6 +76,15 @@ def sendFileData(pathLen):
     outputFile("a").write(sData[pathLen:] + "\n")
     outputFile("a").flush()
 
+def writeMaze(file, header, maze, delete):
+    if delete:
+        file.truncate(0)
+    if header:
+        file.write(str(header) + "\n")
+    for i in range(config.mazeSideLen ** 2):
+        file.write(str(''.join(str(j) for j in maze[i])) + "\n")
+    file.close()
+
 # sets up serial communication
 def setupSerial():
     print("SETTING UP SERIAL")
