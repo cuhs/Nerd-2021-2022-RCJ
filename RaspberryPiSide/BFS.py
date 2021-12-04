@@ -78,8 +78,8 @@ def nextTile(cTile):
         print("\tQueue:\t" + str(util.q))
 
     # recursively finds unvisited tiles
-    for x in range(len(possibleTiles)):
-        if possibleTiles[x] == 1:
+    for i in range(len(possibleTiles)):
+        if possibleTiles[i] == 1:
             if not util.q:
                 return None
             return nextTile(util.q.pop(0))
@@ -87,10 +87,10 @@ def nextTile(cTile):
 # puts path to tile in a stack
 def pathToTile(cTile, target):
     util.path.clear()
-    x = target
-    while x != cTile:
-        util.path.append(int(x))
-        x = util.parent[int(x)]
+    i = target
+    while i != cTile:
+        util.path.append(int(i))
+        i = util.parent[int(i)]
 
 # changes direction being faced, favors left turns
 def turnToTile(target, facing):

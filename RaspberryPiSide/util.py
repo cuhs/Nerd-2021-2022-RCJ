@@ -109,11 +109,11 @@ def goBackward(cTile):
 
 def setBlackTile(cMaze, cTile, setBorders):
     if setBorders:
-        for x in range(4):
-            cMaze[cTile][x] = 1
-        for x in range(4):
-            if tileExists(cTile + adjTiles[x]) and not (x == 1 and (cTile + 1) % config.mazeSideLen == 0):
-                cMaze[cTile + adjTiles[x]][adjustDirections(Dir.S.value)[x]] = 1
+        for i in range(4):
+            cMaze[cTile][i] = 1
+        for i in range(4):
+            if tileExists(cTile + adjTiles[i]) and not (i == 1 and (cTile + 1) % config.mazeSideLen == 0):
+                cMaze[cTile + adjTiles[i]][adjustDirections(Dir.S.value)[i]] = 1
     cMaze[cTile][tileType] = 1
     return cMaze
 
