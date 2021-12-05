@@ -82,14 +82,41 @@ class detection():
             
         return result
     
-    def colorDetect(hsv_lower, hsv_higher):
+    def colorDetect(self,frame,hsv_lower, hsv_upper):
         
-        for i in range(3):
-            #hey soul sisters
-            cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
-            mask = cv2.inRange(frame,hsv_lower[i],hsv_higher[1])
+        hsv = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
+                
+        for i in range(1):
+            mask = cv2.inRange(hsv,hsv_lower[i],hsv_upper[i])
+            #cv2.imshow("mask",mask)
+            
             contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
+            
+            if(len(contours)>0):
+                                    
+                    contours = max(contours,key=cv2.contourArea)
+                    
+                    if(cv2.contourArea(contours)>50):
+                    
+                        if i == 0 or i == 2:
+                            print("Red/Yellow")
+                            packages = 1
+                            
+                        if i == 1:
+                            print("Green")
+                            packages = 0
+
+hsv_lower = {
+    0: (0,0,0)
+    #1: (),
+    #2: ()
+    }
+
+hsv_upper = {
+    0: (40,40,40)
+    #1: (),
+    #2: ()
+    }
 main = detection()
 
 cap1 = cv2.VideoCapture(0)
@@ -110,15 +137,18 @@ while cap1.isOpened() and cap2.isOpened():
     ret2,frame2 = cap2.read()
                         
     if ret1 > 0 and ret2 > 0:
-            
-        imgOutput1 = main.letterDetect(frame1,"frame1")
-        imgOutput2 = main.letterDetect(frame2, "frame2")
         
-        result1 = main.KNN_finish(imgOutput1,10000000)
-        result2 = main.KNN_finish(imgOutput2,10000000)
+        #main.colorDetect(frame1,hsv_lower,hsv_upper)
+        main.colorDetect(frame2,hsv_lower,hsv_upper)
+
+        #imgOutput1 = main.letterDetect(frame1,"frame1")
+        #imgOutput2 = main.letterDetect(frame2, "frame2")
+        
+        #result1 = main.KNN_finish(imgOutput1,10000000)
+        #result2 = main.KNN_finish(imgOutput2,10000000)
             
-        print("Camera1 " + result1)
-        print("Camera2 " + result2)
+        #print("Camera1 " + result1)
+        #print("Camera2 " + result2)
             
         if main.Debug:
                 
