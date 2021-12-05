@@ -71,9 +71,16 @@ def tileExists(cTile):
 # direction must be adjusted from bot to the maze
 def setWalls():
     sensorData = IO.getData(config.inputMode, tile)
-    for i in range(tileLen):
-        # prevents overwriting of black tile
-        if maze[tile][i] == 0:
+    if config.inputMode != 2:
+        for i in range(tileLen):
+            # prevents overwriting of black tile
+            if maze[tile][i] == 0:
+                maze[tile][i] = sensorData[i]
+    else:
+        # adjust directions for bot alignment
+        for i in range(4):
+            maze[tile][adjustDirections(direction)[i]] = sensorData[i]
+        for i in range(4, 10):
             maze[tile][i] = sensorData[i]
 
     if config.debug:
