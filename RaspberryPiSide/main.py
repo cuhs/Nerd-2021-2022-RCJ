@@ -9,9 +9,8 @@ from util import config
 print("\nRaspberryPiSide START")
 BFS.init()
 
-if config.inputMode == 2:
-    import detection2
-    victim = detection2.detection()
+import detection2
+victim = detection2.detection()
 
 print("Setup Finished\n\nrunning...")
 
