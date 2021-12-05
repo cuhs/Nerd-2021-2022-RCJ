@@ -3,6 +3,7 @@ import sys
 import mazeToText
 import IO
 import display
+import cv2
 from util import np
 from util import config
 
@@ -50,6 +51,17 @@ def init():
 
     # display setup
     display.imgSetup()
+
+    # camera setup
+    if config.inputMode == 2:
+        IO.cap1 = cv2.VideoCapture(0)
+        IO.cap2 = cv2.VideoCapture(1)
+
+        IO.cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+        IO.cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
+        IO.cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+        IO.cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
+
 
 # return next tile to visit recursively
 def nextTile(cTile):

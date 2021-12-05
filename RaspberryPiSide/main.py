@@ -9,6 +9,10 @@ from util import config
 print("\nRaspberryPiSide START")
 BFS.init()
 
+if config.inputMode == 2:
+    import detection2
+    victim = detection2.detection()
+
 print("Setup Finished\n\nrunning...")
 
 # set start tile walls, if serial, turn to get back wall
@@ -63,21 +67,43 @@ while nextTile is not None or util.tile != util.startTile:
 
     # send driving instructions and do KNN  TODO: integrate w/ andy
     if config.inputMode == 2:
+
+        # send driving instructions start msg
         IO.sendSerial(IO.sData[util.pathLen])
         util.pathLen += 1
+
+        # while driving instructions remain
         while util.pathLen < len(IO.sData) - 1:
+            # send one driving instruction: "F;" or "L;"
             IO.sendSerial(IO.sData[util.pathLen:(util.pathLen + 2)])
 
             if config.debug:
-                print("Starting Victim")
+                print("Sent:" + IO.sData[util.pathLen:(util.pathLen + 2)] + "\nStarting Victim")
 
             while not IO.hasSerialMessage():
                 if config.debug:
                     print("\tChecking Victim")
 
-                # check & mark victims
+                if not(IO.cap1.isOpened()) or not(IO.cap2.isOpened()):
+                    raise ConnectionError("One or more cameras were not opened!")
 
+                ret1, frame1 = IO.cap1.read()
+                ret2, frame2 = IO.cap2.read()
+
+                lVictim = victim.KNN_finish(victim.letterDetect(frame1, "frame1"), 10000000)
+                rVictim = victim.KNN_finish(victim.letterDetect(frame2, "frame2"), 10000000)
+
+                if config.debug:
+                    print("Left Victim: " + lVictim + "\nRight Victim: " + rVictim)
+                    cv2.imshow("frame1", frame1)
+                    cv2.imshow("frame2", frame2)
+
+                # sleep for serial & camera, MUST BE AT LEAST 0.1
                 time.sleep(0.1)
+
+            IO.cap1.release()
+            IO.cap2.release()
+            cv2.destroyAllWindows()
 
             util.pathLen += 2
 
@@ -86,7 +112,7 @@ while nextTile is not None or util.tile != util.startTile:
     # print out path to only the next tile, reset length
     if config.debug:
         print("\tPath To Tile: " + str(IO.sData[util.pathLen:]))
-        print()
+
     util.pathLen = len(IO.sData)
 
     # set tile new tile to visited, clear parent array

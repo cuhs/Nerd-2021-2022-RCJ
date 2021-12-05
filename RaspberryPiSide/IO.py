@@ -10,7 +10,11 @@ if config.inputMode == 2:
 # directions
 directions = ['N', 'E', 'S', 'W']
 
+# path taken stored in this string
 sData = ""
+
+# cameras
+cap1 = cap2 = None
 
 # get file editors
 def outputFile(mode):
