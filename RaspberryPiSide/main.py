@@ -68,7 +68,16 @@ while nextTile is not None or util.tile != util.startTile:
         while util.pathLen < len(IO.sData) - 1:
             IO.sendSerial(IO.sData[util.pathLen:(util.pathLen + 2)])
 
-            # victim goes here  TODO: send message if victim detected, add to maze
+            if config.debug:
+                print("Starting Victim")
+
+            while not IO.hasSerialMessage():
+                if config.debug:
+                    print("\tChecking Victim")
+
+                # check & mark victims
+
+                time.sleep(0.1)
 
             util.pathLen += 2
 

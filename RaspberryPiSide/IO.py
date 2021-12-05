@@ -124,6 +124,9 @@ def requestData():
     walls[0] = receive_message.decode("ascii", "ignore")
     return walls
 
+def hasSerialMessage():
+    return ser.in_waiting
+
 # send path instructions through serial
 def sendSerial(msg):
     if config.debug:
