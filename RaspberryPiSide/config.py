@@ -13,7 +13,7 @@ redoLastMaze = False  # this setting allows you to rerun the last maze, maybe if
 
 showDisplay = True  # 0 no display, 1 is display
 displayRate = 1  # in milliseconds, 0 for until click
-displaySize = 790  # display size, range from (0 - 1000), see line below
+displaySize = 700  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
 debug = False  # print statements

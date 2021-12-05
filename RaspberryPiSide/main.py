@@ -89,9 +89,12 @@ while nextTile is not None or util.tile != util.startTile:
 
                 ret1, frame1 = IO.cap1.read()
                 ret2, frame2 = IO.cap2.read()
-
-                lVictim = victim.KNN_finish(victim.letterDetect(frame1, "frame1"), 10000000)
-                rVictim = victim.KNN_finish(victim.letterDetect(frame2, "frame2"), 10000000)
+                
+                if ret1 > 0:
+                    lVictim = victim.KNN_finish(victim.letterDetect(frame1, "frame1"), 10000000)
+                    
+                if ret2 > 0:
+                    rVictim = victim.KNN_finish(victim.letterDetect(frame2, "frame2"), 10000000)
 
                 if config.debug:
                     print("Left Victim: " + lVictim + "\nRight Victim: " + rVictim)
@@ -101,9 +104,9 @@ while nextTile is not None or util.tile != util.startTile:
                 # sleep for serial & camera, MUST BE AT LEAST 0.1
                 time.sleep(0.1)
 
-            IO.cap1.release()
-            IO.cap2.release()
-            cv2.destroyAllWindows()
+            #IO.cap1.release()
+            #IO.cap2.release()
+            #cv2.destroyAllWindows()
 
             util.pathLen += 2
 

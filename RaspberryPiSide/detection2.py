@@ -81,7 +81,15 @@ class detection():
             result = "None"
             
         return result
+    
+    def colorDetect(hsv_lower, hsv_higher):
         
+        for i in range(3):
+        
+            cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
+            mask = cv2.inRange(frame,hsv_lower[i],hsv_higher[1])
+        
+            contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
 main = detection()
 
