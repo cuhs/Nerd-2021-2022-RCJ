@@ -1,6 +1,7 @@
 import BFS
 import display
 import cv2
+import detection2
 import time
 from BFS import util
 from util import IO
@@ -9,12 +10,11 @@ from util import config
 print("\nRaspberryPiSide START")
 BFS.init()
 
-import detection2
 victim = detection2.detection()
 
 print("Setup Finished\n\nrunning...")
 
-# set start tile walls, if serial, turn to get back wall
+# set start tile walls
 util.setWalls()
 
 # turn to get wall values on start if serial
@@ -103,10 +103,7 @@ while nextTile is not None or util.tile != util.startTile:
                 # sleep for serial & camera, MUST BE AT LEAST 0.1
                 time.sleep(0.1)
 
-            #IO.cap1.release()
-            #IO.cap2.release()
-            #cv2.destroyAllWindows()
-
+            # update path / driving instructions
             util.pathLen += 2
 
         IO.sendSerial(IO.sData[-1])
