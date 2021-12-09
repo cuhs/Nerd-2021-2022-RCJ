@@ -46,35 +46,37 @@ while nextTile is not None or util.tile != util.startTile:
     if config.showDisplay:
         display.show(nextTile, util.maze, config.displayRate)
 
-    # start of driving instructions
-    IO.sData += config.serialMessages[5]
+    # calculate and send driving instructions
+    if config.inputMode != 2:
+        # start of driving instructions
+        IO.sData += config.serialMessages[5]
 
-    # send driving instructions and do victim and do obstacle and do black tiles
-    while util.path:
-        # calculate driving instructions from path to next tile
-        if config.debug:
-            print("\tPath: " + str(util.path))
+        # send driving instructions and do victim and do obstacle and do black tiles
+        while util.path:
+            # calculate driving instructions from path to next tile
+            if config.debug:
+                print("\tPath: " + str(util.path))
 
-        # set direction to the direction to be turned
-        util.direction = BFS.turnToTile(util.path.pop(), util.direction)
-        util.tile = util.goForward(util.tile)
+            # set direction to the direction to be turned
+            util.direction = BFS.turnToTile(util.path.pop(), util.direction)
+            util.tile = util.goForward(util.tile)
 
-    # driving instructions calculated, add terminating character and send
-    IO.sData += config.serialMessages[6]
-    if config.inputMode == 1:
-        IO.sendFileData(util.pathLen)
+        # driving instructions calculated, add terminating character and send
+        IO.sData += config.serialMessages[6]
 
-    # send driving instructions and do KNN  TODO: integrate w/ andy
-    if config.inputMode == 2:
+        if config.inputMode == 1:
+            IO.sendFileData(util.pathLen)
 
-        # send driving instructions start msg
-        IO.sendSerial(IO.sData[util.pathLen])
-        util.pathLen += 1
+    # serial sending directions
+    else:
+        # add starting char to
+        IO.sData += config.serialMessages[5]
 
         # while driving instructions remain
-        while util.pathLen < len(IO.sData) - 1:
-            # send one driving instruction: "F;" or "L;"
-            IO.sendSerial(IO.sData[util.pathLen:(util.pathLen + 2)])
+        while util.path:
+            # set direction to the direction to be turned
+            util.direction = BFS.turnToTile(util.path.pop(), util.direction)
+            util.tile = util.goForward(util.tile)
 
             if config.debug:
                 print("Sent:" + IO.sData[util.pathLen:(util.pathLen + 2)] + "\nStarting Victim")
@@ -103,9 +105,7 @@ while nextTile is not None or util.tile != util.startTile:
                 # sleep for serial & camera, MUST BE AT LEAST 0.1
                 time.sleep(0.1)
 
-            # update path / driving instructions
-            util.pathLen += 2
-
+        IO.sData += config.serialMessages[6]
         IO.sendSerial(IO.sData[-1])
 
     # print out path to only the next tile, reset length
