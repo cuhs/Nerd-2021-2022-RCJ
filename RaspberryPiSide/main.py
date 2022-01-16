@@ -47,66 +47,26 @@ while nextTile is not None or util.tile != util.startTile:
         display.show(nextTile, util.maze, config.displayRate)
 
     # calculate and send driving instructions
-    if config.inputMode != 2:
-        # start of driving instructions
-        IO.sData += config.serialMessages[5]
+    IO.sData += config.serialMessages[5]
 
-        # send driving instructions and do victim and do obstacle and do black tiles
-        while util.path:
-            # calculate driving instructions from path to next tile
-            if config.debug:
-                print("\tPath: " + str(util.path))
+    # send driving instructions and do victim and do obstacle and do black tiles
+    while util.path:
+        # calculate driving instructions from path to next tile
+        if config.debug:
+            print("\tPath: " + str(util.path))
 
-            # set direction to the direction to be turned
-            util.direction = BFS.turnToTile(util.path.pop(), util.direction)
-            util.tile = util.goForward(util.tile)
+        # set direction to the direction to be turned
+        util.direction = BFS.turnToTile(util.path.pop(), util.direction)
+        util.tile = util.goForward(util.tile)
 
-        # driving instructions calculated, add terminating character and send
-        IO.sData += config.serialMessages[6]
+    # driving instructions calculated, add terminating character and send
+    IO.sData += config.serialMessages[6]
 
-        if config.inputMode == 1:
-            IO.sendFileData(util.pathLen)
-
-    # serial sending directions
-    else:
-        # add starting char to
-        IO.sData += config.serialMessages[5]
-
-        # while driving instructions remain
-        while util.path:
-            # set direction to the direction to be turned
-            util.direction = BFS.turnToTile(util.path.pop(), util.direction)
-            util.tile = util.goForward(util.tile)
-
-            if config.debug:
-                print("Sent:" + IO.sData[util.pathLen:(util.pathLen + 2)] + "\nStarting Victim")
-
-            while not IO.hasSerialMessage():
-                if config.debug:
-                    print("\tChecking Victim")
-
-                if not(IO.cap1.isOpened()) or not(IO.cap2.isOpened()):
-                    raise ConnectionError("One or more cameras were not opened!")
-
-                ret1, frame1 = IO.cap1.read()
-                ret2, frame2 = IO.cap2.read()
-                
-                if ret1 > 0:
-                    lVictim = victim.KNN_finish(victim.letterDetect(frame1, "frame1"), 10000000)
-                    
-                if ret2 > 0:
-                    rVictim = victim.KNN_finish(victim.letterDetect(frame2, "frame2"), 10000000)
-
-                if config.debug:
-                    print("Left Victim: " + lVictim + "\nRight Victim: " + rVictim)
-                    cv2.imshow("frame1", frame1)
-                    cv2.imshow("frame2", frame2)
-
-                # sleep for serial & camera, MUST BE AT LEAST 0.1
-                time.sleep(0.1)
-
-        IO.sData += config.serialMessages[6]
-        IO.sendSerial(IO.sData[-1])
+    while util.pathLen < len(IO.sData):
+        IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], util.pathLen == len(IO.sData) - 1)
+        if config.debug:
+            print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
+        util.pathLen += 1
 
     # print out path to only the next tile, reset length
     if config.debug:

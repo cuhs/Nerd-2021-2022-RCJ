@@ -16,7 +16,7 @@ displayRate = 1  # in milliseconds, 0 for until click
 displaySize = 700  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
-debug = False  # print statements
+debug = True  # print statements
 
 port = "/dev/ttyS0"  # serial port path
 rate = 9600  # serial port rate

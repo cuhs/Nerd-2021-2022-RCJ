@@ -44,7 +44,13 @@ def getData(mode, tile):
     if mode == 1:
         return getFileData(tile)
     if mode == 2:
-        return requestData()
+        return getSerialData()
+
+def sendData(mode, msg, newLine=False):
+    if mode == 1:
+        return sendFileData(msg, newLine)
+    if mode == 2:
+        return sendSerial(msg)
 
 # receiving manual data from console
 def getManualData(tile):
@@ -76,8 +82,10 @@ def getFileData(tile):
     return [int(j) for j in str(f.readline())[:10]]
 
 # writes path to file
-def sendFileData(pathLen):
-    outputFile("a").write(sData[pathLen:] + "\n")
+def sendFileData(msg, newLine):
+    if newLine:
+        msg += "\n"
+    outputFile("a").write(msg)
     outputFile("a").flush()
 
 def writeMaze(file, header, maze, delete):
@@ -110,22 +118,20 @@ def setupSerial():
     return config.port
 
 # request and receive wall positions through serial
-def requestData():
-    send_message = 'g'
-    ser.write(bytes(send_message.encode("ascii", "ignore")))
+def getSerialData():
     walls = np.zeros(5)
+
     receive_message = ser.read()
-    while receive_message.isdigit() is False:
-        print("rms: " + str(receive_message))
-        receive_message = ser.read()
-    time.sleep(0.1)
     walls[3] = receive_message.decode("ascii", "ignore")
-    receive_message = ser.read()
     time.sleep(0.1)
+
+    receive_message = ser.read()
     walls[1] = receive_message.decode("ascii", "ignore")
-    receive_message = ser.read()
     time.sleep(0.1)
+
+    receive_message = ser.read()
     walls[0] = receive_message.decode("ascii", "ignore")
+    time.sleep(0.1)
     return walls
 
 def hasSerialMessage():

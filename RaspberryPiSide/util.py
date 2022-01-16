@@ -88,25 +88,18 @@ def setWalls():
 
 # both are 90 degree turns
 def turnLeft(facing):
-    msg = config.serialMessages[1] + config.serialMessages[4]
     facing = dirToLeft(facing)
-    IO.sData += msg
-    if config.inputMode == 2:
-        IO.ser.write(bytes(msg.encode("ascii", "ignore")))
+    IO.sData += (config.serialMessages[1] + config.serialMessages[4])
     return facing
 
 def turnRight(facing):
-    msg = config.serialMessages[2] + config.serialMessages[4]
     facing = dirToRight(facing)
-    IO.sData += msg
-    if config.inputMode == 2:
-        IO.ser.write(bytes(msg.encode("ascii", "ignore")))
+    IO.sData += (config.serialMessages[2] + config.serialMessages[4])
     return facing
 
 # send forward message
 def goForward(cTile):
-    msg = config.serialMessages[0] + config.serialMessages[4]
-    IO.sData += msg
+    IO.sData += (config.serialMessages[0] + config.serialMessages[4])
     return cTile + adjTiles[direction]
 
 def goBackward(cTile):
