@@ -62,6 +62,7 @@ while nextTile is not None or util.tile != util.startTile:
     # driving instructions calculated, add terminating character and send
     IO.sData += config.serialMessages[6]
 
+    # send driving instructions one at a time
     while util.pathLen < len(IO.sData):
         IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], util.pathLen == len(IO.sData) - 1)
         if config.debug:
