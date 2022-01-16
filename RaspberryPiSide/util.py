@@ -80,8 +80,9 @@ def setWalls():
         # adjust directions for bot alignment
         for i in range(4):
             maze[tile][adjustDirections(direction)[i]] = sensorData[i]
-        for i in range(4, 10):
-            maze[tile][i] = sensorData[i]
+        maze[tile][5] = 1
+        for i in range(5, 10):
+            maze[tile][i] = 0
 
     if config.debug:
         print("\tTile Array for tile " + str(tile) + ": " + str(maze[tile]))

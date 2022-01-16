@@ -104,3 +104,60 @@ class detection():
                     if i == 1:
                         print("Green")
                         packages = 0
+                        
+hsv_lower = {
+    0: (0,0,0)
+    #1: (),
+    #2: ()
+    }
+
+hsv_upper = {
+    0: (40,40,40)
+    #1: (),
+    #2: ()
+    }
+main = detection()
+
+cap1 = cv2.VideoCapture(0)
+cap2 = cv2.VideoCapture(1)
+
+cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
+cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
+
+total = 0
+correct = 0
+start = 0
+
+while cap1.isOpened() and cap2.isOpened():
+    
+    ret1,frame1 = cap1.read()
+    ret2,frame2 = cap2.read()
+                        
+    if ret1 > 0 and ret2 > 0:
+        
+        #main.colorDetect(frame1,hsv_lower,hsv_upper)
+        main.colorDetect(frame2,hsv_lower,hsv_upper)
+
+        #imgOutput1 = main.letterDetect(frame1,"frame1")
+        #imgOutput2 = main.letterDetect(frame2, "frame2")
+        
+        #result1 = main.KNN_finish(imgOutput1,10000000)
+        #result2 = main.KNN_finish(imgOutput2,10000000)
+            
+        #print("Camera1 " + result1)
+        #print("Camera2 " + result2)
+            
+        if main.Debug:
+                
+            cv2.imshow("frame1",frame1)
+            cv2.imshow("frame2",frame2)
+
+            
+    if cv2.waitKey(1) == ord('q'):
+        break
+
+cap1.release()
+cap2.release()
+cv2.destroyAllWindows()

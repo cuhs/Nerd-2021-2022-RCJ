@@ -17,15 +17,6 @@ print("Setup Finished\n\nrunning...")
 # set start tile walls
 util.setWalls()
 
-# turn to get wall values on start if serial
-if config.inputMode == 2:
-    IO.sData += config.serialMessages[5]
-    util.direction = BFS.turnToTile(util.tile, util.dirToLeft(util.direction))
-    IO.sData += config.serialMessages[6]
-    IO.sendSerial(IO.sData)
-
-    util.setWalls()
-
 # time calculation
 ot = 0
 start = time.time()
