@@ -1,13 +1,14 @@
-/*#include "new_global_vars.h"
+#include "new_global_vars.h"
 #include "Distance_Sensor.h"
 #include "IMU.h"
-#include "TCA.h"
-#include "TCS.h"
+//#include "TCA.h"
+//#include "TCS.h"
 #include "motors.h"
-#include "rescueServo.h"*/
-#include <Wire.h>
+//#include "rescueServo.h"
 
   char values[5] = {'1','0','0','0','1'};
+  //last 1;
+  //N E S W --> South always 0
 
 
 void setup() {
@@ -21,7 +22,7 @@ void setup() {
   //INIT_INTERRUPT_RIGHT;
   //ports[RIGHT].backwards = true;
   Serial.println("--------------------STARTING NOW--------------------");
-  //setupSensors();
+  setupSensors();
   //myservo.attach(A8, 490, 2400); // attaches the servo on pin A8 to the servo object
   //midPos();
   Serial2.write('a');
@@ -45,15 +46,27 @@ void loop() {
       case '{': 
         Serial.println("{"); break;
       case 'F': 
-        Serial.println("forward!"); break; //go forward
+        Serial.println("forward!"); 
+        goForwardTiles(1);
+        break; 
       case 'L':
-        Serial.println("left!");break; //turn left
+        Serial.println("left!");
+        turnLeft(90);
+        break; 
+        //turn left
       case 'R':
-       Serial.println("right!"); break; //turn right
+       Serial.println("right!"); 
+       turnRight(90);
+       break; 
+       //turn right
       case ';':
-        Serial.println(";"); break;
+        Serial.println(";"); 
+        break;
       case '}': 
-        Serial.println("}"); Serial2.write(values,3);break;//sendwall values 
+        Serial.println("}"); 
+        Serial2.write(values,3);
+        break;
+        //sendwall values 
       default:
        Serial.println("hmmm wut is this");
 

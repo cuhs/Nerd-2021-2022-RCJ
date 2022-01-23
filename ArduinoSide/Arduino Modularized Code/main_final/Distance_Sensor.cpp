@@ -2,7 +2,7 @@
 VL53L0X lox;
 //VL53L0X_RangingMeasurementData_t measure;
 void sendWallValues(int leftDist, int rightDist, int frontDist) {
-  char walls[3] = {'0', '0', '0'};
+  char walls[5] = {'0', '0', '0', '0','0'};
   int minimumDist = 30; // Minimum distance to determine if there is a wall on the side
 
   if (leftDist < minimumDist)
