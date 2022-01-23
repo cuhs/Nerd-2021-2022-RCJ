@@ -1,13 +1,13 @@
+/* This example shows how to use continuous mode to take
+range measurements with the VL53L0X. It is based on
+vl53l0x_ContinuousRanging_Example.c from the VL53L0X API.
 
+The range readings are in units of mm. */
 
 #include <Wire.h>
-#include "VL53L0X.h"
-
+#include <VL53L0X.h>
 #define TCAADDR 0x70
-
-//enum obstacleStates {FARLEFT, LEFT, MID, RIGHT, FARRIGHT, NONE};
-VL53L0X lox;
-
+VL53L0X sensor[3];
 
 void tcaselect(uint8_t i) {
   if (i > 7) return;
@@ -16,78 +16,55 @@ void tcaselect(uint8_t i) {
   Wire.write(1 << i);
   Wire.endTransmission();  
 }
-
-void setup() {
+void setup()
+{
   Serial.begin(9600);
-  while (! Serial) {
-    delay(1);
-  }
-  
-  
+  Wire.begin();
   tcaselect(0);
-  lox.setTimeout(500);
-  lox.init();
-  lox.startContinuous();
-  /*if (!lox.begin()) {
-    Serial.println(F("Failed to boot VL53L0X 1"));
-    while(1);
-  }*/
+  sensor[0].setTimeout(500);
+  if (!sensor[0].init())
+  {
+    Serial.println("Failed to detect and initialize sensor!");
+    while (1) {}
+  }
+  sensor[0].startContinuous();
   tcaselect(1);
-  lox.setTimeout(500);
-  lox.init();
-  lox.startContinuous();
-  /*if (!lox.begin()) {
-    Serial.println(F("Failed to boot VL53L0X 2"));
-    while(1);
-  }*/
+  sensor[1].setTimeout(500);
+  if (!sensor[1].init())
+  {
+    Serial.println("Failed to detect and initialize sensor!");
+    while (1) {}
+  }
+  sensor[1].startContinuous();
   tcaselect(2);
-  lox.setTimeout(500);
-  lox.init();
-  lox.startContinuous();
-  /*if (!lox.begin()) {
-    Serial.println(F("Failed to boot VL53L0X 3"));
-    while(1);
-  }*/
-  
-  
+  sensor[2].setTimeout(500);
+  if (!sensor[2].init())
+  {
+    Serial.println("Failed to detect and initialize sensor!");
+    while (1) {}
+  }
+  sensor[2].startContinuous();
+  // Start continuous back-to-back mode (take readings as
+  // fast as possible).  To use continuous timed mode
+  // instead, provide a desired inter-measurement period in
+  // ms (e.g. sensor.startContinuous(100)).
 }
 
-void loop() {
-  //VL53L0X_RangingMeasurementData_t measure;
-  //double m1;
-  //double m2;
-  //double m3;
-  //obstacleStates st = NONE;
-  
+void loop()
+{
   tcaselect(0);
-  Serial.print("Port 0: " + lox.readRangeContinuousMillimeters());
-  if (lox.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
+  Serial.print("Sensor 0: " + String(sensor[0].readRangeContinuousMillimeters()));
+  if (sensor[0].timeoutOccurred()) { Serial.print(" TIMEOUT"); }
+
+  //Serial.println();
   tcaselect(1);
-  Serial.print("Port 1: " + lox.readRangeContinuousMillimeters());
-  if (lox.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
+  Serial.print("\tSensor 1: " + String(sensor[1].readRangeContinuousMillimeters()));
+  if (sensor[1].timeoutOccurred()) { Serial.print(" TIMEOUT"); }
+
+  //Serial.println();
   tcaselect(2);
-  Serial.print("Port 2: " + lox.readRangeContinuousMillimeters());
-  if (lox.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
-/*if(m2 <= (m1-10) && m2 <= (m3-10)){
-  st = MID;
-  Serial.print("Middle");
-}else if(m1 <= (m2-10) && m1 <= (m3-10)){
-  st = FARLEFT;
-  Serial.print("Far Left");
-}else if(m3 <= (m2-10) && m3 <= (m1-10)){
-  st = FARRIGHT;
-  Serial.print("Far Right");
-}else if(m1 <= (m3-10) && m2 <= (m3-10)){
-  st = LEFT;
-  Serial.print("Left");
-}else if(m3 <= (m1-10) && m2 <= (m1-10)){
-  st = RIGHT;
-  Serial.print("Right");
-}else{
-  st = NONE;
-  Serial.print("None");
-}*/
-//Serial.print(m1); Serial.print(" ");
-//Serial.print(m2); Serial.print(" ");  
-//Serial.print(m3); Serial.println(" ");
+  Serial.print("\tSensor 2: " + String(sensor[2].readRangeContinuousMillimeters()));
+  if (sensor[2].timeoutOccurred()) { Serial.print(" TIMEOUT"); }
+
+  Serial.println();
 }
