@@ -44,10 +44,11 @@ void turnRight(int deg)
 {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
-  while(euler.x() < deg){
+  while(euler.x() < deg || euler.x()>350){
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     ports[RIGHT].setMotorSpeed(-150);
     ports[LEFT].setMotorSpeed(150);
+    
     Serial.println(euler.x());
   }
     ports[LEFT].setMotorSpeed(0);
