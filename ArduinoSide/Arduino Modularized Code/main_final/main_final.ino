@@ -41,7 +41,9 @@ void setup() {
 
 void loop() {
 
-  if(Serial2.available()){
+    alignFront();
+    
+  /*if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
@@ -76,6 +78,6 @@ void loop() {
        Serial.println("hmmm wut is this");
 
     }
-  }
+  }*/
 
 }

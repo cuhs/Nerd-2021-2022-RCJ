@@ -2,9 +2,14 @@
 #define _VLX_HEAD_
 #include "VL53L0X.h"
 #include "TCA.h"
+#include "motors.h"
+#include "IMU.h"
 void sendWallValues(int leftDist, int rightDist, int frontDist);
 void setupSensors();
 void setupSensors2();
+void alignSide(int leftDist, int rightDist);
+void triangulate(int leftDist, int rightDist);
+void alignFront();
 int getSensorReadings(int sensorNum);
 extern VL53L0X lox;
 const int numSensors = 3;

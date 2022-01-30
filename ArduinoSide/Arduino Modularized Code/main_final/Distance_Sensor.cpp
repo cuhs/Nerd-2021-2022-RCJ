@@ -78,6 +78,95 @@ void setupSensors2(){
   }
 }
 
+void alignSide(int leftDist, int rightDist){
+   int minimumDist = 30; // Minimum distance to determine if there is a wall on the side
+  if(leftDist < minimumDist && rightDist<minimumDist){
+    if(rightDist>leftDist){
+      while(abs(rightDist-leftDist) > 1){
+        ports[RIGHT].setMotorSpeed(150);
+        ports[LEFT].setMotorSpeed(-150);
+      }
+    }
+    else{
+      while(abs(rightDist-leftDist)>1){
+        ports[RIGHT].setMotorSpeed(-150);
+        ports[LEFT].setMotorSpeed(150);
+      }
+    }
+  }
+  ports[RIGHT].setMotorSpeed(0);
+  ports[LEFT].setMotorSpeed(0);
+}
+
+void alignFront(){
+  int frontDist = getSensorReadings(2); 
+  int minimumDist = 30;
+  if(frontDist < minimumDist){
+    while(frontDist < 6){
+      ports[RIGHT].setMotorSpeed(-150);
+      ports[LEFT].setMotorSpeed(-150);
+      frontDist = getSensorReadings(2);
+    }
+  }
+    else{
+      while(frontDist>6){
+      ports[RIGHT].setMotorSpeed(150);
+      ports[LEFT].setMotorSpeed(150);
+      frontDist = getSensorReadings(2);
+      }
+    }
+  
+  ports[RIGHT].setMotorSpeed(0);
+  ports[LEFT].setMotorSpeed(0);
+}
+
+void triangulate(int leftDist, int rightDist){
+  int minimumDist = 30;
+  int tR;
+  int tL;
+  int travelDist = 0; 
+  int angle = 0;
+  if(leftDist < minimumDist){
+    
+    travelDist = sqrt(900+pow(abs(leftDist-tL),2));
+    angle = atan2(30.0,abs(leftDist-tL));
+    angle = angle*180/PI;
+
+    if(leftDist-tL > 0){
+      turnRight(angle);
+      goForward(travelDist);
+    }
+    else{
+      turnLeft(angle);
+      goForward(travelDist);
+
+    }
+  }
+  
+  else if(rightDist < minimumDist){
+    travelDist = sqrt(900+pow(abs(rightDist-tR),2));
+    angle = atan2(30,abs(rightDist-tR));
+    angle = angle*180/PI;
+
+    if(rightDist-tR > 0){
+      turnLeft(angle);
+      goForward(travelDist);
+
+      
+    }
+    else{
+      turnRight(angle);
+      goForward(travelDist);
+
+    }
+  }
+
+  else{
+    goForwardTiles(1);
+  }
+  
+}
+
 int getSensorReadings(int num) {
   tcaselect(num);
   return lox.readRangeContinuousMillimeters()/10;
