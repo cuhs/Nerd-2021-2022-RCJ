@@ -41,7 +41,7 @@ void setup() {
 
 void loop() {
 
-    alignFront();
+    triangulate(getSensorReadings(0),getSensorReadings(1));
     
   /*if(Serial2.available()){
     delay(1);

@@ -135,10 +135,14 @@ void triangulate(int leftDist, int rightDist){
     if(leftDist-tL > 0){
       turnRight(angle);
       goForward(travelDist);
+      turnLeft(angle);
+
     }
     else{
       turnLeft(angle);
       goForward(travelDist);
+      turnRight(angle);
+
 
     }
   }
@@ -151,12 +155,14 @@ void triangulate(int leftDist, int rightDist){
     if(rightDist-tR > 0){
       turnLeft(angle);
       goForward(travelDist);
+      turnRight(angle);
 
       
     }
     else{
       turnRight(angle);
       goForward(travelDist);
+      turnLeft(angle);
 
     }
   }

@@ -191,7 +191,7 @@ void alignRight() {
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
 }
-
+/*
 void alignFront() {
   if (getSensorReadings(2) < 5) {
     while (getSensorReadings(2) < 5) {
@@ -207,7 +207,7 @@ void alignFront() {
 
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
-}
+}*/
 
 void alignRobot() {
   if ((getSensorReadings(0) < 30) && (getSensorReadings(4) < 30))

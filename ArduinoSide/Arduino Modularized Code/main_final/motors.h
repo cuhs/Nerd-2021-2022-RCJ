@@ -16,7 +16,7 @@ void getDist(int start);
 void motorControl();
 void alignLeft();
 void alignRight();
-void alignFront();
+//void alignFront();
 void alignRobot();
 void alignToTile();
 
