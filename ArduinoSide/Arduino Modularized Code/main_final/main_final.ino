@@ -41,9 +41,12 @@ void setup() {
 
 void loop() {
 
-    triangulate(getSensorReadings(0),getSensorReadings(1));
+    //triangulate(getSensorReadings(0),getSensorReadings(1));
+
+     //ports[RIGHT].setMotorSpeed(150);
+      //ports[LEFT].setMotorSpeed(-150);
     
-  /*if(Serial2.available()){
+  if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
@@ -71,6 +74,7 @@ void loop() {
         break;
       case '}': 
         Serial.println("}"); 
+        alignFront();
         sendWallValues(getSensorReadings(0),getSensorReadings(1),getSensorReadings(2));
         break;
         //sendwall values 
@@ -78,6 +82,6 @@ void loop() {
        Serial.println("hmmm wut is this");
 
     }
-  }*/
+  }
 
 }

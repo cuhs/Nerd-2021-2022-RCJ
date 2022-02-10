@@ -6,8 +6,8 @@
 #include "Distance_Sensor.h"
 #include <MeMegaPi.h>
 // For Turns and Movement
-const float WB = 23.285;
-const float D = 6.9;
+const float WB = 23.285; //23.285
+const float D = 6.3; //6.9
 
 void doTurn(char dir, int deg);
 void goForward(int dist);

@@ -101,20 +101,24 @@ void alignSide(int leftDist, int rightDist){
 void alignFront(){
   int frontDist = getSensorReadings(2); 
   int minimumDist = 30;
+
+  ports[RIGHT].setMotorSpeed(0);
+  ports[LEFT].setMotorSpeed(0);
+  
   if(frontDist < minimumDist){
     while(frontDist < 6){
       ports[RIGHT].setMotorSpeed(-150);
       ports[LEFT].setMotorSpeed(-150);
       frontDist = getSensorReadings(2);
     }
-  }
-    else{
-      while(frontDist>6){
+    while(frontDist>6){
       ports[RIGHT].setMotorSpeed(150);
       ports[LEFT].setMotorSpeed(150);
       frontDist = getSensorReadings(2);
       }
-    }
+  }
+      
+
   
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);

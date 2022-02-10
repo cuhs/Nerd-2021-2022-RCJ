@@ -39,7 +39,8 @@ void goForward(int dist) {
 
 void goForwardTiles(int tiles) {
   int tileSize = 30; // Set to 30
-  ports[RIGHT].count = 0;
+  int motorEncUse = 1;
+  ports[motorEncUse].count = 0;
   Serial.print("Forward ");
   Serial.print(tiles);
   Serial.print(" tiles. (");
@@ -48,10 +49,10 @@ void goForwardTiles(int tiles) {
 
   int enc = ((360 / (D * PI)) * tileSize * tiles);
 
-  while (((abs(ports[0].count) < (360 / (D * PI)) * tileSize * tiles)) && (getSensorReadings(2) > 5)) {
+  while (((abs(ports[motorEncUse].count) < (360 / (D * PI)) * tileSize * tiles)) && (getSensorReadings(2) > 5)) {
     Serial.print(enc);
     Serial.print(' ');
-    Serial.println(abs(ports[0].count));
+    Serial.println(abs(ports[motorEncUse].count));
     //    if (Serial.available() >= 1) {
     //      if (Serial.read() == 'v') {
     //        char side = Serial.read();
