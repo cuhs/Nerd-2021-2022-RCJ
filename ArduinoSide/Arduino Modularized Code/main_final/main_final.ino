@@ -40,17 +40,22 @@ void setup() {
 
 void loop() {
 
-  goForwardTilesPID(1);
+  /*for(int i = 0; i<254; i++){
+     ports[RIGHT].setMotorSpeed(i);
+     ports[LEFT].setMotorSpeed(i);
+     Serial.println(i);
+     delay(100);
+  }*/
+
+  //goForwardTilesPID(1);
 
   //goForwardTiles(1);
   //delay(10000);
 
     //triangulate(getSensorReadings(0),getSensorReadings(1));
 
-     //ports[RIGHT].setMotorSpeed(225);
-     //ports[LEFT].setMotorSpeed(-225);
     
-  /*if(Serial2.available()){
+  if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
@@ -86,6 +91,6 @@ void loop() {
        Serial.println("hmmm wut is this");
 
     }
-  }*/
+  }
 
 }

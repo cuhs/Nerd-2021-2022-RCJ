@@ -89,11 +89,11 @@ void goForwardTilesPID(int tiles) {
 
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
 
-    fix = (int)(PID(enc-abs(ports[motorEncUse].count), &pastError, &integral, 5.0, 0.0, 0.0));
+    fix = (int)(PID(enc-abs(ports[motorEncUse].count), pastError, integral, 0.25, 0.0, 0.0));
     Serial.println(fix);
     
-    //ports[RIGHT].setMotorSpeed(200);
-    //ports[LEFT].setMotorSpeed(200);
+    //ports[RIGHT].setMotorSpeed(fix+180);
+    //ports[LEFT].setMotorSpeed(fix+180);
     
   }
   ports[RIGHT].setMotorSpeed(0);
