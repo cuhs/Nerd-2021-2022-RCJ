@@ -34,19 +34,23 @@ void setup() {
   //Serial.print(getSensorReadings(0) + " " + getSensorReadings(1) + " " + getSensorReadings(2)); 
   sendWallValues(getSensorReadings(0),getSensorReadings(1),getSensorReadings(2));
 
-
 }
 
 
 
 void loop() {
 
+  goForwardTilesPID(1);
+
+  //goForwardTiles(1);
+  //delay(10000);
+
     //triangulate(getSensorReadings(0),getSensorReadings(1));
 
-     //ports[RIGHT].setMotorSpeed(150);
-      //ports[LEFT].setMotorSpeed(-150);
+     //ports[RIGHT].setMotorSpeed(225);
+     //ports[LEFT].setMotorSpeed(-225);
     
-  if(Serial2.available()){
+  /*if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
@@ -58,6 +62,7 @@ void loop() {
       case 'F': 
         Serial.println("forward!"); 
         goForwardTiles(1);
+        alignFront();
         break; 
       case 'L':
         Serial.println("left!");
@@ -74,7 +79,6 @@ void loop() {
         break;
       case '}': 
         Serial.println("}"); 
-        alignFront();
         sendWallValues(getSensorReadings(0),getSensorReadings(1),getSensorReadings(2));
         break;
         //sendwall values 
@@ -82,6 +86,6 @@ void loop() {
        Serial.println("hmmm wut is this");
 
     }
-  }
+  }*/
 
 }

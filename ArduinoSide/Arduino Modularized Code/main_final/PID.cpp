@@ -1,6 +1,6 @@
-float PID(float error, float &pastError, float &integral, float kp, float ki, float kd){
+double PID(double error, double *pastError, double *integral, double kp, double ki, double kd){
  
-  float derivative = error-pastError;
+  double derivative = error-pastError;
   integral = integral + error;
 
   pastError = error;

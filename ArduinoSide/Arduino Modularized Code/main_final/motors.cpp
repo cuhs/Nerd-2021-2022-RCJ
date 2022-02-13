@@ -30,8 +30,8 @@ void goForward(int dist) {
   Serial.print(dist);
   Serial.println(" centimeters.");
   while (abs(ports[0].count) < (360 / (D * PI))*dist) {
-    ports[RIGHT].setMotorSpeed(120);
-    ports[LEFT].setMotorSpeed(120);
+    ports[RIGHT].setMotorSpeed(200);
+    ports[LEFT].setMotorSpeed(200);
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
@@ -64,17 +64,42 @@ void goForwardTiles(int tiles) {
     //        //victim stuff
     //      }
     //    } else {
-    ports[RIGHT].setMotorSpeed(120);
-    ports[LEFT].setMotorSpeed(120);
+    ports[RIGHT].setMotorSpeed(200);
+    ports[LEFT].setMotorSpeed(200);
     //    }
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
-  delay(1000);
+  //delay(1000);
   //Serial.println('f');
   //Serial2.write('f');
 }
 
+void goForwardTilesPID(int tiles) {
+  int tileSize = 30; // Set to 30
+  int motorEncUse = LEFT;
+  
+  double pastError = 0;
+  double integral = 0;
+  int fix = 0;
+  
+  ports[motorEncUse].count = 0;
+
+  double enc = ((360 / (D * PI)) * tileSize * tiles);
+
+  while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
+
+    fix = (int)(PID(enc-abs(ports[motorEncUse].count), &pastError, &integral, 5.0, 0.0, 0.0));
+    Serial.println(fix);
+    
+    //ports[RIGHT].setMotorSpeed(200);
+    //ports[LEFT].setMotorSpeed(200);
+    
+  }
+  ports[RIGHT].setMotorSpeed(0);
+  ports[LEFT].setMotorSpeed(0);
+  
+}
 // VVVVV incorporates PID wall following, still in progress
 void goForwardTiles2(int tiles) {
   int target = 11;

@@ -4,14 +4,16 @@
 #define RIGHT 0
 #include "new_global_vars.h"
 #include "Distance_Sensor.h"
+#include "PID.h"
 #include <MeMegaPi.h>
 // For Turns and Movement
-const float WB = 23.285; //23.285
-const float D = 6.3; //6.9
+const double WB = 23.285; //23.285
+const double D = 6.7; //6.9
 
 void doTurn(char dir, int deg);
 void goForward(int dist);
 void goForwardTiles(int tiles);
+void goForwardTilesPID(int tiles);
 void getDist(int start);
 void motorControl();
 void alignLeft();
@@ -45,7 +47,7 @@ extern MegaPiPort ports[];
 extern char message[4];
 // macro to attach the interrupt to the port
 #define INIT_INTERRUPT_LEFT   attachInterrupt(digitalPinToInterrupt(ports[LEFT].intPin), motorinterruptleft, RISING)
-#define INIT_INTERRUPT_RIGHT   attachInterrupt(digitalPinToInterrupt(ports[RIGHT].intPin), motorinterruptleft, RISING)
+#define INIT_INTERRUPT_RIGHT   attachInterrupt(digitalPinToInterrupt(ports[RIGHT].intPin), motorinterruptright, RISING)
 //template <int PN>
 void motorinterruptleft();
 void motorinterruptright();

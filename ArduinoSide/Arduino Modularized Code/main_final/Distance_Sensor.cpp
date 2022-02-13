@@ -4,7 +4,7 @@ VL53L0X sensor[numSensors];
 //VL53L0X_RangingMeasurementData_t measure;
 void sendWallValues(int leftDist, int rightDist, int frontDist) {
   char walls[3] = {'0', '0', '0'};
-  int minimumDist = 30; // Minimum distance to determine if there is a wall on the side
+  int minimumDist = 25; // Minimum distance to determine if there is a wall on the side
 
   if (leftDist < minimumDist)
     walls[2] = '1';
@@ -105,13 +105,13 @@ void alignFront(){
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
   
-  if(frontDist < minimumDist){
-    while(frontDist < 6){
+  if(frontDist < minimumDist-10){
+    while(frontDist < 7){
       ports[RIGHT].setMotorSpeed(-150);
       ports[LEFT].setMotorSpeed(-150);
       frontDist = getSensorReadings(2);
     }
-    while(frontDist>6){
+    while(frontDist>7){
       ports[RIGHT].setMotorSpeed(150);
       ports[LEFT].setMotorSpeed(150);
       frontDist = getSensorReadings(2);
