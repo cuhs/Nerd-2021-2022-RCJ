@@ -47,6 +47,13 @@ void loop() {
      delay(100);
   }*/
 
+  turnRightPID(90);
+  while(1){};
+  
+  //delay(1000);
+  //turnLeft(90);
+  //delay(1000);
+
   //goForwardTiles(1);
   //delay(5000);
 
@@ -56,8 +63,8 @@ void loop() {
   //goForwardTiles(1);
   //delay(10000);
 
-  ports[RIGHT].setMotorSpeed(255);
-  ports[LEFT].setMotorSpeed(-255);
+  //ports[RIGHT].setMotorSpeed(60);
+  //ports[LEFT].setMotorSpeed(-60);
 
     //triangulate(getSensorReadings(0),getSensorReadings(1));
 
@@ -98,6 +105,6 @@ void loop() {
        Serial.println("hmmm wut is this");
     
     }
-  }
-*/
+  }*/
+
 }

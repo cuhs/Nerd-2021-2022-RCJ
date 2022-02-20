@@ -48,8 +48,8 @@ void turnRight(int deg)
 
   while(euler.x() < deg || euler.x()>350){
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    ports[RIGHT].setMotorSpeed(-250);
-    ports[LEFT].setMotorSpeed(250);
+    ports[RIGHT].setMotorSpeed(-150);
+    ports[LEFT].setMotorSpeed(150);
     
     Serial.println(euler.x());
   }
@@ -66,9 +66,66 @@ void turnLeft(int deg)
 
   while(euler.x() > 360 - deg || euler.x() < 15){
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    ports[RIGHT].setMotorSpeed(250);
-    ports[LEFT].setMotorSpeed(-250);
+    ports[RIGHT].setMotorSpeed(150);
+    ports[LEFT].setMotorSpeed(-150);
     Serial.println(euler.x());
+  }
+    ports[LEFT].setMotorSpeed(0);
+    ports[RIGHT].setMotorSpeed(0);
+    reset();
+}
+
+void turnRightPID(int deg)
+{
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+
+  double pastError = 0;
+  double integral = 0;
+  int fix = 0;
+
+  deg = deg-7;
+
+  while(euler.x() < deg || euler.x()>350){
+    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+
+    fix = (int)(PID(deg-euler.x(),pastError,integral,1,0,0));
+    Serial.println("Deg: " + String(deg));
+    Serial.println("Cur: " + String(euler.x()));
+    Serial.println("Err: " + String(deg-euler.x()));
+    Serial.println("Fix: " + String(fix));
+    Serial.println("Lmt: " + String(60 + fix));
+    Serial.println("Rmt: " + String(-(60 + fix)));
+    Serial.println();
+
+    ports[RIGHT].setMotorSpeed(60+fix);
+    ports[LEFT].setMotorSpeed(60+fix);
+    
+    //Serial.println(euler.x());
+  }
+    ports[LEFT].setMotorSpeed(0);
+    ports[RIGHT].setMotorSpeed(0);
+    reset();
+}
+
+void turnLeftPID(int deg)
+{
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+
+  double pastError = 0;
+  double integral = 0;
+  int fix = 0;
+
+ deg = deg-7;
+
+  while(euler.x() > 360 - deg || euler.x() < 15){
+    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+
+    fix = (int)(PID(euler.x()-(360-deg), pastError, integral, 0,0,0));
+    Serial.println(fix);
+      
+    ports[RIGHT].setMotorSpeed(150);
+    ports[LEFT].setMotorSpeed(-150);
+    //Serial.println(euler.x());
   }
     ports[LEFT].setMotorSpeed(0);
     ports[RIGHT].setMotorSpeed(0);

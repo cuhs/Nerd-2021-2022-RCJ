@@ -9,6 +9,8 @@ void initIMU();
 void reset();
 void turnRight(int deg);
 void turnLeft(int deg);
+void turnRightPID(int deg);
+void turnLeftPID(int deg);
 
 extern int resetPinIMU;
 extern Adafruit_BNO055 bno;
