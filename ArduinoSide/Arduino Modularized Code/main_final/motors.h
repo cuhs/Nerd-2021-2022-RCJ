@@ -8,7 +8,7 @@
 #include <MeMegaPi.h>
 // For Turns and Movement
 const double WB = 23.285; //23.285
-const double D = 6.7; //6.9
+const double D = 5.9; //6.9 6.5
 
 void doTurn(char dir, int deg);
 void goForward(int dist);

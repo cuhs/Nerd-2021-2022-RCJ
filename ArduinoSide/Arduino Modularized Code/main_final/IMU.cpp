@@ -48,8 +48,8 @@ void turnRight(int deg)
 
   while(euler.x() < deg || euler.x()>350){
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    ports[RIGHT].setMotorSpeed(-225);
-    ports[LEFT].setMotorSpeed(225);
+    ports[RIGHT].setMotorSpeed(-250);
+    ports[LEFT].setMotorSpeed(250);
     
     Serial.println(euler.x());
   }
@@ -66,8 +66,8 @@ void turnLeft(int deg)
 
   while(euler.x() > 360 - deg || euler.x() < 15){
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    ports[RIGHT].setMotorSpeed(225);
-    ports[LEFT].setMotorSpeed(-225);
+    ports[RIGHT].setMotorSpeed(250);
+    ports[LEFT].setMotorSpeed(-250);
     Serial.println(euler.x());
   }
     ports[LEFT].setMotorSpeed(0);

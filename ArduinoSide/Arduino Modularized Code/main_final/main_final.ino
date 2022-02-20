@@ -47,14 +47,21 @@ void loop() {
      delay(100);
   }*/
 
+  //goForwardTiles(1);
+  //delay(5000);
+
   //goForwardTilesPID(1);
+  //delay(5000);
 
   //goForwardTiles(1);
   //delay(10000);
 
+  ports[RIGHT].setMotorSpeed(255);
+  ports[LEFT].setMotorSpeed(-255);
+
     //triangulate(getSensorReadings(0),getSensorReadings(1));
 
-    
+  /*  
   if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
@@ -66,7 +73,7 @@ void loop() {
         Serial.println("{"); break;
       case 'F': 
         Serial.println("forward!"); 
-        goForwardTiles(1);
+        goForwardTilesPID(1);
         alignFront();
         break; 
       case 'L':
@@ -89,8 +96,8 @@ void loop() {
         //sendwall values 
       default:
        Serial.println("hmmm wut is this");
-
+    
     }
   }
-
+*/
 }
