@@ -42,14 +42,15 @@ void reset() {
 
 void turnRight(int deg)
 {
+  int speed = 250;
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
   deg = deg-7;
 
   while(euler.x() < deg || euler.x()>350){
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    ports[RIGHT].setMotorSpeed(-150);
-    ports[LEFT].setMotorSpeed(150);
+    ports[RIGHT].setMotorSpeed(-speed);
+    ports[LEFT].setMotorSpeed(speed);
     
     Serial.println(euler.x());
   }
@@ -60,14 +61,15 @@ void turnRight(int deg)
 
 void turnLeft(int deg)
 {
+ int speed = 250;
  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
  deg = deg-7;
 
   while(euler.x() > 360 - deg || euler.x() < 15){
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    ports[RIGHT].setMotorSpeed(150);
-    ports[LEFT].setMotorSpeed(-150);
+    ports[RIGHT].setMotorSpeed(speed);
+    ports[LEFT].setMotorSpeed(-speed);
     Serial.println(euler.x());
   }
     ports[LEFT].setMotorSpeed(0);
