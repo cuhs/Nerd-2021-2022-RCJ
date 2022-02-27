@@ -48,13 +48,13 @@ void loop() {
      Serial.println(i);
      delay(100);
   }*/
-    imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    //imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
-    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    Serial.println(euler.x());
+    //euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    //Serial.println(euler.x());
 
-  //turnRight(90);
-  //while(1){};
+  turnLeftPID(90);
+  while(1){};
   
   //delay(1000);
   //turnLeft(90);
