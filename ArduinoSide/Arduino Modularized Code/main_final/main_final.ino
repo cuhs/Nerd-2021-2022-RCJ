@@ -53,8 +53,8 @@ void loop() {
     //euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     //Serial.println(euler.x());
 
-  turnLeftPID(90);
-  while(1){};
+  //turnLeftPID(90);
+  //while(1){};
   
   //delay(1000);
   //turnLeft(90);
@@ -70,11 +70,11 @@ void loop() {
   //delay(10000);
 
   //ports[RIGHT].setMotorSpeed(60);
-  //ports[LEFT].setMotorSpeed(-60);
+  //ports[LEFT].setMotorSpeed(60);
 
     //triangulate(getSensorReadings(0),getSensorReadings(1));
 
-  /*  
+  
   if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
@@ -111,6 +111,6 @@ void loop() {
        Serial.println("hmmm wut is this");
     
     }
-  }*/
+  }
 
 }

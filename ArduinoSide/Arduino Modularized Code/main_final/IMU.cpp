@@ -42,7 +42,7 @@ void reset() {
 
 void turnRight(int deg)
 {
-  int speed = 250;
+  int speed = 220;
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
   deg = deg-7;
@@ -61,7 +61,7 @@ void turnRight(int deg)
 
 void turnLeft(int deg)
 {
- int speed = 250;
+ int speed = 220;
  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
  deg = deg-7;

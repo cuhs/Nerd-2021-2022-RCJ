@@ -60,6 +60,10 @@ while nextTile is not None or util.tile != util.startTile:
             print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
         util.pathLen += 1
 
+        #ATTENTION ATTENTION ATTENTION
+        #PUT VIDEO INFORMATION HERE!!!!!!!!!!!!!!!!!!!!!!!!!!
+        #ATTENTION ATTENTION ATTENTION
+
     # print out path to only the next tile, reset length
     if config.debug:
         print("\tPath To Tile: " + str(IO.sData[util.pathLen:]))
