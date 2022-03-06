@@ -119,10 +119,10 @@ def setupSerial():
 
 # request and receive wall positions through serial
 def getSerialData():
-    walls = np.zeros(5)
+    walls = np.zeros(10)
 
     receive_message = ser.read()
-    walls[3] = receive_message.decode("ascii", "ignore")
+    walls[0] = receive_message.decode("ascii", "ignore")
     time.sleep(0.1)
 
     receive_message = ser.read()
@@ -130,8 +130,12 @@ def getSerialData():
     time.sleep(0.1)
 
     receive_message = ser.read()
-    walls[0] = receive_message.decode("ascii", "ignore")
+    walls[3] = receive_message.decode("ascii", "ignore")
     time.sleep(0.1)
+
+    walls[2] = 0
+    for i in range(4, 10):
+        walls[i] = 0
     return walls
 
 def hasSerialMessage():

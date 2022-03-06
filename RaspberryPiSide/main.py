@@ -1,16 +1,14 @@
 import BFS
 import display
 import cv2
-import detection2
 import time
+import detection2
 from BFS import util
 from util import IO
 from util import config
 
 print("\nRaspberryPiSide START")
 BFS.init()
-
-victim = detection2.detection()
 
 print("Setup Finished\n\nrunning...")
 
@@ -53,16 +51,39 @@ while nextTile is not None or util.tile != util.startTile:
     # driving instructions calculated, add terminating character and send
     IO.sData += config.serialMessages[6]
 
+    # send beginning char "{"
+    IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], util.pathLen == len(IO.sData) - 1)
+    if config.debug:
+        print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
+    util.pathLen += 1
+
     # send driving instructions one at a time
     while util.pathLen < len(IO.sData):
-        IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], util.pathLen == len(IO.sData) - 1)
+        IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2], util.pathLen == len(IO.sData) - 2)
         if config.debug:
-            print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
-        util.pathLen += 1
+            print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
+        util.pathLen += 2
 
-        #ATTENTION ATTENTION ATTENTION
-        #PUT VIDEO INFORMATION HERE!!!!!!!!!!!!!!!!!!!!!!!!!!
-        #ATTENTION ATTENTION ATTENTION
+        # camera stuff
+        if config.inputMode == 2:
+            while (not IO.hasSerialMessage()) and IO.cap1.isOpened():  # and IO.cap2.isOpened
+                ret1, frame1 = IO.cap1.read()
+                # ret2, frame2 = IO. cap2.read()
+
+                if ret1 > 0:  # and ret2 > 0
+                    detection2.detection().KNN_finish(detection2.detection().letterDetect(frame1, "frame1"), 10000000)
+                    # detection2.detection().KNN_finish(detection2.detection().letterDetect(frame2, "frame2"), 10000000)
+
+                if config.debug:
+                    cv2.imshow("frame1", frame1)
+                    # cv2.imshow("frame2", frame2)
+
+
+    # send ending char "}"
+    IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], util.pathLen == len(IO.sData) - 1)
+    if config.debug:
+        print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
+    util.pathLen += 1
 
     # print out path to only the next tile, reset length
     if config.debug:
@@ -112,4 +133,8 @@ while nextTile is not None or util.tile != util.startTile:
 end = time.time()
 print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - start) * 1000, '.2f') + "ms ")
 display.show(-1, util.maze, 0)
+
+if config.inputMode == 2:
+    IO.cap1.release()
+    # IO.cap2.release()
 cv2.destroyAllWindows()

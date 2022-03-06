@@ -55,12 +55,12 @@ def init():
     # camera setup
     if config.inputMode == 2:
         IO.cap1 = cv2.VideoCapture(0)
-        IO.cap2 = cv2.VideoCapture(1)
+        # IO.cap2 = cv2.VideoCapture(1)
 
         IO.cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
         IO.cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
-        IO.cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-        IO.cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
+        # IO.cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+        # IO.cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
 
 
 # return next tile to visit recursively
