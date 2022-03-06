@@ -86,25 +86,30 @@ void loop() {
         Serial.println("{"); break;
       case 'F': 
         Serial.println("forward!"); 
-        goForwardTilesPID(1);
-        alignFront();
+        //goForwardTilesPID(1);
+        //alignFront();
+        delay(5000);
         break; 
       case 'L':
         Serial.println("left!");
-        turnLeft(90);
+        //turnLeft(90);
+        delay(5000);
         break; 
         //turn left
       case 'R':
        Serial.println("right!"); 
-       turnRight(90);
+       //turnRight(90);
+       delay(5000);
        break; 
        //turn right
       case ';':
         Serial.println(";"); 
+        Serial2.write(';');
+
         break;
       case '}': 
         Serial.println("}"); 
-        sendWallValues(getSensorReadings(0),getSensorReadings(1),getSensorReadings(2));
+        //sendWallValues(getSensorReadings(0),getSensorReadings(1),getSensorReadings(2));
         break;
         //sendwall values 
       default:
