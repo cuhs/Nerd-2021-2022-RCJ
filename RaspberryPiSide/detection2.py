@@ -81,7 +81,7 @@ class detection():
 
         return result
 
-    def colorDetect(self, frame, hsv_lower, hsv_upper):
+    def colorDetectHSV(self, frame, hsv_lower, hsv_upper):
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -105,6 +105,21 @@ class detection():
                         print("Green")
                         packages = 0
                         
+    def colorDetectRatio(self,frame):
+        b = 0
+        g = 0
+        r = 0
+        
+        for i in frame:
+            #print(i)
+            b += i[0]
+            g += i[1]
+            r += i[2]
+        print(b,g,r)
+            
+        
+        
+                        
 # hsv_lower = {
 #     0: (0,0,0)
 #     #1: (),
@@ -115,14 +130,14 @@ class detection():
 #     0: (40,40,40)
 #     #1: (),
 #     #2: ()
-#     }
-# main = detection()
+#    }
+main = detection()
 #
-# cap1 = cv2.VideoCapture(0)
+cap1 = cv2.VideoCapture(0)
 # cap2 = cv2.VideoCapture(1)
 #
-# cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-# cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
+cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
 # cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 # cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
 
@@ -130,12 +145,13 @@ class detection():
 # correct = 0
 # start = 0
 
-# while cap1.isOpened() and cap2.isOpened():
+while cap1.isOpened(): #and cap2.isOpened():
 #
-#     ret1,frame1 = cap1.read()
+    ret1,frame1 = cap1.read()
 #     ret2,frame2 = cap2.read()
                         
-    # if ret1 > 0 and ret2 > 0:
+    if ret1 > 0: #and ret2 > 0:
+        main.colorDetectRatio(frame1)
         
         #main.colorDetect(frame1,hsv_lower,hsv_upper)
         # main.colorDetect(frame2,hsv_lower,hsv_upper)
@@ -149,15 +165,15 @@ class detection():
         #print("Camera1 " + result1)
         #print("Camera2 " + result2)
             
-        # if main.Debug:
+        #if main.Debug:
         #
-        #     cv2.imshow("frame1",frame1)
+        cv2.imshow("frame1",frame1)
         #     cv2.imshow("frame2",frame2)
 
             
-#     if cv2.waitKey(1) == ord('q'):
-#         break
+        if cv2.waitKey(1) == ord('q'):
+            break
 #
-# cap1.release()
+cap1.release()
 # cap2.release()
-# cv2.destroyAllWindows()
+cv2.destroyAllWindows()
