@@ -131,13 +131,13 @@ class detection():
 #     #1: (),
 #     #2: ()
 #    }
-main = detection()
+#main = detection()
 #
-cap1 = cv2.VideoCapture(0)
+#cap1 = cv2.VideoCapture(0)
 # cap2 = cv2.VideoCapture(1)
 #
-cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
+#cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+#cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
 # cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 # cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
 
@@ -145,13 +145,13 @@ cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
 # correct = 0
 # start = 0
 
-while cap1.isOpened(): #and cap2.isOpened():
+#while cap1.isOpened(): #and cap2.isOpened():
 #
-    ret1,frame1 = cap1.read()
+#    ret1,frame1 = cap1.read()
 #     ret2,frame2 = cap2.read()
                         
-    if ret1 > 0: #and ret2 > 0:
-        main.colorDetectRatio(frame1)
+#    if ret1 > 0: #and ret2 > 0:
+#        main.colorDetectRatio(frame1)
         
         #main.colorDetect(frame1,hsv_lower,hsv_upper)
         # main.colorDetect(frame2,hsv_lower,hsv_upper)
@@ -167,13 +167,13 @@ while cap1.isOpened(): #and cap2.isOpened():
             
         #if main.Debug:
         #
-        cv2.imshow("frame1",frame1)
+        #cv2.imshow("frame1",frame1)
         #     cv2.imshow("frame2",frame2)
 
             
-        if cv2.waitKey(1) == ord('q'):
-            break
+#        if cv2.waitKey(1) == ord('q'):
+#            break
 #
-cap1.release()
+#cap1.release()
 # cap2.release()
-cv2.destroyAllWindows()
+#cv2.destroyAllWindows()
