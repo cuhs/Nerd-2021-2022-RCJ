@@ -143,14 +143,14 @@ void turnAbs(char t) {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   delay(10);
 
-  float dir[4] = {0, 89.87, 180.06, 270.38};
+  float dir[4] = {0, 90, 180, 270};
   int range[4][2] = {{350, 10}, {80, 100}, {170, 190}, {260, 280}};
   char dirChar[4] = {'n', 'e', 's', 'w'};
 
   int targetDir;
   int currDir;
 
-  int speed = 200;
+  int speed = 150;
 
   for (int i = 0; i < 4; i++) {
 
@@ -165,7 +165,7 @@ void turnAbs(char t) {
     currDir == 3 ? targetDir = 0 : targetDir = currDir + 1;
 
     if (targetDir == 0) {
-      while (!(euler.x() > 360 - 1.25 && euler.x() < 1.25)) {
+      while (!((euler.x() > 360 - 1.25 &&  euler.x() <360) || (euler.x() < 1.25 && euler.x() > 0))) {
         euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
         ports[RIGHT].setMotorSpeed(-speed);
         ports[LEFT].setMotorSpeed(speed);
