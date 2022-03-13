@@ -16,7 +16,7 @@ void victimInterrupt(){
 }
 
 void setup() {
-  delay(1);
+  delay(100);
   Serial.begin(9600);
   Serial2.begin(9600);
   Wire.begin();
@@ -55,10 +55,10 @@ void loop() {
      Serial.println(i);
      delay(100);
   }*/
-    imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    //imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
-    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  Serial.println(euler.x());
+    //euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  //Serial.println(euler.x());
 
   //turnLeftPID(90);
   //while(1){};
@@ -70,18 +70,23 @@ void loop() {
   //goForwardTiles(1);
   //delay(5000);
 
-  //goForwardTilesPID(1);
-  //delay(5000);
+  goForwardTilesPID(1);
+  delay(5000);
 
   //goForwardTiles(1);
   //delay(10000);
-
-  ports[RIGHT].setMotorSpeed(220);
-  ports[LEFT].setMotorSpeed(-220);
+  //ports[RIGHT].setMotorSpeed(220);
+  //ports[LEFT].setMotorSpeed(-220);
 
   //triangulate(getSensorReadings(0),getSensorReadings(1));
 
   
+    //turnAbs('r');
+    //delay(2500);
+    //turnAbs('l');
+    //delay(2500);
+
+  /*
   if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
