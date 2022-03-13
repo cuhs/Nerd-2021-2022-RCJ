@@ -136,11 +136,12 @@ void turnLeftPID(int deg)
   reset();
 }
 
-/*void turnAbs(char t) {
+void turnAbs(char t) {
 
   t = tolower(t);
 
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  delay(10);
 
   float dir[4] = {0, 89.87, 180.06, 270.38};
   int range[4][2] = {{350, 10}, {80, 100}, {170, 190}, {260, 280}};
@@ -149,7 +150,7 @@ void turnLeftPID(int deg)
   int targetDir;
   int currDir;
 
-  int speed = 220;
+  int speed = 200;
 
   for (int i = 0; i < 4; i++) {
 
@@ -160,24 +161,49 @@ void turnLeftPID(int deg)
   }
 
   if (t == 'r') {
+    Serial.print("turning right");
     currDir == 3 ? targetDir = 0 : targetDir = currDir + 1;
 
-    while (euler.x() < dir[targetDir] || euler.x() > 350) {
-      euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-      ports[RIGHT].setMotorSpeed(-speed);
-      ports[LEFT].setMotorSpeed(speed);
-      Serial.println(euler.x());
+    if (targetDir == 0) {
+      while (!(euler.x() > 360 - 1.25 && euler.x() < 1.25)) {
+        euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+        ports[RIGHT].setMotorSpeed(-speed);
+        ports[LEFT].setMotorSpeed(speed);
+        Serial.println(euler.x());
+      }
+    }
+
+    else {
+
+      while (!(euler.x() > dir[targetDir] - 1.25 && euler.x() < dir[targetDir] + 1.25)) {
+        euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+        ports[RIGHT].setMotorSpeed(-speed);
+        ports[LEFT].setMotorSpeed(speed);
+        Serial.println(euler.x());
+      }
     }
   }
 
   else if (t == 'l') {
+    Serial.println("turning left");
     currDir == 0 ? targetDir = 3 : targetDir = currDir - 1;
 
-    while (euler.x() > 360 - deg || euler.x() < 15) {
-      euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-      ports[RIGHT].setMotorSpeed(speed);
-      ports[LEFT].setMotorSpeed(-speed);
-      Serial.println(euler.x());
+    if (targetDir == 0) {
+      while (!((euler.x() > 360 - 1.25 &&  euler.x() <360) || (euler.x() < 1.25 && euler.x() > 0))) {
+        euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+        ports[RIGHT].setMotorSpeed(speed);
+        ports[LEFT].setMotorSpeed(-speed);
+        Serial.println(euler.x());
+      }
+    }
+    else {
+
+      while (!(euler.x() > dir[targetDir] - 1.25 && euler.x() < dir[targetDir] + 1.25)) {
+        euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+        ports[RIGHT].setMotorSpeed(speed);
+        ports[LEFT].setMotorSpeed(-speed);
+        Serial.println(euler.x());
+      }
     }
   }
 
@@ -187,4 +213,4 @@ void turnLeftPID(int deg)
 
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
-}*/
+}
