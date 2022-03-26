@@ -73,13 +73,13 @@ void loop() {
 
     //triangulate(getSensorReadings(0),getSensorReadings(1));
 
-    //turnAbs('r');
-    //delay(2500);
-    //turnAbs('l');
-    //delay(2500);
+    turnAbs('r');
+    delay(2500);
+    turnAbs('l');
+    delay(2500);
 
   
-  if(Serial2.available()){
+  /*if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
@@ -119,6 +119,6 @@ void loop() {
        Serial.println("hmmm wut is this");
     
     }
-  }
+  }*/
 
 }

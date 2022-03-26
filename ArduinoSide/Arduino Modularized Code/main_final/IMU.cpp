@@ -149,6 +149,7 @@ void turnAbs(char t) {
 
   int targetDir;
   int currDir;
+  const int errorRoom = 1.25;
 
   int speed = 150;
 
@@ -162,10 +163,10 @@ void turnAbs(char t) {
 
   if (t == 'r') {
     Serial.print("turning right");
-    targetDir=currDir+1%4;
+    currDir == 3 ? targetDir = 0 : targetDir = currDir + 1;
 
     if (targetDir == 0) {
-      while (!((euler.x() > 360 - 1.25 &&  euler.x() <360) || (euler.x() < 1.25 && euler.x() > 0))) {
+      while (!((euler.x() > 360 - errorRoom &&  euler.x() <360) || (euler.x() < errorRoom && euler.x() > 0))) {
         euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
         ports[RIGHT].setMotorSpeed(-speed);
         ports[LEFT].setMotorSpeed(speed);
@@ -175,7 +176,7 @@ void turnAbs(char t) {
 
     else {
 
-      while (!(euler.x() > dir[targetDir] - 1.25 && euler.x() < dir[targetDir] + 1.25)) {
+      while (!(euler.x() > dir[targetDir] - errorRoom && euler.x() < dir[targetDir] + errorRoom)) {
         euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
         ports[RIGHT].setMotorSpeed(-speed);
         ports[LEFT].setMotorSpeed(speed);
@@ -186,10 +187,10 @@ void turnAbs(char t) {
 
   else if (t == 'l') {
     Serial.println("turning left");
-    targetDir=currDir+3%4;
+    currDir == 0 ? targetDir = 3 : targetDir = currDir - 1;
 
     if (targetDir == 0) {
-      while (!((euler.x() > 360 - 1.25 &&  euler.x() <360) || (euler.x() < 1.25 && euler.x() > 0))) {
+      while (!((euler.x() > 360 - errorRoom &&  euler.x() <360) || (euler.x() < errorRoom && euler.x() > 0))) {
         euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
         ports[RIGHT].setMotorSpeed(speed);
         ports[LEFT].setMotorSpeed(-speed);
@@ -198,7 +199,7 @@ void turnAbs(char t) {
     }
     else {
 
-      while (!(euler.x() > dir[targetDir] - 1.25 && euler.x() < dir[targetDir] + 1.25)) {
+      while (!(euler.x() > dir[targetDir] - errorRoom && euler.x() < dir[targetDir] + errorRoom)) {
         euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
         ports[RIGHT].setMotorSpeed(speed);
         ports[LEFT].setMotorSpeed(-speed);
