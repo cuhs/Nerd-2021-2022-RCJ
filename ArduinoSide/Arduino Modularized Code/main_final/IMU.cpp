@@ -162,7 +162,7 @@ void turnAbs(char t) {
 
   if (t == 'r') {
     Serial.print("turning right");
-    currDir == 3 ? targetDir = 0 : targetDir = currDir + 1;
+    targetDir=currDir+1%4;
 
     if (targetDir == 0) {
       while (!((euler.x() > 360 - 1.25 &&  euler.x() <360) || (euler.x() < 1.25 && euler.x() > 0))) {
@@ -186,7 +186,7 @@ void turnAbs(char t) {
 
   else if (t == 'l') {
     Serial.println("turning left");
-    currDir == 0 ? targetDir = 3 : targetDir = currDir - 1;
+    targetDir=currDir+3%4;
 
     if (targetDir == 0) {
       while (!((euler.x() > 360 - 1.25 &&  euler.x() <360) || (euler.x() < 1.25 && euler.x() > 0))) {
