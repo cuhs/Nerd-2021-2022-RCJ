@@ -85,12 +85,14 @@ void turnRightPID(int deg)
   double integral = 0;
   int fix = 0;
 
-  deg = deg - 7;
+  deg = deg-1;
 
   while (euler.x() < deg || euler.x() > 350) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-
-    fix = (int)(PID(deg - euler.x(), pastError, integral, 1, 0, 0));
+    int x = euler.x();
+    if(x>350)
+      x=euler.x()-360;
+    fix = (int)(PID(deg - x, pastError, integral, 1, 0, 0));
     Serial.println("Deg: " + String(deg));
     Serial.println("Cur: " + String(euler.x()));
     Serial.println("Err: " + String(deg - euler.x()));
@@ -99,8 +101,8 @@ void turnRightPID(int deg)
     Serial.println("Rmt: " + String(-(60 + fix)));
     Serial.println();
 
-    ports[RIGHT].setMotorSpeed(-60 - fix);
-    ports[LEFT].setMotorSpeed(60 + fix);
+    ports[RIGHT].setMotorSpeed(-100 - fix);
+    ports[LEFT].setMotorSpeed(100 + fix);
 
     //Serial.println(euler.x());
   }
@@ -131,19 +133,18 @@ void turnLeftPID(int deg)
   double integral = 0;
   int fix = 0;
 
-  deg = deg - 7;
+  deg = deg;
 
   while (euler.x() > 360 - deg || euler.x() < 15) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
-    fix = (int)(PID(abs(euler.x() - (360 - deg)), pastError, integral,
-1, 0, 0));
+    fix = (int)(PID(abs(euler.x() - (360 - deg)), pastError, integral, 1, 0, 0));
     Serial.println(fix);
     Serial.print("Euler: ");
     Serial.println(euler.x());
 
-    ports[RIGHT].setMotorSpeed(60 + fix);
-    ports[LEFT].setMotorSpeed(-60 - fix);
+    ports[RIGHT].setMotorSpeed(100 + fix);
+    ports[LEFT].setMotorSpeed(-100 - fix);
     //Serial.println(euler.x());
   }
   ports[LEFT].setMotorSpeed(0);

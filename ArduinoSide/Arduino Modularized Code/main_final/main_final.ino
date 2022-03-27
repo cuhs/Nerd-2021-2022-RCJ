@@ -73,10 +73,12 @@ void loop() {
 
     //triangulate(getSensorReadings(0),getSensorReadings(1));
 
-    turnAbs('r');
+    //turnAbs('r');
+    turnRightPID(90);
     delay(2500);
-    turnAbs('l');
-    delay(2500);
+    //turnAbs('l');
+    //delay(2500);
+    //turnRightPID(90);
 
   
   /*if(Serial2.available()){
