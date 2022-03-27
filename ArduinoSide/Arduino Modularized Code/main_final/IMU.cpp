@@ -108,8 +108,18 @@ void turnRightPID(int deg)
   ports[RIGHT].setMotorSpeed(0);
   reset();
 }
-void turbRightPID(char dir){
+void turnRightPID(char t){
+  t = tolower(t);
 
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  delay(10);
+
+  float dir[4] = {0, 90, 180, 270};
+  int range[4][2] = {{350, 10}, {80, 100}, {170, 190}, {260, 280}};
+  char dirChar[4] = {'n', 'e', 's', 'w'};
+  double pastError = 0;
+  double integral = 0;
+  int fix = 0;
   
 }
 
