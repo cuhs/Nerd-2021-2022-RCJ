@@ -76,9 +76,9 @@ while nextTile is not None or util.tile != util.startTile:
                     
                     print(result1)
 
-                if config.debug:
-                    # cv2.imshow("frame1", frame1)
-                    # cv2.imshow("frame2", frame2)
+                #if config.debug:
+                    #cv2.imshow("frame1", frame1)
+                    #cv2.imshow("frame2", frame2)
             
             print("aaa" + IO.ser.read().decode("ascii", "ignore"))
         util.pathLen += 2
