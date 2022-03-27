@@ -58,14 +58,14 @@ while nextTile is not None or util.tile != util.startTile:
     util.pathLen += 1
 
     # send driving instructions one at a time
-    while util.pathLen < len(IO.sData):
+    while util.pathLen < len(IO.sData) - 1:
         IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2], util.pathLen == len(IO.sData) - 2)
         if config.debug:
             print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
-        util.pathLen += 2
-
+        
         # camera stuff
         if config.inputMode == 2:
+            print("checkpoint1")
             while (not IO.hasSerialMessage()) and IO.cap1.isOpened():  # and IO.cap2.isOpened
                 ret1, frame1 = IO.cap1.read()
                 # ret2, frame2 = IO. cap2.read()
@@ -79,8 +79,11 @@ while nextTile is not None or util.tile != util.startTile:
                         IO.sendData(config.inputMode, result1)
 
                 if config.debug:
-                    cv2.imshow("frame1", frame1)
+                    # cv2.imshow("frame1", frame1)
                     # cv2.imshow("frame2", frame2)
+            
+            print("aaa" + IO.ser.read().decode("ascii", "ignore"))
+        util.pathLen += 2
 
 
     # send ending char "}"

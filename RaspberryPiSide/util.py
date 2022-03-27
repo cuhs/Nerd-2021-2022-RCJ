@@ -46,6 +46,19 @@ pathLen = None
 #  home/starting tile
 startTile = int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))
 
+#Color Ranges
+hsv_lower = {
+    0: (150,230,70),
+    1: (50,40,85),
+    2: (5,95,160)
+    }
+
+hsv_upper = {
+     0: (179,255,205),
+     1: (90,105,130),
+     2: (50,175,195)
+     }
+
 # adjust which position is facing true north
 # getting sensorData[N] will get north,
 # this adjusts it to true north, and all other directions

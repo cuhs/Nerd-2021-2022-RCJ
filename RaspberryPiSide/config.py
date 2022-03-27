@@ -1,8 +1,8 @@
 # config file, because some settings might differ
 # while debugging, or on different systems
 
-mazeSideLen = 10  # must be even
-inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
+mazeSideLen = 20  # must be even
+inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) + 10  # buffer of 10
 
 wallPercentage = 50  # percentage of tiles that should be walls for random generation of maze
@@ -12,13 +12,13 @@ genFromImage = False  # if false, will generate random maze
 redoLastMaze = False  # this setting allows you to rerun the last maze, maybe if a bug or problem occurred in it
 
 showDisplay = True  # 0 no display, 1 is display
-displayRate = 1  # in milliseconds, 0 for until click
+displayRate = 0  # in milliseconds, 0 for until click
 displaySize = 500  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
 debug = True  # print statements
 
-port = "/dev/ttyAMA0"  # serial port path
+port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0
 rate = 9600  # serial port rate
 
 # serial messages in order for:

@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 import KNN
+import util
+import IO
 
 class detection():
 
@@ -85,7 +87,7 @@ class detection():
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        for i in range(1):
+        for i in range(3):
             mask = cv2.inRange(hsv, hsv_lower[i], hsv_upper[i])
             # cv2.imshow("mask",mask)
 
@@ -98,12 +100,15 @@ class detection():
                 if cv2.contourArea(contours) > 50:
 
                     if i == 0 or i == 2:
-                        print("Red/Yellow")
+                        return("R")
                         packages = 1
 
-                    if i == 1:
-                        print("Green")
+                    elif i == 1:
+                        return("G")
                         packages = 0
+                    else:
+                        return None
+                    
                         
     def colorDetectRatio(self,frame):
         b = 0
@@ -116,64 +121,81 @@ class detection():
             g += i[1]
             r += i[2]
         print(b,g,r)
+        
+    def rightDetectFinal(self):
+        if(cap1.isOpened()):
+            ret, frame = cap1.read()
+            if(ret>0):
+                return(self.KNN_finish(self.letterDetect(frame, "frame1"), 10000000),self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper))
+        
+        
+    def leftDetectFinal(self):
+        if(cap2.isOpened()):
+            ret, frame = cap2.read()
+            if(ret>0):
+                return(self.KNN_finish(self.letterDetect(frame, "frame2"), 10000000),self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper))
             
         
         
-                        
-# hsv_lower = {
-#     0: (0,0,0)
-#     #1: (),
-#     #2: ()
-#     }
-#
-# hsv_upper = {
-#     0: (40,40,40)
-#     #1: (),
-#     #2: ()
-#    }
-main = detection()
-#
-cap1 = cv2.VideoCapture(0)
-# cap2 = cv2.VideoCapture(1)
-#
-cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
-# cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-# cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
+'''                       
+hsv_lower = {
+    0: (150,230,70),
+    1: (50,40,85),
+    2: (5,95,160)
+    }
 
-# total = 0
-# correct = 0
-# start = 0
+hsv_upper = {
+     0: (179,255,205),
+     1: (90,105,130),
+     2: (50,175,195)
+     }
+main = detection()
+
+cap1 = cv2.VideoCapture(0)
+cap2 = cv2.VideoCapture(1)
+
+cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+
+total = 0
+correct = 0
+start = 0
+
+while True:
+    print(main.rightDetectFinal())
+    print(main.leftDetectFinal())
 
 while cap1.isOpened(): #and cap2.isOpened():
-#
+
     ret1,frame1 = cap1.read()
-#     ret2,frame2 = cap2.read()
+    ret2,frame2 = cap2.read()
                         
     if ret1 > 0: #and ret2 > 0:
-        main.colorDetectRatio(frame1)
+        #main.colorDetectRatio(frame1)
         
-        #main.colorDetect(frame1,hsv_lower,hsv_upper)
-        # main.colorDetect(frame2,hsv_lower,hsv_upper)
+        print(str(main.colorDetectHSV(frame1,hsv_lower,hsv_upper)))
+        print(str(main.colorDetectHSV(frame2,hsv_lower,hsv_upper)))
 
-        #imgOutput1 = main.letterDetect(frame1,"frame1")
-        #imgOutput2 = main.letterDetect(frame2, "frame2")
+        imgOutput1 = main.letterDetect(frame1,"frame1")
+        imgOutput2 = main.letterDetect(frame2, "frame2")
         
-        #result1 = main.KNN_finish(imgOutput1,10000000)
-        #result2 = main.KNN_finish(imgOutput2,10000000)
+        result1 = main.KNN_finish(imgOutput1,10000000)
+        result2 = main.KNN_finish(imgOutput2,10000000)
             
-        #print("Camera1 " + result1)
-        #print("Camera2 " + result2)
+        print("Camera1 " + str(result1))
+        print("Camera2 " + str(result2))
             
-        #if main.Debug:
-        #
-        cv2.imshow("frame1",frame1)
-        #     cv2.imshow("frame2",frame2)
+        if main.Debug:
+        
+            cv2.imshow("frame1",frame1)
+            cv2.imshow("frame2",frame2)
 
             
         if cv2.waitKey(1) == ord('q'):
             break
-#
+
 cap1.release()
-# cap2.release()
-cv2.destroyAllWindows()
+cap2.release()
+cv2.destroyAllWindows()'''
