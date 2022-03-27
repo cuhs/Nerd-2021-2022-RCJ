@@ -14,13 +14,13 @@ Adafruit_BNO055 bno;
 
 
 void initIMU() {
-  pinMode(resetPinIMU, OUTPUT);
-  digitalWrite(resetPinIMU, HIGH);
-
+//  pinMode(resetPinIMU, OUTPUT);
+//  digitalWrite(resetPinIMU, HIGH);
+//  delay(
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_IMUPLUS))
   {
     /* There was a problem detecting the BNO055 ... check your connections */
-    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    Serial.print("Ooops, no BNO055 detected .pp.. Check your wiring or I2C ADDR!");
     while (1);
   }
 
@@ -31,6 +31,7 @@ void initIMU() {
 
 void reset() {
   Serial.println("Resetting.");
+  digitalWrite(resetPinIMU, HIGH);
   digitalWrite(resetPinIMU, LOW);
 
   delayMicroseconds(30);
@@ -110,20 +111,7 @@ void turnRightPID(int deg)
   ports[RIGHT].setMotorSpeed(0);
   reset();
 }
-void turnRightPID(char t){
-  t = tolower(t);
 
-  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  delay(10);
-
-  float dir[4] = {0, 90, 180, 270};
-  int range[4][2] = {{350, 10}, {80, 100}, {170, 190}, {260, 280}};
-  char dirChar[4] = {'n', 'e', 's', 'w'};
-  double pastError = 0;
-  double integral = 0;
-  int fix = 0;
-  
-}
 
 void turnLeftPID(int deg)
 {
@@ -234,4 +222,39 @@ dir[targetDir] + errorRoom)) {
 
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
+}
+
+void turnAbs(int degree){
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
+  int dir[4] = {0, 90, 180, 270};
+  int fix;
+  int curDir=euler.x();
+  int targetDir=degree;
+  double integral=0.0;
+  int error=targetDir-curDir;
+  double pastError = 0;
+  while (abs(error)>2) {
+    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    curDir=euler.x();
+    error = targetDir-curDir;
+    if(error>180)
+      error = 360-error;
+    else if(error<-180)
+      error=360+error;
+    fix = (int)(PID(error, pastError, integral, 1.6667, .005, 0));
+    if(fix>0)
+      fix+=80;
+    else 
+      fix-=80;
+    Serial.print(fix);
+    Serial.print("\tEuler: ");
+    Serial.print(euler.x());
+    Serial.print("\terror: ");
+    Serial.println(error);
+    ports[RIGHT].setMotorSpeed(-fix);
+    ports[LEFT].setMotorSpeed(fix);
+    //Serial.println(euler.x());
+  }
+  ports[RIGHT].setMotorSpeed(0);
+  ports[LEFT].setMotorSpeed(0);
 }

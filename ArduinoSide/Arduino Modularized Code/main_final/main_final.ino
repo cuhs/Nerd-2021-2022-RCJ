@@ -74,8 +74,14 @@ void loop() {
     //triangulate(getSensorReadings(0),getSensorReadings(1));
 
     //turnAbs('r');
-    turnRightPID(90);
+    turnAbs((int)90);
+    Serial.println("Finish 90 turn");
     delay(2500);
+    turnAbs((int)0);
+    Serial.println("Finish 0 turn");
+    delay(2500);
+    //turnLeftPID(90);
+    //delay(2500);
     //turnAbs('l');
     //delay(2500);
     //turnRightPID(90);
