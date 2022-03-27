@@ -100,40 +100,38 @@ class detection():
                 if cv2.contourArea(contours) > 50:
 
                     if i == 0 or i == 2:
-                        return("R")
+                        return "R"
                         packages = 1
 
                     elif i == 1:
-                        return("G")
+                        return "G"
                         packages = 0
                     else:
                         return None
-                    
-                        
+
     def colorDetectRatio(self,frame):
         b = 0
         g = 0
         r = 0
         
         for i in frame:
-            #print(i)
+            # print(i)
             b += i[0]
             g += i[1]
             r += i[2]
-        print(b,g,r)
+        print(b, g, r)
         
     def rightDetectFinal(self):
-        if(cap1.isOpened()):
-            ret, frame = cap1.read()
-            if(ret>0):
-                return(self.KNN_finish(self.letterDetect(frame, "frame1"), 10000000),self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper))
-        
+        if IO.cap1.isOpened():
+            ret, frame = IO.cap1.read()
+            if ret > 0:
+                return self.KNN_finish(self.letterDetect(frame, "frame1"), 10000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
         
     def leftDetectFinal(self):
-        if(cap2.isOpened()):
-            ret, frame = cap2.read()
-            if(ret>0):
-                return(self.KNN_finish(self.letterDetect(frame, "frame2"), 10000000),self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper))
+        if IO.cap2.isOpened():
+            ret, frame = IO.cap2.read()
+            if ret > 0:
+                return self.KNN_finish(self.letterDetect(frame, "frame2"), 10000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
             
         
         

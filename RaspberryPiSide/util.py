@@ -43,10 +43,10 @@ parent = None
 path = None
 pathLen = None
 
-#  home/starting tile
+# home/starting tile
 startTile = int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))
 
-#Color Ranges
+# hsv ranges for color victims
 hsv_lower = {
     0: (150,230,70),
     1: (50,40,85),

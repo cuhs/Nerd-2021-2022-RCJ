@@ -65,24 +65,32 @@ while nextTile is not None or util.tile != util.startTile:
         
         # camera stuff
         if config.inputMode == 2:
-            print("checkpoint1")
+            if config.debug:
+                print("\t\t\tSTARTING CAMERA")
+
             while (not IO.hasSerialMessage()) and IO.cap1.isOpened():  # and IO.cap2.isOpened
-                ret1, frame1 = IO.cap1.read()
-                # ret2, frame2 = IO. cap2.read()
 
-                if ret1 > 0:  # and ret2 > 0
-                    result1 = detection2.detection().KNN_finish(detection2.detection().letterDetect(frame1, "frame1"), 10000000)
-                    # detection2.detection().KNN_finish(detection2.detection().letterDetect(frame2, "frame2"), 10000000)
-                    
-                    if result1 is not None and util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] is None:
-                        util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = result1
-                        IO.sendData(config.inputMode, result1)
+                # check if no victim already found at wall
+                if util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] is None:
+                    # get letter and color victims
+                    ltrVictim, colVictim = detection2.detection().rightDetectFinal()
 
-                if config.debug:
-                    # cv2.imshow("frame1", frame1)
-                    # cv2.imshow("frame2", frame2)
-            
-            print("aaa" + IO.ser.read().decode("ascii", "ignore"))
+                    # send and record letter victim
+                    if ltrVictim is not None:
+                        print("\t\t\t\tLETTER VICTIM FOUND: " + ltrVictim)
+                        util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ltrVictim
+                        IO.sendData(config.inputMode, ltrVictim)
+                        break
+
+                    # send and record color victim
+                    elif colVictim is not None:
+                        print("\t\t\t\tCOLOR VICTIM FOUND: " + colVictim)
+                        util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ltrVictim
+                        IO.sendData(config.inputMode, ltrVictim)
+                        break
+
+            if config.debug:
+                print("\t\t\tCAMERA OVER")
         util.pathLen += 2
 
 
