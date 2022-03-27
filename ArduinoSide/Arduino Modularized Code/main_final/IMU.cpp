@@ -108,6 +108,10 @@ void turnRightPID(int deg)
   ports[RIGHT].setMotorSpeed(0);
   reset();
 }
+void turbRightPID(char dir){
+
+  
+}
 
 void turnLeftPID(int deg)
 {
@@ -122,7 +126,8 @@ void turnLeftPID(int deg)
   while (euler.x() > 360 - deg || euler.x() < 15) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
-    fix = (int)(PID(abs(euler.x() - (360 - deg)), pastError, integral, 1, 0, 0));
+    fix = (int)(PID(abs(euler.x() - (360 - deg)), pastError, integral,
+1, 0, 0));
     Serial.println(fix);
     Serial.print("Euler: ");
     Serial.println(euler.x());
@@ -166,7 +171,8 @@ void turnAbs(char t) {
     currDir == 3 ? targetDir = 0 : targetDir = currDir + 1;
 
     if (targetDir == 0) {
-      while (!((euler.x() > 360 - errorRoom &&  euler.x() <360) || (euler.x() < errorRoom && euler.x() > 0))) {
+      while (!((euler.x() > 360 - errorRoom &&  euler.x() <360) ||
+(euler.x() < errorRoom && euler.x() > 0))) {
         euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
         ports[RIGHT].setMotorSpeed(-speed);
         ports[LEFT].setMotorSpeed(speed);
@@ -176,7 +182,8 @@ void turnAbs(char t) {
 
     else {
 
-      while (!(euler.x() > dir[targetDir] - errorRoom && euler.x() < dir[targetDir] + errorRoom)) {
+      while (!(euler.x() > dir[targetDir] - errorRoom && euler.x() <
+dir[targetDir] + errorRoom)) {
         euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
         ports[RIGHT].setMotorSpeed(-speed);
         ports[LEFT].setMotorSpeed(speed);
@@ -190,7 +197,8 @@ void turnAbs(char t) {
     currDir == 0 ? targetDir = 3 : targetDir = currDir - 1;
 
     if (targetDir == 0) {
-      while (!((euler.x() > 360 - errorRoom &&  euler.x() <360) || (euler.x() < errorRoom && euler.x() > 0))) {
+      while (!((euler.x() > 360 - errorRoom &&  euler.x() <360) ||
+(euler.x() < errorRoom && euler.x() > 0))) {
         euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
         ports[RIGHT].setMotorSpeed(speed);
         ports[LEFT].setMotorSpeed(-speed);
@@ -199,7 +207,8 @@ void turnAbs(char t) {
     }
     else {
 
-      while (!(euler.x() > dir[targetDir] - errorRoom && euler.x() < dir[targetDir] + errorRoom)) {
+      while (!(euler.x() > dir[targetDir] - errorRoom && euler.x() <
+dir[targetDir] + errorRoom)) {
         euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
         ports[RIGHT].setMotorSpeed(speed);
         ports[LEFT].setMotorSpeed(-speed);
