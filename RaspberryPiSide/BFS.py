@@ -62,6 +62,8 @@ def init():
         # IO.cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
         # IO.cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 120)
 
+        util.maze[util.nVictim:(util.wVictim + 1)] = None
+
 
 # return next tile to visit recursively
 def nextTile(cTile):

@@ -73,11 +73,11 @@ class detection():
         if imgOutput is not None:
             result, dist = self.KNN.classify(imgOutput)
         else:
-            result = "None"
+            result = None
             dist = 0
 
         if dist > distLimit:
-            result = "None"
+            result = None
 
         return result
 

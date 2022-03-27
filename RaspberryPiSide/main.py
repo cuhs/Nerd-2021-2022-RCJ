@@ -74,7 +74,9 @@ while nextTile is not None or util.tile != util.startTile:
                     result1 = detection2.detection().KNN_finish(detection2.detection().letterDetect(frame1, "frame1"), 10000000)
                     # detection2.detection().KNN_finish(detection2.detection().letterDetect(frame2, "frame2"), 10000000)
                     
-                    print(result1)
+                    if result1 is not None and util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] is None:
+                        util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = result1
+                        IO.sendData(config.inputMode, result1)
 
                 if config.debug:
                     cv2.imshow("frame1", frame1)
