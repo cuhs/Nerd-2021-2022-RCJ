@@ -4,7 +4,7 @@
 #include "TCA.h"
 #include "motors.h"
 #include "IMU.h"
-void sendWallValues(int leftDist, int rightDist, int frontDist);
+void sendWallValues(int frontDist, int rightDist, int leftDist);
 void setupSensors();
 void setupSensors2();
 void alignSide(int leftDist, int rightDist);

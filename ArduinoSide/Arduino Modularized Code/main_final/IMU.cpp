@@ -144,14 +144,25 @@ void turnAbs(char t) {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   //int range[4][2] = {{350, 10}, {80, 100}, {170, 190}, {260, 280}};
   int pos = euler.x();
-  if(pos>350||pos<10)
-    turnAbs(90);
-  else if(pos>80&&pos<100)
-    turnAbs(180);
-  else if(pos>170 && pos < 190)
-    turnAbs(270);
-  else if(pos > 260 && pos < 280)
+  if(t=='r'){
+    if(pos>350||pos<10)
+      turnAbs(90);
+    else if(pos>80&&pos<100)
+      turnAbs(180);
+    else if(pos>170 && pos < 190)
+      turnAbs(270);
+    else if(pos > 260 && pos < 280)
     turnAbs(0);
+  }else if(t=='l'){
+    if(pos>350||pos<10)
+      turnAbs(270);
+    else if(pos>80&&pos<100)
+      turnAbs(0);
+    else if(pos>170 && pos < 190)
+      turnAbs(90);
+    else if(pos > 260 && pos < 280)
+    turnAbs(180);
+  }
 //  t = tolower(t);
 //
 //  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);

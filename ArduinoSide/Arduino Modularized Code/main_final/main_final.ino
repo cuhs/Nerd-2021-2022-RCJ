@@ -85,6 +85,10 @@ void loop() {
     //turnAbs('l');
     //delay(2500);
     //turnRightPID(90);
+    //delay(2000);
+    //turnAbs('r');
+    //delay(2000);
+    //turnAbs('l');
 
   
   if(Serial2.available()){
@@ -120,7 +124,7 @@ void loop() {
         break;
       case '}': 
         Serial.println("}"); 
-        sendWallValues(getSensorReadings(0),getSensorReadings(1),getSensorReadings(2));
+        sendWallValues(getSensorReadings(2),getSensorReadings(0),getSensorReadings(1));
         break;
         //sendwall values 
       default:
