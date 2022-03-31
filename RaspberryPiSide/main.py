@@ -65,7 +65,9 @@ while nextTile is not None or util.tile != util.startTile:
         
         # camera stuff
         if config.inputMode == 2:
-            print("checkpoint1")
+            if config.debug:
+                print("\t\t\tSTARTING CAMERA")
+
             while (not IO.hasSerialMessage()) and IO.cap1.isOpened():  # and IO.cap2.isOpened
                 ret1, frame1 = IO.cap1.read()
                 # ret2, frame2 = IO. cap2.read()
@@ -81,6 +83,27 @@ while nextTile is not None or util.tile != util.startTile:
                     #cv2.imshow("frame2", frame2)
             
             print("aaa" + IO.ser.read().decode("ascii", "ignore"))
+                # check if no victim already found at wall
+                if util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] is None:
+                    # get letter and color victims
+                    ltrVictim, colVictim = detection2.detection().rightDetectFinal()
+
+                    # send and record letter victim
+                    if ltrVictim is not None:
+                        print("\t\t\t\tLETTER VICTIM FOUND: " + ltrVictim)
+                        util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ltrVictim
+                        IO.sendData(config.inputMode, ltrVictim)
+                        break
+
+                    # send and record color victim
+                    elif colVictim is not None:
+                        print("\t\t\t\tCOLOR VICTIM FOUND: " + colVictim)
+                        util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ltrVictim
+                        IO.sendData(config.inputMode, ltrVictim)
+                        break
+
+            if config.debug:
+                print("\t\t\tCAMERA OVER")
         util.pathLen += 2
 
 

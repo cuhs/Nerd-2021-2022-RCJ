@@ -9,12 +9,6 @@
   //last 1;
   //N E S W --> South always 0
 
-volatile boolean doingVictim;
-
-void victimInterrupt(){
-  doingVictim = true;
-}
-
 void setup() {
   delay(100);
   Serial.begin(9600);
@@ -40,9 +34,8 @@ void setup() {
   //Serial.print(getSensorReadings(0) + " " + getSensorReadings(1) + " " + getSensorReadings(2)); 
   sendWallValues(getSensorReadings(0),getSensorReadings(1),getSensorReadings(2));
 
-  doingVictim = false;
-  pinMode(18, INPUT_PULLUP);
-  //attachInterrupt(digitalPinToInterrupt(18), increment, CHANGE);
+
+
 }
 
 
@@ -70,23 +63,30 @@ void loop() {
   //goForwardTiles(1);
   //delay(5000);
 
-  goForwardTilesPID(1);
-  delay(5000);
+  //goForwardTilesPID(1);
+  //delay(5000);
 
   //goForwardTiles(1);
   //delay(10000);
   //ports[RIGHT].setMotorSpeed(220);
   //ports[LEFT].setMotorSpeed(-220);
 
-  //triangulate(getSensorReadings(0),getSensorReadings(1));
+    //triangulate(getSensorReadings(0),getSensorReadings(1));
 
-  
     //turnAbs('r');
+    //turnAbs((int)90);
+    //Serial.println("Finish 90 turn");
+    //delay(2500);
+    //turnAbs((int)0);
+    //Serial.println("Finish 0 turn");
+    //delay(2500);
+    //turnLeftPID(90);
     //delay(2500);
     //turnAbs('l');
     //delay(2500);
+    //turnRightPID(90);
 
-  /*
+  
   if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
@@ -96,27 +96,22 @@ void loop() {
     switch (incoming_byte){
       case '{': 
         Serial.println("{"); break;
-        
       case 'F': 
         Serial.println("forward!"); 
-        //goForwardTilesPID(1);
-        //alignFront();
-        delay(5000);
+        goForwardTilesPID(1);
+        alignFront();
         break; 
-        
       case 'L':
         Serial.println("left!");
         //turnLeft(90);
-        delay(5000);
+        turnAbs('l');
         break; 
         //turn left
-        
       case 'R':
        Serial.println("right!"); 
        //turnRight(90);
-       delay(5000);
+       turnAbs('r');
        break; 
-       
        //turn right
       case ';':
         Serial.println(";"); 
@@ -125,10 +120,9 @@ void loop() {
         break;
       case '}': 
         Serial.println("}"); 
-        //sendWallValues(getSensorReadings(0),getSensorReadings(1),getSensorReadings(2));
+        sendWallValues(getSensorReadings(0),getSensorReadings(1),getSensorReadings(2));
         break;
         //sendwall values 
-        
       default:
        Serial.println("hmmm wut is this");
     
