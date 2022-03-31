@@ -93,7 +93,6 @@ while nextTile is not None or util.tile != util.startTile:
                 print("\t\t\tCAMERA OVER")
         util.pathLen += 2
 
-
     # send ending char "}"
     IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], util.pathLen == len(IO.sData) - 1)
     if config.debug:
