@@ -4,7 +4,7 @@ import serial
 import time
 
 # sp = config.port
-if config.inputMode == 1:
+if config.inputMode == 2:
     ser = serial.Serial(config.port, config.rate)
 
 # directions

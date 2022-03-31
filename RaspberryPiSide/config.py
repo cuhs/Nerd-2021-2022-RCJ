@@ -1,8 +1,8 @@
 # config file, because some settings might differ
 # while debugging, or on different systems
 
-mazeSideLen = 20  # must be even
-inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
+mazeSideLen = 10  # must be even
+inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) + 10  # buffer of 10
 
 wallPercentage = 50  # percentage of tiles that should be walls for random generation of maze
@@ -18,7 +18,7 @@ displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
 debug = True  # print statements
 
-port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0
+port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0)
 rate = 9600  # serial port rate
 
 # serial messages in order for:
