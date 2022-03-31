@@ -74,14 +74,20 @@ void loop() {
     //triangulate(getSensorReadings(0),getSensorReadings(1));
 
     //turnAbs('r');
-    turnRightPID(90);
-    delay(2500);
+    //turnAbs((int)90);
+    //Serial.println("Finish 90 turn");
+    //delay(2500);
+    //turnAbs((int)0);
+    //Serial.println("Finish 0 turn");
+    //delay(2500);
+    //turnLeftPID(90);
+    //delay(2500);
     //turnAbs('l');
     //delay(2500);
     //turnRightPID(90);
 
   
-  /*if(Serial2.available()){
+  if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
@@ -121,6 +127,6 @@ void loop() {
        Serial.println("hmmm wut is this");
     
     }
-  }*/
+  }
 
 }

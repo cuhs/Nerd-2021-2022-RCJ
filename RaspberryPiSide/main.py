@@ -69,7 +69,20 @@ while nextTile is not None or util.tile != util.startTile:
                 print("\t\t\tSTARTING CAMERA")
 
             while (not IO.hasSerialMessage()) and IO.cap1.isOpened():  # and IO.cap2.isOpened
+                ret1, frame1 = IO.cap1.read()
+                # ret2, frame2 = IO. cap2.read()
 
+                if ret1 > 0:  # and ret2 > 0
+                    result1 = detection2.detection().KNN_finish(detection2.detection().letterDetect(frame1, "frame1"), 10000000)
+                    # detection2.detection().KNN_finish(detection2.detection().letterDetect(frame2, "frame2"), 10000000)
+                    
+                    print(result1)
+
+                #if config.debug:
+                    #cv2.imshow("frame1", frame1)
+                    #cv2.imshow("frame2", frame2)
+            
+            print("aaa" + IO.ser.read().decode("ascii", "ignore"))
                 # check if no victim already found at wall
                 if util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] is None:
                     # get letter and color victims
