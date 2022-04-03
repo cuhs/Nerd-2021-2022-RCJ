@@ -4,6 +4,7 @@
 #include "TCA.h"
 #include "TCS.h"
 #include "motors.h"
+#include "rescueServo.h"
 //#include "rescueServo.h"
 // this is comment
   //last 1;
@@ -14,7 +15,7 @@ void setup() {
   Serial.begin(9600);
   Serial2.begin(9600);
   Wire.begin();
-  
+  setupServo();
   //Serial2.write('a');
   //pinMode(A6, OUTPUT);
   
@@ -89,7 +90,6 @@ void loop() {
     //turnAbs('r');
     //delay(2000);
     //turnAbs('l');
-
   
   if(Serial2.available()){
     delay(1);

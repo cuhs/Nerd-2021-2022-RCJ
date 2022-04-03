@@ -1,7 +1,7 @@
 #include "rescueServo.h"
 Servo myservo;
 bool shouldRun = true;
-int ct = 0;
+//midPos: 60
  bool stuckTest(int target) {
   int ang = myservo.read();
   //Serial.println(ang);
@@ -12,6 +12,10 @@ int ct = 0;
 
 }
 
+void setupServo(){
+  myservo.attach(A6, 300, 2400); // attaches the servo on pin A8 to the servo object
+  //myservo.attach(A6);
+}
 void wiggle(int target, int times) {
 
   for (int i = 1; i < times; i++) {
@@ -27,26 +31,24 @@ void wiggle(int target, int times) {
   }
 }
 
-void turnLeft() {
+void servoTurnLeft() {
   myservo.write(0);
 
   delay(500);
   wiggle(0, 5);
-  ct++;
 }
 
-void midPos() {
+void servoMidPos() {
   myservo.write(60);
   delay(500);
-  wiggle(60, ct * 1.5 + 1);
+  wiggle(60, 5);
 }
 
 
-void turnRight() {
+void servoTurnRight() {
 
   myservo.write(173);
   delay(500);
   //Serial.print(myservo.read());
   wiggle(173, 5);
-  ct++;
 }
