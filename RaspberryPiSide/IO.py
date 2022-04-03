@@ -14,7 +14,7 @@ directions = ['N', 'E', 'S', 'W']
 sData = ""
 
 # cameras
-cap1 = cap2 = None
+cap = []
 
 # get file editors
 def outputFile(mode):
@@ -73,7 +73,7 @@ def setupInputFile():
     else:
         raise ValueError("Invalid Input File Type!\nExpected: \"GENERATED\" or \"IMAGE\"\nGot: " + str(inputType))
 
-# gets data from file depending whether from gen or input
+# gets data from file depending on whether from gen or input
 def getFileData(tile):
     # skips until desired tile
     f = inputFile("r")
@@ -138,11 +138,9 @@ def getSerialData():
         walls[i] = 0
     return walls
 
-def hasSerialMessage():
-    return ser.in_waiting
-
 # send path instructions through serial
 def sendSerial(msg):
     if config.debug:
         print("Sending: " + msg)  # send msg over serial
     ser.write(bytes(msg.encode("ascii", "ignore")))
+    time.sleep(0.1)

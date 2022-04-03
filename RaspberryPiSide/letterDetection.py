@@ -4,25 +4,24 @@ import KNN
 import util
 import IO
 
-class detection():
+class Detection:
 
+    # constructor
     def __init__(self):
-
         self.Debug = True
         self.size = 30
         self.KNN = KNN.KNN()
 
+    # calculate the distance between two points
     def dist(self, point1, point2):
         return np.sqrt(((point1[0] - point2[0]) ** 2) + ((point1[1] - point2[1]) ** 2))
 
+    # calculate the letter seen by camera, if any
     def getLetter(self, contour, mask, name):
-
         if len(contour) > 0:
-
             contour = max(contour, key=cv2.contourArea)
 
             if cv2.contourArea(contour) > 50:
-
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
                 box = np.float32(box)
@@ -55,23 +54,19 @@ class detection():
                     cv2.imshow("letter_" + name, imgOutput)
 
                 # result,dist = self.KNN(imgOutput)
-
                 return imgOutput  # , invert
 
+    # process frame and return letter from getLetter
     def letterDetect(self, frame, name):
-
         cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
         mask = cv2.inRange(frame, (0, 0, 0), (50, 50, 50))
 
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
         imgOutput = self.getLetter(contours, mask, name)
-
         return imgOutput
 
+    # check for letters with KNN
     def KNN_finish(self, imgOutput, distLimit):
-
         if imgOutput is not None:
             result, dist = self.KNN.classify(imgOutput)
         else:
@@ -80,11 +75,10 @@ class detection():
 
         if dist > distLimit:
             result = None
-
         return result
 
+    # use HSV to find color victims
     def colorDetectHSV(self, frame, hsv_lower, hsv_upper):
-
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
         for i in range(3):
@@ -92,24 +86,21 @@ class detection():
             # cv2.imshow("mask",mask)
 
             contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
             if len(contours) > 0:
-
                 contours = max(contours, key=cv2.contourArea)
 
                 if cv2.contourArea(contours) > 50:
-
                     if i == 0 or i == 2:
                         return "R"
-                        packages = 1
+                        # packages = 1
 
                     elif i == 1:
                         return "G"
-                        packages = 0
+                        # packages = 0
                     else:
                         return None
 
-    def colorDetectRatio(self,frame):
+    def colorDetectRatio(self, frame):
         b = 0
         g = 0
         r = 0
@@ -120,21 +111,22 @@ class detection():
             g += i[1]
             r += i[2]
         print(b, g, r)
-        
+
+    # return letter and color victims from right camera
     def rightDetectFinal(self):
-        if IO.cap1.isOpened():
-            ret, frame = IO.cap1.read()
+        if IO.cap[0].isOpened():
+            ret, frame = IO.cap[0].read()
             if ret > 0:
                 return self.KNN_finish(self.letterDetect(frame, "frame1"), 10000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
-        
+
+    # return letter and color victims from left camera
     def leftDetectFinal(self):
-        if IO.cap2.isOpened():
-            ret, frame = IO.cap2.read()
+        if IO.cap[1].isOpened():
+            ret, frame = IO.cap[1].read()
             if ret > 0:
                 return self.KNN_finish(self.letterDetect(frame, "frame2"), 10000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
-            
-        
-        
+
+# old main below
 '''                       
 hsv_lower = {
     0: (150,230,70),

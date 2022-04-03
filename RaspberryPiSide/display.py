@@ -5,7 +5,7 @@ from util import config
 
 imageSize = config.mazeSideLen * config.displaySize
 img = np.zeros((imageSize, imageSize, 3), dtype=np.uint8)
-s = 1 if config.mazeSideLen > 50 else 2
+lineWidth = 1 if config.mazeSideLen > 50 else 2
 
 def imgSetup():
     # create blank white image
@@ -42,19 +42,18 @@ def displayMaze(target, cMaze):
             if util.isCheckpoint(cMaze, tile):
                 cv2.rectangle(img, (xPixel + config.displaySize//4, yPixel + config.displaySize // 4), (xPixel + (config.displaySize//4)*3, yPixel + (config.displaySize//4)*3), (175, 175, 175), -1)
 
-            # adds walls for the tile
+            # adds the walls for the tile
             if cMaze[tile][util.Dir.N.value] == 1:
-                cv2.line(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel), (0, 0, 0), s)
+                cv2.line(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel), (0, 0, 0), lineWidth)
             if cMaze[tile][util.Dir.E.value] == 1:
-                cv2.line(img, (xPixel + config.displaySize, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), s)
+                cv2.line(img, (xPixel + config.displaySize, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), lineWidth)
             if cMaze[tile][util.Dir.S.value] == 1:
-                cv2.line(img, (xPixel, yPixel + config.displaySize), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), s)
+                cv2.line(img, (xPixel, yPixel + config.displaySize), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), lineWidth)
             if cMaze[tile][util.Dir.W.value] == 1:
-                cv2.line(img, (xPixel, yPixel), (xPixel, yPixel + config.displaySize), (0, 0, 0), s)
+                cv2.line(img, (xPixel, yPixel), (xPixel, yPixel + config.displaySize), (0, 0, 0), lineWidth)
 
 def show(target, cMaze, ms):
     imgSetup()
     displayMaze(target, cMaze)
     cv2.imshow("maze", img)
     cv2.waitKey(ms)
-

@@ -14,15 +14,15 @@ class Dir(Enum):
     S = 2
     W = 3
 
-# neighboring tiles as: N E S W, to get neighbor do: Tile + nTiles[0] for tile north of Tile
+# neighboring tiles as: N E S W, to get neighbor do: Tile + adjTiles[0] for tile north of Tile
 adjTiles = [-config.mazeSideLen, 1, config.mazeSideLen, -1]
 
 # tile states are true NESW for getting walls, and vis for checking if visited
 # maze[tile][5] -> return visited. 0 = not visited, 1 = visited.
 visited = 4
 
-# tile states for victims
-# maze[tile][6] -> what victim on north wall of tile. "H" "S" "U" or NoneType
+# tile states for victims (ascii code of char victim)
+# maze[tile][6] -> what victim on north wall of tile. "H" "S" "U", "R" "Y" "G" or None
 nVictim = 5
 eVictim = 6
 sVictim = 7
@@ -48,16 +48,16 @@ startTile = int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))
 
 # hsv ranges for color victims
 hsv_lower = {
-    0: (150,230,70),
-    1: (50,40,85),
-    2: (5,95,160)
-    }
+    0: (150, 230, 70),
+    1: (50, 40, 85),
+    2: (5, 95, 160)
+}
 
 hsv_upper = {
-     0: (179,255,205),
-     1: (90,105,130),
-     2: (50,175,195)
-     }
+     0: (179, 255, 205),
+     1: (90, 105, 130),
+     2: (50, 175, 195)
+}
 
 # adjust which position is facing true north
 # getting sensorData[N] will get north,
@@ -121,7 +121,7 @@ def goBackward(cTile):
     # packet.sData += msg
     return cTile + adjTiles[oppositeDir(direction)]
 
-def setBlackTile(cMaze, cTile, setBorders):
+def setBlackTile(cMaze, cTile, setBorders=True):
     if setBorders:
         for i in range(4):
             cMaze[cTile][i] = 1

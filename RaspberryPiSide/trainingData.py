@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import detection 
+import old_detection
 
 cap = cv2.VideoCapture(0)
 
@@ -16,7 +16,7 @@ letter_count = {'H':0,'S':0,'U':0}
 
 
 
-main = detection.detection()
+main = detection.Detection()
 
 print("hey ")
 

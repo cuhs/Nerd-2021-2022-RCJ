@@ -1,8 +1,15 @@
+"""
+TODO:
+- Add supplemental turns to check all walls for victims
+- Integrate black and silver tiles
+- Integrate Obstacle
+- Have different debug levels
+"""
+
 import BFS
 import display
 import cv2
 import time
-import detection2
 from BFS import util
 from util import IO
 from util import config
@@ -16,7 +23,6 @@ print("Setup Finished\n\nrunning...")
 util.setWalls()
 
 # time calculation
-ot = 0
 start = time.time()
 
 # calculate next tile
@@ -35,74 +41,54 @@ while nextTile is not None or util.tile != util.startTile:
     if config.showDisplay:
         display.show(nextTile, util.maze, config.displayRate)
 
-    # calculate and send driving instructions
+    # send BFS starting char '{'
     IO.sData += config.serialMessages[5]
+    IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1])
+    if config.debug:
+        print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
+    util.pathLen += 1
 
-    # send driving instructions and do victim and do obstacle and do black tiles
+    # calculate instructions for next tile
     while util.path:
         # calculate driving instructions from path to next tile
         if config.debug:
             print("\tPath: " + str(util.path))
 
         # set direction to the direction to be turned
-        util.direction = BFS.turnToTile(util.path.pop(), util.direction)
+        nextTileInPath = util.path.pop()
+        while util.tile + util.adjTiles[util.direction] != nextTileInPath:
+            # calculate next direction
+            if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
+                util.direction = util.turnRight(util.direction)
+            else:
+                util.direction = util.turnLeft(util.direction)
+            # send direction
+            IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
+            if config.debug:
+                print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
+            # find and send victims
+            if config.inputMode == 2:
+                BFS.searchForVictims()
+            util.pathLen += 2
+
+        # set the tile to the tile to be moved to
         util.tile = util.goForward(util.tile)
-
-    # driving instructions calculated, add terminating character and send
-    IO.sData += config.serialMessages[6]
-
-    # send beginning char "{"
-    IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], util.pathLen == len(IO.sData) - 1)
-    if config.debug:
-        print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
-    util.pathLen += 1
-
-    # send driving instructions one at a time
-    while util.pathLen < len(IO.sData) - 1:
-        IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2], util.pathLen == len(IO.sData) - 2)
+        IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
         if config.debug:
             print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
-        
-        # camera stuff
+        # find and send victims
         if config.inputMode == 2:
-            if config.debug:
-                print("\t\t\tSTARTING CAMERA")
-
-            while (not IO.hasSerialMessage()) and IO.cap1.isOpened():  # and IO.cap2.isOpened
-
-                # check if no victim already found at wall
-                if util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] is None:
-                    # get letter and color victims
-                    ltrVictim, colVictim = detection2.detection().rightDetectFinal()
-
-                    # send and record letter victim
-                    if ltrVictim is not None:
-                        print("\t\t\t\tLETTER VICTIM FOUND: " + ltrVictim)
-                        util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ltrVictim
-                        IO.sendData(config.inputMode, ltrVictim)
-                        break
-
-                    # send and record color victim
-                    elif colVictim is not None:
-                        print("\t\t\t\tCOLOR VICTIM FOUND: " + colVictim)
-                        util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ltrVictim
-                        IO.sendData(config.inputMode, ltrVictim)
-                        break
-
-            if config.debug:
-                print("\t\t\tCAMERA OVER")
+            BFS.searchForVictims()
         util.pathLen += 2
 
-    # send ending char "}"
-    IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], util.pathLen == len(IO.sData) - 1)
+    # send BFS ending char '}'
+    IO.sData += config.serialMessages[6]
+    IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], True)
     if config.debug:
         print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
     util.pathLen += 1
 
-    # print out path to only the next tile, reset length
-    if config.debug:
-        print("\tPath To Tile: " + str(IO.sData[util.pathLen:]))
-
+    # reset path string
     util.pathLen = len(IO.sData)
 
     # set tile new tile to visited, clear parent array
@@ -125,7 +111,7 @@ while nextTile is not None or util.tile != util.startTile:
         if config.debug:
             print("\tTile " + str(util.tile) + " is a black tile, going back")
 
-        util.maze = util.setBlackTile(util.maze, util.tile, setBorders=True)
+        util.maze = util.setBlackTile(util.maze, util.tile)
         util.tile = util.goBackward(util.tile)
 
         if config.debug:
@@ -149,6 +135,6 @@ print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + 
 display.show(-1, util.maze, 0)
 
 if config.inputMode == 2:
-    IO.cap1.release()
-    # IO.cap2.release()
+    for i in range(len(IO.cap)):
+        IO.cap[i].release()
 cv2.destroyAllWindows()
