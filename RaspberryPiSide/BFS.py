@@ -57,14 +57,14 @@ def init():
     if config.inputMode == 2:
         if config.cameraCount == 1 or config.cameraCount == 2:
             if config.cameraCount == 1:
-                IO.cap[0] = cv2.VideoCapture(-1)
+                IO.cap.append(cv2.VideoCapture(-1))
             else:
-                IO.cap[0] = cv2.VideoCapture(0)
+                IO.cap.append(cv2.VideoCapture(0))
             IO.cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
             IO.cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
 
         if config.cameraCount == 2:
-            IO.cap[1] = cv2.VideoCapture(1)
+            IO.cap.append(cv2.VideoCapture(1))
             IO.cap[1].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
             IO.cap[1].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
 
@@ -125,6 +125,11 @@ def searchForVictims():
         if config.cameraCount == 2 and (not IO.cap[1].isOpened()):
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
             return
+        
+        if config.showCameras:
+            _, leftFrame = IO.cap[0].read()
+            cv2.imshow("left", leftFrame)
+            cv2.waitKey(1)
 
         # check if searching needed on left camera
         if util.maze[util.tile][util.dirToLeft(util.direction)] == 1 and util.maze[util.tile][util.nVictim + util.dirToLeft(util.direction)] == 0:
@@ -135,13 +140,13 @@ def searchForVictims():
             if leftLetterVictim is not None:
                 print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
-                IO.sendData(config.inputMode, "L" + leftLetterVictim)
+                # IO.sendData(config.inputMode, leftLetterVictim)
 
             # send and record color victim
             elif leftColorVictim is not None:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
-                IO.sendData(config.inputMode, "L" + leftColorVictim)
+                # IO.sendData(config.inputMode, leftColorVictim)
 
         # check if searching is needed on right camera
         if config.cameraCount == 2 and util.maze[util.tile][util.dirToLeft(util.direction)] == 1 and util.maze[util.tile][util.nVictim + util.dirToRight(util.direction)] == 0:
@@ -152,16 +157,16 @@ def searchForVictims():
             if rightLetterVictim is not None:
                 print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightLetterVictim)
-                IO.sendData(config.inputMode, "R" + rightLetterVictim)
+                IO.sendData(config.inputMode, rightLetterVictim)
 
             # send and record color victim
             elif rightColorVictim is not None:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
-                IO.sendData(config.inputMode, "R" + rightColorVictim)
+                IO.sendData(config.inputMode, rightColorVictim)
 
     # remove ending of movement message from buffer
     if config.debug:
-        print("\t\t\tCAMERA OVER, GOT: " + IO.ser.read())
+        print("\t\t\tCAMERA OVER, GOT: " + str(IO.ser.read()))
     else:
         IO.ser.read()

@@ -68,7 +68,13 @@ while nextTile is not None or util.tile != util.startTile:
                 print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
             # find and send victims
             if config.inputMode == 2:
-                BFS.searchForVictims()
+                if config.doVictim:
+                    BFS.searchForVictims()
+                else:
+                    if config.debug:
+                        print("\t\t\tCAMERA OVER, GOT: " + str(IO.ser.read()))
+                    else:
+                        IO.ser.read()
             util.pathLen += 2
 
         # set the tile to the tile to be moved to
@@ -78,7 +84,13 @@ while nextTile is not None or util.tile != util.startTile:
             print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
         # find and send victims
         if config.inputMode == 2:
-            BFS.searchForVictims()
+            if config.doVictim:
+                BFS.searchForVictims()
+            else:
+                if config.debug:
+                    print("\t\t\tCAMERA OVER, GOT: " + str(IO.ser.read()))
+                else:
+                    IO.ser.read()
         util.pathLen += 2
 
     # send BFS ending char '}'
