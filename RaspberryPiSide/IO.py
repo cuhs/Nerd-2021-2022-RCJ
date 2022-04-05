@@ -2,8 +2,8 @@ import numpy as np
 import config
 import serial
 import time
+import util
 
-# sp = config.port
 if config.inputMode == 2:
     ser = serial.Serial(config.port, config.rate)
 
@@ -67,9 +67,11 @@ def getManualData(tile):
 def setupInputFile():
     inputType = inputFile("r").readline()
     if inputType == "GENERATED\n":
-        print("File input is a generated maze")
+        if config.importantDebug:
+            print("File input is a generated maze")
     elif inputType == "IMAGE\n":
-        print("File input is a maze from image")
+        if config.importantDebug:
+            print("File input is a maze from image")
     else:
         raise ValueError("Invalid Input File Type!\nExpected: \"GENERATED\" or \"IMAGE\"\nGot: " + str(inputType))
 
@@ -98,10 +100,10 @@ def writeMaze(file, header, maze, delete):
     file.close()
 
 def readMaze(file):
-    maze = np.zeros((config.mazeSideLen ** 2, 10), dtype=np.int8)
+    maze = np.zeros((config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)
     header = file.readline()
     for i in range(config.mazeSideLen ** 2):
-        maze[i][:] = file.readline()
+        maze[i][:] = [int(j) for j in str(file.readline())[:10]]
     file.close()
     return header[:len(header) - 1], maze
 
@@ -120,8 +122,16 @@ def setupSerial():
 # request and receive wall positions through serial
 def getSerialData():
     walls = np.zeros(10)
-
     receive_message = ser.read()
+
+    # account for black and silver tiles
+    if not receive_message.isdigit():
+        if receive_message == 'b':
+            return None
+        else:
+            walls[util.tileType] = 2
+            receive_message = ser.read()
+
     walls[0] = receive_message.decode("ascii", "ignore")
     time.sleep(0.1)
 
@@ -134,13 +144,11 @@ def getSerialData():
     time.sleep(0.1)
 
     walls[2] = 0
-    for i in range(4, 10):
-        walls[i] = 0
     return walls
 
 # send path instructions through serial
 def sendSerial(msg):
-    if config.debug:
+    if config.serialDebug:
         print("Sending: " + msg)  # send msg over serial
     ser.write(bytes(msg.encode("ascii", "ignore")))
     time.sleep(0.1)

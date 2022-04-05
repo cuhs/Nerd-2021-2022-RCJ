@@ -1,9 +1,7 @@
 """
 TODO:
 - Add supplemental turns to check all walls for victims
-- Integrate black and silver tiles
-- Integrate Obstacle
-- Have different debug levels
+- Add conditions for loading checkpoints
 """
 
 import BFS
@@ -14,10 +12,12 @@ from BFS import util
 from util import IO
 from util import config
 
-print("\nRaspberryPiSide START")
+if config.importantDebug:
+    print("\nRaspberryPiSide START")
 BFS.init()
 
-print("Setup Finished\n\nrunning...")
+if config.importantDebug:
+    print("Setup Finished\n\nrunning...")
 
 # set start tile walls
 util.setWalls()
@@ -27,14 +27,14 @@ start = time.time()
 
 # calculate next tile
 nextTile = BFS.nextTile(util.tile)
-lastCheckpoint = -1
+checkpoint = -1
 
 while nextTile is not None or util.tile != util.startTile:
-    if config.debug:
+    if config.BFSDebug:
         print("\tCurrent Tile:\t" + str(util.tile) + "\n\tNext Tile:\t" + str(nextTile))
     # calculate path to target tile
     BFS.pathToTile(util.tile, nextTile)
-    if config.debug:
+    if config.BFSDebug:
         print("\tTiles To Target Tile: " + str(len(util.path)))
 
     # display the maze
@@ -44,14 +44,14 @@ while nextTile is not None or util.tile != util.startTile:
     # send BFS starting char '{'
     IO.sData += config.serialMessages[5]
     IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1])
-    if config.debug:
+    if config.serialDebug:
         print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
     util.pathLen += 1
 
     # calculate instructions for next tile
     while util.path:
         # calculate driving instructions from path to next tile
-        if config.debug:
+        if config.BFSDebug:
             print("\tPath: " + str(util.path))
 
         # set direction to the direction to be turned
@@ -64,14 +64,14 @@ while nextTile is not None or util.tile != util.startTile:
                 util.direction = util.turnLeft(util.direction)
             # send direction
             IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
-            if config.debug:
+            if config.serialDebug:
                 print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
             # find and send victims
             if config.inputMode == 2:
                 if config.doVictim:
                     BFS.searchForVictims()
                 else:
-                    if config.debug:
+                    if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(IO.ser.read()))
                     else:
                         IO.ser.read()
@@ -80,14 +80,14 @@ while nextTile is not None or util.tile != util.startTile:
         # set the tile to the tile to be moved to
         util.tile = util.goForward(util.tile)
         IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
-        if config.debug:
+        if config.serialDebug:
             print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
         # find and send victims
         if config.inputMode == 2:
             if config.doVictim:
                 BFS.searchForVictims()
             else:
-                if config.debug:
+                if config.serialDebug:
                     print("\t\t\tCAMERA OVER, GOT: " + str(IO.ser.read()))
                 else:
                     IO.ser.read()
@@ -96,7 +96,7 @@ while nextTile is not None or util.tile != util.startTile:
     # send BFS ending char '}'
     IO.sData += config.serialMessages[6]
     IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], True)
-    if config.debug:
+    if config.serialDebug:
         print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
     util.pathLen += 1
 
@@ -107,43 +107,34 @@ while nextTile is not None or util.tile != util.startTile:
     util.maze[util.tile][util.visited] = 1
     util.parent.fill(-1)
 
-    # get sensor/wall values
-    util.setWalls()
-
-    # check if tile is a silver tile
-    if util.isCheckpoint(util.maze, util.tile):
-        if config.debug:
-            print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
-
-        lastCheckpoint = util.tile
-        IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction], util.maze, True)
-
-    # check if tile is a black tile
-    if util.isBlackTile(util.maze, util.tile):
-        if config.debug:
-            print("\tTile " + str(util.tile) + " is a black tile, going back")
-
+    # get sensor/wall values, take care of special tiles
+    if (not util.setWalls()) or (config.inputMode != 2 and util.isBlackTile(util.maze, util.tile)):
         util.maze = util.setBlackTile(util.maze, util.tile)
-        util.tile = util.goBackward(util.tile)
+    checkpoint = BFS.handleSpecialTiles(checkpoint)
 
-        if config.debug:
-            print("\tTile now " + str(util.tile) + " after black tile")
+    # load checkpoint if needed
+    if False:
+        if not BFS.loadCheckpoint(checkpoint):
+            # no checkpoint exists, reset to start of maze
+            util.setWalls()
+        display.show(None, util.maze, config.displayRate)
 
     # calculate next tile
     nextTile = BFS.nextTile(util.tile)
 
-    if config.debug:
+    if config.BFSDebug:
         print("BFS START")
 
     # go back to start
     if nextTile is None and util.tile != util.startTile:
-        if config.debug:
+        if config.importantDebug or config.BFSDebug:
             print("Maze fully traversed! Going back to start tile")
         nextTile = util.startTile
 
 # print out entire path the robot took traversing the maze and how long the algorithm took
 end = time.time()
-print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - start) * 1000, '.2f') + "ms ")
+if config.importantDebug:
+    print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - start) * 1000, '.2f') + "ms ")
 display.show(-1, util.maze, 0)
 
 if config.inputMode == 2:

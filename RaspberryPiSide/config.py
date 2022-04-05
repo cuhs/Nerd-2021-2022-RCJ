@@ -1,8 +1,8 @@
 # config file, because some settings might differ while debugging, or on different systems
 
 mazeSideLen = 10  # must be even
-inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
-recursionLimit = (mazeSideLen ** 2) + 50  # buffer of 10
+inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
+recursionLimit = (mazeSideLen ** 2)  # buffer added on setup
 
 wallPercentage = 50  # percentage of tiles that should be walls for random generation of maze
 blackTilePercentage = 5  # percent of black tiles when randomly generating a maze
@@ -10,21 +10,23 @@ silverTilePercentage = 2  # percent of silver tiles when randomly generating a m
 genFromImage = False  # if false, will generate random maze
 redoLastMaze = False  # this setting allows you to rerun the last maze, maybe if a bug or problem occurred in it
 
-showDisplay = False  # 0 no display, 1 is display
-displayRate = 0  # in milliseconds, 0 for until click
+showDisplay = True  # 0 no display, 1 is display
+displayRate = 1  # in milliseconds, 0 for until click
 displaySize = 500  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
-debug = False  # print statements
-showCameras = True # showing camera feeds
-doVictim = True # do victims
+importantDebug = True  # important print statements, overrides other settings
+BFSDebug = False  # print statements for maze traversal
+victimDebug = False  # shows camera feeds
+serialDebug = False  # prints serial IO
 
 port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0)
 rate = 9600  # serial port rate
 
+doVictim = True  # check for color and letter victims
 cameraCount = 1  # number of cameras, cam0 is left, cam1 is right. if only one camera, left
-cameraWidth = 160  # camera width
-cameraHeight = 128  # camera height
+cameraWidth = 160  # width of camera feed for both cameras
+cameraHeight = 128  # height of camera feed for both cameras
 
 # serial messages in order for:
 # forward, left, right, back, EOI, (end of single instruction), SOD (start of dir.), EOD (end of directions)

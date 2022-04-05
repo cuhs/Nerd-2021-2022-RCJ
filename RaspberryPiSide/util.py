@@ -84,12 +84,17 @@ def tileExists(cTile):
 # direction must be adjusted from bot to the maze
 def setWalls():
     sensorData = IO.getData(config.inputMode, tile)
+
     if config.inputMode != 2:
         for i in range(tileLen):
             # prevents overwriting of black tile
             if maze[tile][i] == 0:
                 maze[tile][i] = sensorData[i]
     else:
+        # black tile
+        if sensorData is None:
+            return False
+
         # adjust directions for bot alignment
         for i in range(4):
             maze[tile][adjustDirections(direction)[i]] = sensorData[i]
@@ -97,8 +102,9 @@ def setWalls():
         for i in range(5, 10):
             maze[tile][i] = 0
 
-    if config.debug:
+    if config.BFSDebug:
         print("\tTile Array for tile " + str(tile) + ": " + str(maze[tile]))
+    return True
 
 # both are 90 degree turns
 def turnLeft(facing):
@@ -122,12 +128,14 @@ def goBackward(cTile):
     return cTile + adjTiles[oppositeDir(direction)]
 
 def setBlackTile(cMaze, cTile, setBorders=True):
+    # set the borders of the black tile
     if setBorders:
         for i in range(4):
             cMaze[cTile][i] = 1
         for i in range(4):
             if tileExists(cTile + adjTiles[i]) and not (i == 1 and (cTile + 1) % config.mazeSideLen == 0):
                 cMaze[cTile + adjTiles[i]][adjustDirections(Dir.S.value)[i]] = 1
+    # mark the tile as black
     cMaze[cTile][tileType] = 1
     return cMaze
 

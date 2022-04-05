@@ -39,7 +39,8 @@ def genMazeFromImage():
     # writes maze values to "generatedMaze.txt"
     IO.writeMaze(IO.inputFile("a"), "IMAGE", maze, True)
 
-    print("Maze write finished!")
+    if config.importantDebug:
+        print("Maze write finished!")
 
 # generate maze from random walls
 def genRandMaze():
@@ -89,4 +90,5 @@ def genRandMaze():
     # writes maze values to "generatedMaze.txt"
     IO.writeMaze(IO.inputFile("a"), "GENERATED", maze, True)
 
-    print("Maze write finished!")
+    if config.importantDebug:
+        print("Maze write finished!")

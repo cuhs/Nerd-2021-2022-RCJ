@@ -7,12 +7,9 @@ import cv2
 from util import np
 from util import config
 import letterDetection
+import inspect
 
-def init():
-    if config.mazeSideLen % 2 != 0 or not(2 <= config.mazeSideLen <= 80):
-        raise ValueError("Invalid Maze Size (check config!)")
-    if config.inputMode == 0 and config.displayRate is not 0:
-        raise ValueError("displayRate must be 0 for manual input!")
+def reset():
     util.maze = np.zeros((config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
     util.tile = util.startTile  # creates start tile in the middle of size x size area
     util.direction = util.Dir.N.value  # starting direction is set to north
@@ -29,8 +26,15 @@ def init():
     # set starting tile as visited
     util.maze[util.tile][util.visited] = 1
 
+def init():
+    if config.mazeSideLen % 2 != 0 or not(2 <= config.mazeSideLen <= 80):
+        raise ValueError("Invalid Maze Size (check config!)")
+    if config.inputMode == 0 and config.displayRate is not 0:
+        raise ValueError("displayRate must be 0 for manual input!")
+    reset()
+
     # increase recursion limit for large mazes
-    sys.setrecursionlimit(config.recursionLimit)
+    sys.setrecursionlimit(config.recursionLimit + len(inspect.stack()) + 10)
 
     if config.inputMode == 1 and not config.redoLastMaze:
         if config.genFromImage:
@@ -73,13 +77,13 @@ def init():
 
 # return next tile to visit recursively
 def nextTile(cTile):
-    if config.debug:
+    if config.BFSDebug:
         print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[util.tile][util.visited]))
 
     # base case, BFS done and cTile is target tile
     if util.maze[cTile][util.visited] == 0:
         util.q.clear()
-        if config.debug:
+        if config.BFSDebug:
             print("\tBFS - END, Tile:\t" + str(cTile))
         return cTile
 
@@ -94,7 +98,7 @@ def nextTile(cTile):
                 util.q.append(util.adjTiles[i] + cTile)
             possibleTiles[i] = 1
 
-    if config.debug:
+    if config.BFSDebug:
         print("\tQueue:\t" + str(util.q))
 
     # recursively finds unvisited tiles
@@ -112,9 +116,58 @@ def pathToTile(cTile, target):
         util.path.append(int(i))
         i = util.parent[int(i)]
 
+# handles black and silver tiles
+def handleSpecialTiles(previousCheckpoint):
+    # check if tile is a silver tile
+    if util.isCheckpoint(util.maze, util.tile):
+        if config.importantDebug or config.BFSDebug:
+            print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
+
+        # save maze to file
+        IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction], util.maze, True)
+        return util.tile
+
+    # check if tile is a black tile
+    if util.isBlackTile(util.maze, util.tile):
+        if config.importantDebug or config.BFSDebug:
+            print("\tTile " + str(util.tile) + " is a black tile, going back")
+
+        util.tile = util.goBackward(util.tile)
+
+        if config.importantDebug or config.BFSDebug:
+            print("\tTile now " + str(util.tile) + " after black tile")
+
+    return previousCheckpoint
+
+# reset program to checkpoint
+def loadCheckpoint(checkpoint):
+    if config.importantDebug or config.BFSDebug:
+        print("\tLoading Checkpoint " + str(checkpoint))
+
+    # check if no checkpoints reached yet, reset if so
+    if checkpoint == -1:
+        reset()
+        return False
+
+    # retrieve saved maze from file
+    info, savedMaze = IO.readMaze(IO.saveFile("r"))
+
+    # make sure file is up-to-date
+    if checkpoint != int(info[:-1]):
+        raise ValueError("Checkpoint mismatch")
+
+    # reset maze, tile, and direction
+    util.maze = np.copy(savedMaze)
+    util.tile = checkpoint
+    util.direction = util.Dir[info[-1]].value
+    if config.importantDebug or config.BFSDebug:
+        print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
+
+    return True
+
 # searches for letter and color victims, marks and sends them
 def searchForVictims():
-    if config.debug:
+    if config.victimDebug:
         print("\t\t\tSTARTING CAMERA")
 
     while config.cameraCount > 0 and (not IO.ser.in_waiting):
@@ -126,7 +179,7 @@ def searchForVictims():
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
             return
         
-        if config.showCameras:
+        if config.victimDebug:
             _, leftFrame = IO.cap[0].read()
             cv2.imshow("left", leftFrame)
             cv2.waitKey(1)
@@ -166,7 +219,7 @@ def searchForVictims():
                 IO.sendData(config.inputMode, rightColorVictim)
 
     # remove ending of movement message from buffer
-    if config.debug:
+    if config.victimDebug:
         print("\t\t\tCAMERA OVER, GOT: " + str(IO.ser.read()))
     else:
         IO.ser.read()
