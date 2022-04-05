@@ -2,7 +2,6 @@ import numpy as np
 import config
 import serial
 import time
-import util
 
 if config.inputMode == 2:
     ser = serial.Serial(config.port, config.rate)
@@ -100,7 +99,7 @@ def writeMaze(file, header, maze, delete):
     file.close()
 
 def readMaze(file):
-    maze = np.zeros((config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)
+    maze = np.zeros((config.mazeSideLen ** 2, 10), dtype=np.int8)
     header = file.readline()
     for i in range(config.mazeSideLen ** 2):
         maze[i][:] = [int(j) for j in str(file.readline())[:10]]
@@ -129,7 +128,7 @@ def getSerialData():
         if receive_message == 'b':
             return None
         else:
-            walls[util.tileType] = 2
+            walls[9] = 2
             receive_message = ser.read()
 
     walls[0] = receive_message.decode("ascii", "ignore")
