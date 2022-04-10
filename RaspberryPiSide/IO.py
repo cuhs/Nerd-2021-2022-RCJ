@@ -112,8 +112,9 @@ def setupSerial():
     print("\tSerial setup on port: " + ser.name + "\n")
     print("waiting")
 
-    if ser.read() != 'a':  # setup acknowledgement
-        raise ValueError("Invalid Serial Setup Acknowledgement, Did Not Receive 'a'")
+    msg = getNextSerialByte()
+    if msg != 'a':  # setup acknowledgement
+        raise ValueError("Invalid Serial Setup Acknowledgement, Received: " + msg)
     return config.port
 
 # gets one byte of data from serial

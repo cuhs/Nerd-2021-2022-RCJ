@@ -94,7 +94,7 @@ def setWalls():
         # black tile
         if sensorData is None:
             return None
-        if sensorData == 'a':
+        if (type(sensorData) is not np.ndarray) and sensorData == 'a':
             return False
 
         # adjust directions for bot alignment

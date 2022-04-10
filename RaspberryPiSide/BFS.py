@@ -183,6 +183,11 @@ def searchForVictims():
             _, leftFrame = IO.cap[0].read()
             cv2.imshow("left", leftFrame)
             cv2.waitKey(1)
+            
+            if config.cameraCount == 2:
+                _, rightFrame = IO.cap[0].read()
+                cv2.imshow("right", rightFrame)
+                cv2.waitKey(1)
 
         # check if searching needed on left camera
         if util.maze[util.tile][util.dirToLeft(util.direction)] == 1 and util.maze[util.tile][util.nVictim + util.dirToLeft(util.direction)] == 0:
@@ -193,13 +198,15 @@ def searchForVictims():
             if leftLetterVictim is not None:
                 print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
-                # IO.sendData(config.inputMode, leftLetterVictim)
+                IO.sendData(config.inputMode, leftLetterVictim)
+                break;
 
             # send and record color victim
-            elif leftColorVictim is not None:
+            if leftColorVictim is not None:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
-                # IO.sendData(config.inputMode, leftColorVictim)
+                IO.sendData(config.inputMode, leftColorVictim)
+                break;
 
         # check if searching is needed on right camera
         if config.cameraCount == 2 and util.maze[util.tile][util.dirToLeft(util.direction)] == 1 and util.maze[util.tile][util.nVictim + util.dirToRight(util.direction)] == 0:
@@ -211,9 +218,12 @@ def searchForVictims():
                 print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightLetterVictim)
                 IO.sendData(config.inputMode, rightLetterVictim)
+                break;
 
             # send and record color victim
             elif rightColorVictim is not None:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
                 IO.sendData(config.inputMode, rightColorVictim)
+                break;
+        
