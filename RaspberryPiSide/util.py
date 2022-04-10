@@ -48,15 +48,15 @@ startTile = int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))
 
 # hsv ranges for color victims
 hsv_lower = {
-    0: (150, 230, 70),
-    1: (50, 40, 85),
-    2: (5, 95, 160)
+    0: (150, 230, 20),
+    1: (50, 40, 20),
+    2: (5, 95, 20)
 }
 
 hsv_upper = {
-     0: (179, 255, 205),
-     1: (90, 105, 130),
-     2: (50, 175, 195)
+     0: (179, 255, 255),
+     1: (90, 105, 255),
+     2: (50, 175, 255)
 }
 
 # adjust which position is facing true north
