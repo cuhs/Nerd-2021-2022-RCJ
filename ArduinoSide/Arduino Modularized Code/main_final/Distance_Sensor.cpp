@@ -1,5 +1,5 @@
 #include "Distance_Sensor.h"
-VL53L0X lox;
+VL53L0X lox;//Right: 0 Left: 1 Front: 2
 VL53L0X sensor[numSensors];
 //VL53L0X_RangingMeasurementData_t measure;
 void sendWallValues(int frontDist, int rightDist, int leftDist) {
