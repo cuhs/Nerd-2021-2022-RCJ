@@ -13,4 +13,5 @@ void servoTurnLeft();
 void servoMidPos();
 void servoTurnRight();
 void setupServo();
+void victim();
 #endif

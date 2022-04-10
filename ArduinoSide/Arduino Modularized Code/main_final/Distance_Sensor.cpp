@@ -107,11 +107,13 @@ void alignFront(){
   
   if(frontDist < minimumDist){
     while(frontDist < 5){
+      victim()
       ports[RIGHT].setMotorSpeed(-150);
       ports[LEFT].setMotorSpeed(-150);
       frontDist = getSensorReadings(2);
     }
-    while(frontDist>5){
+    while(frontDist>5){s
+      victim()
       ports[RIGHT].setMotorSpeed(150);
       ports[LEFT].setMotorSpeed(150);
       frontDist = getSensorReadings(2);

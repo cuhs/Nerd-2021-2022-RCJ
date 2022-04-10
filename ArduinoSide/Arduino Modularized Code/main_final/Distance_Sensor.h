@@ -4,6 +4,8 @@
 #include "TCA.h"
 #include "motors.h"
 #include "IMU.h"
+#include "rescueServo.cpp"
+
 void sendWallValues(int frontDist, int rightDist, int leftDist);
 void setupSensors();
 void setupSensors2();

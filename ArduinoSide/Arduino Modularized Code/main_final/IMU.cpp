@@ -16,7 +16,6 @@ Adafruit_BNO055 bno;
 void initIMU() {
 //  pinMode(resetPinIMU, OUTPUT);
 //  digitalWrite(resetPinIMU, HIGH);
-//  delay(
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_IMUPLUS))
   {
     /* There was a problem detecting the BNO055 ... check your connections */
@@ -255,6 +254,7 @@ void turnAbs(int degree){
   int error=targetDir-curDir;
   double pastError = 0;
   while (abs(error)>2) {
+    victim()
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     curDir=euler.x();
     error = targetDir-curDir;

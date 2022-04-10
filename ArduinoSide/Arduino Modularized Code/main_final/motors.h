@@ -5,6 +5,7 @@
 #include "new_global_vars.h"
 #include "Distance_Sensor.h"
 #include "PID.h"
+#include "rescueServo.cpp"
 #include <MeMegaPi.h>
 // For Turns and Movement
 const double WB = 16; //23.285

@@ -16,7 +16,6 @@ void setup() {
   Serial2.begin(9600);
   Wire.begin();
   setupServo();
-  setupTCSSensors();
   //Serial2.write('a');
   //pinMode(A6, OUTPUT);
   
@@ -91,7 +90,7 @@ void loop() {
     //turnAbs('r');
     //delay(2000);
     //turnAbs('l');
-  detectTiles();
+  
   if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
