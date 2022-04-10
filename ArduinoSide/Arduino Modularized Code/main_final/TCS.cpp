@@ -29,3 +29,13 @@ void getValues(){
   delay(20);
 
 }
+
+void detectTiles(){
+  tcaselect(5);
+  uint16_t r, g, b, c, lux;
+  tcs.getRawData(&r, &g, &b, &c);
+  lux = tcs.calculateLux(r, g, b);
+  if(lux<=0){
+    Serial2.write('b');
+  }
+}
