@@ -4,10 +4,10 @@ TODO:
 - Add conditions for loading checkpoints
 """
 
-import BFS
-import display
 import cv2
 import time
+import BFS
+import display
 from BFS import util
 from util import IO
 from util import config
@@ -20,7 +20,7 @@ if config.importantDebug:
     print("Setup Finished\n\nrunning...")
 
 # set start tile walls
-util.setWalls()
+inputWalls = util.setWalls()
 
 # time calculation
 start = time.time()
@@ -28,8 +28,17 @@ start = time.time()
 # calculate next tile
 nextTile = BFS.nextTile(util.tile)
 checkpoint = -1
+loadingCheckpoint = False
 
 while nextTile is not None or util.tile != util.startTile:
+    # load checkpoints manually
+    if config.manualCheckpointLoading:
+        if cv2.waitKey(33) == ord('c'):
+            if config.importantDebug:
+                print("\tCheckpoint Manually Loaded")
+            loadingCheckpoint = True
+
+    # BFS start
     if config.BFSDebug:
         print("\tCurrent Tile:\t" + str(util.tile) + "\n\tNext Tile:\t" + str(nextTile))
     # calculate path to target tile
@@ -49,14 +58,14 @@ while nextTile is not None or util.tile != util.startTile:
     util.pathLen += 1
 
     # calculate instructions for next tile
-    while util.path:
+    while util.path and not loadingCheckpoint:
         # calculate driving instructions from path to next tile
         if config.BFSDebug:
             print("\tPath: " + str(util.path))
 
         # set direction to the direction to be turned
         nextTileInPath = util.path.pop()
-        while util.tile + util.adjTiles[util.direction] != nextTileInPath:
+        while util.tile + util.adjTiles[util.direction] != nextTileInPath and not loadingCheckpoint:
             # calculate next direction
             if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
                 util.direction = util.turnRight(util.direction)
@@ -70,12 +79,18 @@ while nextTile is not None or util.tile != util.startTile:
             if config.inputMode == 2:
                 if config.doVictim:
                     BFS.searchForVictims()
-                else:
+
+                    victimMsg = IO.getNextSerialByte()
+                    if victimMsg == 'a':
+                        loadingCheckpoint = True
+                        break
+
                     if config.serialDebug:
-                        print("\t\t\tCAMERA OVER, GOT: " + str(IO.ser.read()))
-                    else:
-                        IO.ser.read()
+                        print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
             util.pathLen += 2
+
+        if loadingCheckpoint:
+            break
 
         # set the tile to the tile to be moved to
         util.tile = util.goForward(util.tile)
@@ -86,38 +101,42 @@ while nextTile is not None or util.tile != util.startTile:
         if config.inputMode == 2:
             if config.doVictim:
                 BFS.searchForVictims()
-            else:
+
+                victimMsg = IO.getNextSerialByte()
+                if victimMsg == 'a':
+                    loadingCheckpoint = True
+                    break
+
                 if config.serialDebug:
-                    print("\t\t\tCAMERA OVER, GOT: " + str(IO.ser.read()))
-                else:
-                    IO.ser.read()
+                    print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
         util.pathLen += 2
 
     # send BFS ending char '}'
-    IO.sData += config.serialMessages[6]
-    IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], True)
-    if config.serialDebug:
-        print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
-    util.pathLen += 1
+    if not loadingCheckpoint:
+        IO.sData += config.serialMessages[6]
+        IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], True)
+        if config.serialDebug:
+            print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
+        util.pathLen += 1
 
-    # reset path string
-    util.pathLen = len(IO.sData)
+        # reset path string
+        util.pathLen = len(IO.sData)
 
-    # set tile new tile to visited, clear parent array
-    util.maze[util.tile][util.visited] = 1
-    util.parent.fill(-1)
+        # set tile new tile to visited, clear parent array
+        util.maze[util.tile][util.visited] = True
+        util.parent.fill(-1)
 
-    # get sensor/wall values, take care of special tiles
-    if (not util.setWalls()) or (config.inputMode != 2 and util.isBlackTile(util.maze, util.tile)):
-        util.maze = util.setBlackTile(util.maze, util.tile)
-    checkpoint = BFS.handleSpecialTiles(checkpoint)
+        # get sensor/wall values, take care of special tiles
+        inputWalls = util.setWalls()
 
-    # load checkpoint if needed
-    if False:
-        if not BFS.loadCheckpoint(checkpoint):
-            # no checkpoint exists, reset to start of maze
-            util.setWalls()
-        display.show(None, util.maze, config.displayRate)
+    if loadingCheckpoint or inputWalls is False:
+        BFS.loadCheckpoint(checkpoint)
+        loadingCheckpoint = False
+        util.maze[util.tile][util.visited] = False
+    else:
+        if (inputWalls is None) or (config.inputMode != 2 and util.isBlackTile(util.maze, util.tile)):
+            util.maze = util.setBlackTile(util.maze, util.tile)
+        checkpoint = BFS.handleSpecialTiles(checkpoint)
 
     # calculate next tile
     nextTile = BFS.nextTile(util.tile)

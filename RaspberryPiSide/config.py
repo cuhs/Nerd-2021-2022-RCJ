@@ -28,6 +28,8 @@ cameraCount = 1  # number of cameras, cam0 is left, cam1 is right. if only one c
 cameraWidth = 160  # width of camera feed for both cameras
 cameraHeight = 128  # height of camera feed for both cameras
 
+manualCheckpointLoading = True  # load back to last checkpoint when 'c' is pressed
+
 # serial messages in order for:
 # forward, left, right, back, EOI, (end of single instruction), SOD (start of dir.), EOD (end of directions)
 # example: if ["a", "b", "c", "d", ".", "$", "%"], directions for forward, left, left, forward would be:

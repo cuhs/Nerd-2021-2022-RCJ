@@ -27,7 +27,7 @@ def genMazeFromImage():
             maze[x + (config.mazeSideLen * y)][3] = (1 if (img.item(yPixel, xPixel - 8, 0) < 100) else 0)
 
     for i in range(config.mazeSideLen ** 2):
-        maze[i][util.visited] = 1
+        maze[i][util.visited] = True
 
     # displays check for correct
     if config.showDisplay:

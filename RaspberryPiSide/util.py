@@ -93,6 +93,8 @@ def setWalls():
     else:
         # black tile
         if sensorData is None:
+            return None
+        if sensorData == 'a':
             return False
 
         # adjust directions for bot alignment
@@ -133,7 +135,7 @@ def setBlackTile(cMaze, cTile, setBorders=True):
         for i in range(4):
             cMaze[cTile][i] = 1
         for i in range(4):
-            if tileExists(cTile + adjTiles[i]) and not (i == 1 and (cTile + 1) % config.mazeSideLen == 0):
+            if tileExists(cTile + adjTiles[i]) and not (i == 1 and (cTile + 1) % config.mazeSideLen == 0) and not (i == 3 and cTile % config.mazeSideLen == 0):
                 cMaze[cTile + adjTiles[i]][adjustDirections(Dir.S.value)[i]] = 1
     # mark the tile as black
     cMaze[cTile][tileType] = 1

@@ -112,34 +112,45 @@ def setupSerial():
     print("\tSerial setup on port: " + ser.name + "\n")
     print("waiting")
 
-    while not ser.inWaiting():
-        time.sleep(0.01)
-
-    ser.read()  # do this to clean the buffer
+    if ser.read() != 'a':  # setup acknowledgement
+        raise ValueError("Invalid Serial Setup Acknowledgement, Did Not Receive 'a'")
     return config.port
+
+# gets one byte of data from serial
+def getNextSerialByte():
+    return ser.read().decode("ascii", "ignore")
 
 # request and receive wall positions through serial
 def getSerialData():
     walls = np.zeros(10)
-    receive_message = ser.read()
+    msg = getNextSerialByte()
+
+    if msg == 'a':
+        return msg
 
     # account for black and silver tiles
-    if not receive_message.isdigit():
-        if receive_message == 'b':
+    if not msg.isdigit():
+        if msg == 'b':
             return None
         else:
             walls[9] = 2
-            receive_message = ser.read()
+            msg = getNextSerialByte()
+            if msg == 'a':
+                return msg
 
-    walls[0] = receive_message.decode("ascii", "ignore")
+    walls[0] = msg
     time.sleep(0.1)
 
-    receive_message = ser.read()
-    walls[1] = receive_message.decode("ascii", "ignore")
+    msg = getNextSerialByte()
+    if msg == 'a':
+        return msg
+    walls[1] = msg
     time.sleep(0.1)
 
-    receive_message = ser.read()
-    walls[3] = receive_message.decode("ascii", "ignore")
+    msg = getNextSerialByte()
+    if msg == 'a':
+        return msg
+    walls[3] = msg
     time.sleep(0.1)
 
     walls[2] = 0

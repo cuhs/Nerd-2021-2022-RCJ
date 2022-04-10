@@ -24,7 +24,10 @@ def reset():
     util.pathLen = 0
 
     # set starting tile as visited
-    util.maze[util.tile][util.visited] = 1
+    util.maze[util.tile][util.visited] = True
+
+    # setup input from file or serial
+    IO.setupInput(config.inputMode)
 
 def init():
     if config.mazeSideLen % 2 != 0 or not(2 <= config.mazeSideLen <= 80):
@@ -50,9 +53,6 @@ def init():
         for i in range(config.mazeSideLen ** 2):
             dMaze[i][:] = [int(j) for j in str(r.readline())[:10]]
         display.show(-1, dMaze, 0)
-
-    # packet setup
-    IO.setupInput(config.inputMode)
 
     # display setup
     display.imgSetup()
@@ -81,7 +81,7 @@ def nextTile(cTile):
         print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[util.tile][util.visited]))
 
     # base case, BFS done and cTile is target tile
-    if util.maze[cTile][util.visited] == 0:
+    if not util.maze[cTile][util.visited]:
         util.q.clear()
         if config.BFSDebug:
             print("\tBFS - END, Tile:\t" + str(cTile))
@@ -91,7 +91,7 @@ def nextTile(cTile):
     possibleTiles = [0, 0, 0, 0]
 
     for i in range(4):
-        if util.maze[cTile][i] == 0:
+        if not util.maze[cTile][i]:
             # no wall in direction i
             if util.parent[util.adjTiles[i] + cTile] == -1:
                 util.parent[util.adjTiles[i] + cTile] = cTile
@@ -135,7 +135,7 @@ def handleSpecialTiles(previousCheckpoint):
         util.tile = util.goBackward(util.tile)
 
         if config.importantDebug or config.BFSDebug:
-            print("\tTile now " + str(util.tile) + " after black tile")
+            print("\tTile is now " + str(util.tile) + " after black tile")
 
     return previousCheckpoint
 
@@ -147,23 +147,23 @@ def loadCheckpoint(checkpoint):
     # check if no checkpoints reached yet, reset if so
     if checkpoint == -1:
         reset()
-        return False
+        util.setWalls()
+    else:
+        # retrieve saved maze from file
+        info, savedMaze = IO.readMaze(IO.saveFile("r"))
 
-    # retrieve saved maze from file
-    info, savedMaze = IO.readMaze(IO.saveFile("r"))
+        # make sure file is up-to-date
+        if checkpoint != int(info[:-1]):
+            raise ValueError("Checkpoint mismatch")
 
-    # make sure file is up-to-date
-    if checkpoint != int(info[:-1]):
-        raise ValueError("Checkpoint mismatch")
+        # reset maze, tile, and direction
+        util.maze = np.copy(savedMaze)
+        util.tile = checkpoint
+        util.direction = util.Dir[info[-1]].value
+        if config.importantDebug or config.BFSDebug:
+            print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
 
-    # reset maze, tile, and direction
-    util.maze = np.copy(savedMaze)
-    util.tile = checkpoint
-    util.direction = util.Dir[info[-1]].value
-    if config.importantDebug or config.BFSDebug:
-        print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
-
-    return True
+    display.show(None, util.maze, config.displayRate)
 
 # searches for letter and color victims, marks and sends them
 def searchForVictims():
@@ -217,9 +217,3 @@ def searchForVictims():
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
                 IO.sendData(config.inputMode, rightColorVictim)
-
-    # remove ending of movement message from buffer
-    if config.victimDebug:
-        print("\t\t\tCAMERA OVER, GOT: " + str(IO.ser.read()))
-    else:
-        IO.ser.read()
