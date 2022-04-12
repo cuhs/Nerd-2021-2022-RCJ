@@ -4,7 +4,7 @@
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 #include "motors.h"
-#include "rescueServo.cpp"
+#include "rescueServo.h"
 
 
 void initIMU();

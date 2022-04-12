@@ -2,7 +2,7 @@
 Servo myservo;
 bool shouldRun = true;
 //midPos: 60
- bool stuckTest(int target) {
+bool stuckTest(int target) {
   int ang = myservo.read();
   //Serial.println(ang);
   if (!(ang > target - 1 && ang < target + 1)) {
@@ -12,7 +12,7 @@ bool shouldRun = true;
 
 }
 
-void setupServo(){
+void setupServo() {
   myservo.attach(A8, 300, 2400); // attaches the servo on pin A8 to the servo object
   //myservo.attach(A6);
 }
@@ -53,37 +53,57 @@ void servoTurnRight() {
   wiggle(173, 5);
 }
 
-void victim(){
+void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
+ {
+  analogWrite(47, red_light_value);
+  analogWrite(43, green_light_value);
+  analogWrite(42, blue_light_value);
+}
+void victim() {
 
-if(Serial2.available()){
+  if (Serial2.available()) {
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
 
     ports[RIGHT].setMotorSpeed(0);
     ports[LEFT].setMotorSpeed(0);
-    
- switch (incoming_byte){
-      case 'R': 
-        Serial.println("red/yellow"); 
+
+    switch (incoming_byte) {
+      case 'R':
+        Serial.println("red/yellow");
+         RGB_color(255, 0, 0); // Red
+         delay(1000);
+         RGB_color(0, 0, 0); // Red
         break;
-      case 'G': 
-        Serial.println("green"); 
-        break; 
+      case 'G':
+        Serial.println("green");
+        RGB_color(255, 0, 0); // Green
+         delay(1000);
+         RGB_color(0, 255, 0); 
+        break;
       case 'H':
         Serial.println("H");
-        break; 
-        //turn left
+        RGB_color(255, 0, 255); // Blue
+         delay(1000);
+         RGB_color(0, 0, 0); // 
+        break;
+      //turn left
       case 'S':
-       Serial.println("S");
-       break; 
-       //turn right
+        Serial.println("S");
+        RGB_color(0, 255, 255); // Cyan
+         delay(1000);
+         RGB_color(0, 0, 0); // 
+        break;
+      //turn right
       case 'U':
-        Serial.println("U"); 
+        Serial.println("U");
+        RGB_color(255, 0, 255); // Magenta
+         delay(1000);
+         RGB_color(0, 0, 0); // 
         break;
       default:
-       Serial.println("hmmm wut is this");
+        Serial.println("hmmm wut is this");
     }
-    }
+  }
 }
-    

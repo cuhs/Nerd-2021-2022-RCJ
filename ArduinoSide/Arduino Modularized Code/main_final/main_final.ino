@@ -100,21 +100,30 @@ void loop() {
     switch (incoming_byte){
       case '{': 
         Serial.println("{"); break;
-      case 'F': 
+      case 'F':
+      Serial2.read(); 
         Serial.println("forward!"); 
         goForwardTilesPID(1);
         alignFront();
+                Serial2          .write(';');
+
         break; 
       case 'L':
+            Serial2.read(); 
         Serial.println("left!");
         //turnLeft(90);
         turnAbs('l');
+                Serial2.write(';');
+
         break; 
         //turn left
       case 'R':
+            Serial2.read(); 
        Serial.println("right!"); 
        //turnRight(90);
        turnAbs('r');
+               Serial2.write(';');
+
        break; 
        //turn right
       case ';':

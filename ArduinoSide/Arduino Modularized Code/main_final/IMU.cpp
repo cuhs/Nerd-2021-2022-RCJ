@@ -254,7 +254,7 @@ void turnAbs(int degree){
   int error=targetDir-curDir;
   double pastError = 0;
   while (abs(error)>2) {
-    victim()
+    victim();
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     curDir=euler.x();
     error = targetDir-curDir;
