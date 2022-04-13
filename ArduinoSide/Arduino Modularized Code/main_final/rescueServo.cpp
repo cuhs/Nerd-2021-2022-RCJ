@@ -63,13 +63,13 @@ void victim() {
         break;
       case 'G': // 0 kits
         Serial.println("green");
-        RGB_color(255, 0, 0); // Green
+        RGB_color(0, 255, 0); // Green
         delay(1000);
-        RGB_color(0, 255, 0);
+        RGB_color(0, 0, 0);
         break;
       case 'H': // 3 kits
         Serial.println("H");
-        RGB_color(255, 0, 255); // Blue
+        RGB_color(0, 0, 255); // Blue
         dropKits('L'/*direction*/, 3);
         delay(1000);
         RGB_color(0, 0, 0); //
