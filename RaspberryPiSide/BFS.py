@@ -185,7 +185,7 @@ def searchForVictims():
             cv2.waitKey(1)
             
             if config.cameraCount == 2:
-                _, rightFrame = IO.cap[0].read()
+                _, rightFrame = IO.cap[1].read()
                 cv2.imshow("right", rightFrame)
                 cv2.waitKey(1)
 
