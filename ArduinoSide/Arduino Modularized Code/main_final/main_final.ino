@@ -28,8 +28,6 @@ void setup() {
   setupSensors2();
   initIMU();
   
-  setupServo();
-  
   Serial2.write('a');
   //Serial.print(getSensorReadings(0) + " " + getSensorReadings(1) + " " + getSensorReadings(2)); 
   sendWallValues(getSensorReadings(2),getSensorReadings(0),getSensorReadings(1));
