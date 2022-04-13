@@ -16,7 +16,6 @@ void wiggle(char angle) {
     delay(100);
   }
 }
-<<<<<<< HEAD
  
 void servoTurnLeft() {
   myservo.write(0);
@@ -38,7 +37,6 @@ void servoTurnRight() {
   delay(500);
   //Serial.print(myservo.read());
   wiggle(173, 5);
-=======
 
 void dropKits(char dir, int amt) {
   if (dir == 'L') {
@@ -58,7 +56,6 @@ void dropKits(char dir, int amt) {
       delay(1000);
     }
   }
->>>>>>> 887491fc17f9c6189f66b8efdcc1fd34aa4b488a
 }
 
 void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
