@@ -28,9 +28,6 @@ void setup() {
   setupSensors2();
   initIMU();
   
-  //myservo.attach(A8, 490, 2400); // attaches the servo on pin A8 to the servo object
-  //midPos();
-  
   Serial2.write('a');
   //Serial.print(getSensorReadings(0) + " " + getSensorReadings(1) + " " + getSensorReadings(2)); 
   sendWallValues(getSensorReadings(2),getSensorReadings(0),getSensorReadings(1));

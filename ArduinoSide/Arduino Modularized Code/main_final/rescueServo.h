@@ -6,13 +6,12 @@
 extern Servo myservo;  // create servo object to control a servo
 // twelve servo objects can be created on most boards
 //int pos = 0;    // variable to store the servo position
-extern bool shouldRun;
+extern const int R_angle;
+extern const int L_angle;
+extern const int C_angle;
 
-bool stuckTest(int target);
-void wiggle(int target, int times);
-void servoTurnLeft();
-void servoMidPos();
-void servoTurnRight();
+void wiggle(char angle);
+void dropKits(char dir, int amt);
 void setupServo();
 void victim();
 void RGB_color(int red_light_value, int green_light_value, int blue_light_value);
