@@ -37,5 +37,7 @@ bool detectBlack(){
   lux = tcs.calculateLux(r, g, b);
   if(lux<=0){
     Serial2.write('b');
+    return true;
   }
+  return false;
 }
