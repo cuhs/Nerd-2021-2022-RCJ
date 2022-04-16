@@ -15,6 +15,7 @@ void turnRightPID(int deg);
 void turnLeftPID(int deg);
 void turnAbs(char t);
 void turnAbs(int);
+void triangulation(int, int);
 
 extern int resetPinIMU;
 extern Adafruit_BNO055 bno;

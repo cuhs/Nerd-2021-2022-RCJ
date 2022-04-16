@@ -10,6 +10,7 @@
 //MeMegaPiDCMotor rightMotor(PORT1B);
 
 int resetPinIMU = A6;
+const int ROBOT_WIDTH =17.5;
 Adafruit_BNO055 bno;
 
 
@@ -278,4 +279,33 @@ void turnAbs(int degree){
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
+}
+
+void triangulation(int left, int right){
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  int distFromCenter;
+  int angle;
+  int forwardCm;
+  int currAngle;
+  if(left > 30 && right > 30){
+    goForwardTilesPID(1);
+    return;
+  }
+  if(left>right){
+    distFromCenter=15-(right+ROBOT_WIDTH/2);
+    angle = atan(30/distFromCenter)*360/(2*3.1415927);
+    forwardCm=sqrt(pow(distFromCenter,2)+900);
+    currAngle=euler.x();
+    turnAbs((int)(currAngle-angle+360)%360);
+    goForwardPID(forwardCm);
+    turnAbs(currAngle);
+  }else{
+    distFromCenter=15-(left+ROBOT_WIDTH/2);
+    angle = atan(30/distFromCenter)*360/(2*3.1415927);
+    forwardCm=sqrt(pow(distFromCenter,2)+900);
+    currAngle=euler.x();
+    turnAbs((int)(currAngle+angle)%360);
+    goForwardPID(forwardCm);
+    turnAbs(currAngle);
+  }
 }
