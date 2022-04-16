@@ -297,7 +297,7 @@ void triangulation(int left, int right){
     forwardCm=sqrt(pow(distFromCenter,2)+900);
     currAngle=euler.x();
     turnAbs((int)(currAngle-angle+360)%360);
-    goForward(forwardCm);
+    goForwardPID(forwardCm);
     turnAbs(currAngle);
   }else{
     distFromCenter=15-(left+ROBOT_WIDTH/2);
@@ -305,7 +305,7 @@ void triangulation(int left, int right){
     forwardCm=sqrt(pow(distFromCenter,2)+900);
     currAngle=euler.x();
     turnAbs((int)(currAngle+angle)%360);
-    goForward(forwardCm);
+    goForwardPID(forwardCm);
     turnAbs(currAngle);
   }
 }

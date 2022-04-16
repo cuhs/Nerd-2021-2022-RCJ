@@ -112,6 +112,44 @@ void goForwardTilesPID(int tiles) {
   ports[LEFT].setMotorSpeed(0);
   
 }
+
+void goForwardPID(int dist) {
+  int tileSize = 30; // Set to 30
+  int motorEncUse = LEFT;
+  
+  double pastError = 0;
+  double integral = 0;
+  int fix = 0;
+  
+  ports[motorEncUse].count = 0;
+
+  double enc = ((360 / (D * PI)) * dist);
+
+  while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
+
+    victim();
+    if(detectBlack()){
+      while(ports[motorEncUse].count>0){
+        ports[RIGHT].setMotorSpeed(-80);
+        ports[LEFT].setMotorSpeed(-80);
+      }
+      return;
+    }
+    Serial.print(enc);
+    Serial.print(' ');
+    Serial.println(abs(ports[motorEncUse].count));
+
+    fix = (int)(PID(enc-abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.0, 1));
+    Serial.println(fix);
+    
+    ports[RIGHT].setMotorSpeed(fix+40);
+    ports[LEFT].setMotorSpeed(fix+40);
+    
+  }
+  ports[RIGHT].setMotorSpeed(0);
+  ports[LEFT].setMotorSpeed(0);
+  
+}
 // VVVVV incorporates PID wall following, still in progress
 void goForwardTiles2(int tiles) {
   int target = 11;
