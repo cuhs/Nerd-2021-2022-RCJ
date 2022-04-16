@@ -16,44 +16,22 @@ void wiggle(char angle) {
     delay(100);
   }
 }
- 
-void servoTurnLeft() {
-  myservo.write(0);
-
-  delay(500);
-  wiggle(0, 5);
-}
-
-void servoMidPos() {
-  myservo.write(60);
-  delay(500);
-  wiggle(60, 5);
-}
-
-
-void servoTurnRight() {
-
-  myservo.write(173);
-  delay(500);
-  //Serial.print(myservo.read());
-  wiggle(173, 5);
-
 void dropKits(char dir, int amt) {
   if (dir == 'L') {
     for (int i = 0; i < amt; i++) {
       wiggle(C_angle);
       myservo.write(C_angle);
-      delay(1000);
+      delay(2000);
       myservo.write(L_angle);
-      delay(1000);
+      delay(2000);
     }
   } else if (dir == 'R') {
     for (int i = 0; i < amt; i++) {
       wiggle(C_angle);
       myservo.write(C_angle);
-      delay(1000);
+      delay(2000);
       myservo.write(R_angle);
-      delay(1000);
+      delay(2000);
     }
   }
 }

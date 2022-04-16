@@ -1,7 +1,7 @@
 #include "TCS.h"
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
 void setupTCSSensors() {
-  tcaselect(5);
+  tcaselect(3);
   if (tcs.begin()) {
     Serial.println("Found sensor");
   } else {
@@ -11,7 +11,7 @@ void setupTCSSensors() {
 }
 
 void getValues(){
-  tcaselect(5);
+  tcaselect(3);
   uint16_t r, g, b, c, colorTemp, lux;
 
   tcs.getRawData(&r, &g, &b, &c);
@@ -30,8 +30,8 @@ void getValues(){
 
 }
 
-void detectTiles(){
-  tcaselect(5);
+bool detectBlack(){
+  tcaselect(3);
   uint16_t r, g, b, c, lux;
   tcs.getRawData(&r, &g, &b, &c);
   lux = tcs.calculateLux(r, g, b);

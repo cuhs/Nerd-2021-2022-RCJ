@@ -4,6 +4,6 @@
 #include "TCA.h"
 void setupTCSSensors();
 void getValues();
-void detectTiles();
+bool detectBlack();
 extern Adafruit_TCS34725 tcs;
 #endif

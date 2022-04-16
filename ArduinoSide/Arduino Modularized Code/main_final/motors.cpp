@@ -90,6 +90,13 @@ void goForwardTilesPID(int tiles) {
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
 
     victim();
+    if(detectBlack()){
+      while(ports[motorEncUse].count>0){
+        ports[RIGHT].setMotorSpeed(-80);
+        ports[LEFT].setMotorSpeed(80);
+      }
+      
+    }
     Serial.print(enc);
     Serial.print(' ');
     Serial.println(abs(ports[motorEncUse].count));
