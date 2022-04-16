@@ -21,7 +21,7 @@ class Detection:
         if len(contour) > 0:
             contour = max(contour, key=cv2.contourArea)
 
-            if cv2.contourArea(contour) > 100:
+            if cv2.contourArea(contour) > 50:
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
                 box = np.float32(box)

@@ -1,5 +1,6 @@
 import util
 import sys
+import time
 import mazeToText
 import IO
 import display
@@ -199,14 +200,18 @@ def searchForVictims():
                 print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
                 IO.sendData(config.inputMode, leftLetterVictim)
-                break;
+                if config.victimDebug:
+                    cv2.imwrite('saveImage/' + leftLetterVictim + str(time.time()) + '.png', leftFrame)
+                break
 
             # send and record color victim
             if leftColorVictim is not None:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
                 IO.sendData(config.inputMode, leftColorVictim)
-                break;
+                if config.victimDebug:
+                    cv2.imwrite('saveImage/' + leftColorVictim + str(time.time()) + '.png', leftFrame)
+                break
 
         # check if searching is needed on right camera
         if config.cameraCount == 2 and util.maze[util.tile][util.dirToLeft(util.direction)] == 1 and util.maze[util.tile][util.nVictim + util.dirToRight(util.direction)] == 0:
@@ -218,12 +223,16 @@ def searchForVictims():
                 print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightLetterVictim)
                 IO.sendData(config.inputMode, rightLetterVictim)
-                break;
+                if config.victimDebug:
+                    cv2.imwrite('saveImage/' + rightLetterVictim + str(time.time()) + '.png', rightFrame)
+                break
 
             # send and record color victim
             elif rightColorVictim is not None:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
                 IO.sendData(config.inputMode, rightColorVictim)
-                break;
+                if config.victimDebug:
+                    cv2.imwrite('saveImage/' + rightColorVictim + str(time.time()) + '.png', rightFrame)
+                break
         

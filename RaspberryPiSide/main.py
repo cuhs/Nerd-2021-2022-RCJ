@@ -12,7 +12,7 @@ import display
 from BFS import util
 from util import IO
 from util import config
-
+    
 if config.importantDebug:
     print("\nRaspberryPiSide START")
 BFS.init()
