@@ -286,17 +286,22 @@ void triangulation(int left, int right){
   int distFromCenter;
   int angle;
   int forwardCm;
+  int currAngle;
   if(left>right){
     distFromCenter=15-(right+ROBOT_WIDTH/2);
     angle = atan(30/distFromCenter)*360/(2*3.1415927);
     forwardCm=sqrt(pow(distFromCenter,2)+900);
-    turnAbs((int)(euler.x()-angle+360)%360);
+    currAngle=euler.x();
+    turnAbs((int)(currAngle-angle+360)%360);
     goForward(forwardCm);
+    turnAbs(currAngle);
   }else{
     distFromCenter=15-(left+ROBOT_WIDTH/2);
     angle = atan(30/distFromCenter)*360/(2*3.1415927);
     forwardCm=sqrt(pow(distFromCenter,2)+900);
-    turnAbs((int)(euler.x()+angle)%360);
+    currAngle=euler.x();
+    turnAbs((int)(currAngle+angle)%360);
     goForward(forwardCm);
+    turnAbs(currAngle);
   }
 }
