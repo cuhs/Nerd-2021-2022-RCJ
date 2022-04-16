@@ -95,7 +95,7 @@ void goForwardTilesPID(int tiles) {
         ports[RIGHT].setMotorSpeed(-80);
         ports[LEFT].setMotorSpeed(-80);
       }
-      
+      return;
     }
     Serial.print(enc);
     Serial.print(' ');
