@@ -287,6 +287,10 @@ void triangulation(int left, int right){
   int angle;
   int forwardCm;
   int currAngle;
+  if(left > 30 && right > 30){
+    goForwardTilesPID(1);
+    return;
+  }
   if(left>right){
     distFromCenter=15-(right+ROBOT_WIDTH/2);
     angle = atan(30/distFromCenter)*360/(2*3.1415927);
