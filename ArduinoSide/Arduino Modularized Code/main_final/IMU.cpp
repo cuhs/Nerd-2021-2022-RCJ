@@ -9,7 +9,7 @@
 //MeMegaPiDCMotor leftMotor(PORT2B);
 //MeMegaPiDCMotor rightMotor(PORT1B);
 
-const int resetPinIMU = A6;
+int resetPinIMU = A6;
 const int ROBOT_WIDTH =17.5;
 Adafruit_BNO055 bno;
 
@@ -290,13 +290,13 @@ void triangulation(int left, int right){
     distFromCenter=15-(right+ROBOT_WIDTH/2);
     angle = atan(30/distFromCenter)*360/(2*3.1415927);
     forwardCm=sqrt(pow(distFromCenter,2)+900);
-    turnAbs((euler.x()-angle+360)%360);
+    turnAbs((int)(euler.x()-angle+360)%360);
     goForward(forwardCm);
   }else{
     distFromCenter=15-(left+ROBOT_WIDTH/2);
     angle = atan(30/distFromCenter)*360/(2*3.1415927);
     forwardCm=sqrt(pow(distFromCenter,2)+900);
-    turnAbs((euler.x()+angle)%360);
+    turnAbs((int)(euler.x()+angle)%360);
     goForward(forwardCm);
   }
 }
