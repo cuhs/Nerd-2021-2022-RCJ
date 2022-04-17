@@ -91,7 +91,7 @@ void goForwardTilesPID(int tiles) {
 
     victim();
     if(detectBlack()){
-      while(ports[motorEncUse].count>0){
+      while(abs(ports[motorEncUse].count)>0){
         ports[RIGHT].setMotorSpeed(-80);
         ports[LEFT].setMotorSpeed(-80);
       }
