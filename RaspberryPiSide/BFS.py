@@ -11,8 +11,7 @@ import letterDetection
 import inspect
 
 def reset():
-    util.maze = np.zeros((2, config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
-    util.layer = 0 # set t
+    util.maze = np.zeros((config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
     util.tile = util.startTile  # creates start tile in the middle of size x size area
     util.direction = util.Dir.N.value  # starting direction is set to north
 
@@ -26,7 +25,7 @@ def reset():
     util.pathLen = 0
 
     # set starting tile as visited
-    util.maze[util.layer][util.tile][util.visited] = True
+    util.maze[util.tile][util.visited] = True
 
     # setup input from file or serial
     IO.setupInput(config.inputMode)
