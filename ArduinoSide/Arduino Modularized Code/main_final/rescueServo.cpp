@@ -43,7 +43,7 @@ void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
   analogWrite(42, blue_light_value);
 }
 void victim() {
-  doHeatVictim(getHeatSensorReadings(4), getHeatSensorReadings(5));
+//  doHeatVictim(getHeatSensorReadings(4), getHeatSensorReadings(5));
 
   if (Serial2.available()) {
     delay(1);
