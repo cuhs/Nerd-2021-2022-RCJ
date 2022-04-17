@@ -260,9 +260,9 @@ void turnAbs(int degree){
     curDir=euler.x();
     error = targetDir-curDir;
     if(error>180)
-      error = 360-error;
+      error-=360;
     else if(error<-180)
-      error=360+error;
+      error+=360;
     fix = (int)(PID(error, pastError, integral, 1.6667, .005, 0));
     if(fix>0)
       fix+=80;
@@ -273,8 +273,8 @@ void turnAbs(int degree){
     Serial.print(euler.x());
     Serial.print("\terror: ");
     Serial.println(error);
-    ports[RIGHT].setMotorSpeed(-fix);
-    ports[LEFT].setMotorSpeed(fix);
+    ports[RIGHT].setMotorSpeed(fix);
+    ports[LEFT].setMotorSpeed(-fix);
     //Serial.println(euler.x());
   }
   ports[RIGHT].setMotorSpeed(0);
