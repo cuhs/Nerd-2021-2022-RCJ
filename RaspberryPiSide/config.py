@@ -1,7 +1,7 @@
 # config file, because some settings might differ while debugging, or on different systems
 
 mazeSideLen = 10  # must be even
-inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
+inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2)  # buffer added on setup
 
 wallPercentage = 50  # percentage of tiles that should be walls for random generation of maze
