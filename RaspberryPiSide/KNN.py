@@ -6,8 +6,8 @@ class KNN:
     
     def __init__(self):
         self.knn = cv2.ml.KNearest_create()
-        features = np.loadtxt(config.fpKNN + "features.txt", dtype=np.float32)
-        labels = np.loadtxt(config.fpKNN + "labels.txt", dtype=np.float32)
+        features = np.loadtxt(config.fpKNN + "features2.txt", dtype=np.float32)
+        labels = np.loadtxt(config.fpKNN + "labels2.txt", dtype=np.float32)
 
         self.knn.train(features, cv2.ml.ROW_SAMPLE, labels)
 

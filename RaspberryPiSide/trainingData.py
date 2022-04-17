@@ -4,8 +4,8 @@ import old_detection
 
 cap = cv2.VideoCapture(0)
 
-labels = open("labels.txt",'w')
-features = open("features.txt",'w')
+labels = open("KNN/labels2.txt",'w')
+features = open("KNN/features2.txt",'w')
 
 size = 30
 
@@ -16,13 +16,15 @@ letter_count = {'H':0,'S':0,'U':0}
 
 
 
-main = detection.Detection()
+main = old_detection.detection()
 
 print("hey ")
 
 while(cap.isOpened):
     
     ret, frame = cap.read()
+    
+    frame = frame[:,:560]
     
     if(ret > 0):
         
@@ -65,10 +67,10 @@ while(cap.isOpened):
             print(training_features)
             print(training_features.shape)
             
-            np.savetxt("labels.txt",training_labels)
+            np.savetxt("KNN/labels2.txt",training_labels)
             np.savetxt(features,training_features)
             
-            break
+            break 
         
         cv2.imshow("frame",frame)
 

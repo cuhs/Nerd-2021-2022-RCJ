@@ -95,7 +95,7 @@ class detection():
         
         return imgOutput1,imgOutput2
         
-main = detection()
+'''main = detection()
 KNN = KNN.KNN()
 
 cap1 = cv2.VideoCapture(0)
@@ -164,7 +164,7 @@ while cap1.isOpened() and cap2.isOpened():
 print("Total: " + str(total) + "\tCorrect: " + str(correct) + "\nPercentage: " + str(float(correct)/total * 100)[:4] + "%")
 cap1.release()
 cap2.release()
-cv2.destroyAllWindows()
+cv2.destroyAllWindows()'''
 
 
             
