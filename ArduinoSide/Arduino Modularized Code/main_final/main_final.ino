@@ -40,10 +40,10 @@ void setup() {
 
 void loop() {
 
-  goForwardTilesPID(1);
-  delay(5000);
+//  goForwardTilesPID(1);
+//  delay(5000);
   
-  /*
+  
   if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
@@ -94,6 +94,6 @@ void loop() {
     
     }
   }
-  */
+  
 
 }

@@ -85,23 +85,24 @@ void goForwardTilesPID(int tiles) {
   int fix = 0;
   
   ports[motorEncUse].count = 0;
-
   double enc = ((360 / (D * PI)) * tileSize * tiles);
-
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
 
     victim();
     if(detectBlack()){
       Serial.println("SAW BLACK");
-      while(abs(ports[motorEncUse].count)>0){// this may not work if it skips past 0, may need update
+      while(ports[motorEncUse].count>0){// this may not work if it skips past 0, may need update
         ports[RIGHT].setMotorSpeed(-80);
         ports[LEFT].setMotorSpeed(-80);
       }
+      Serial2.write('b');
+      ports[RIGHT].setMotorSpeed(0);
+      ports[LEFT].setMotorSpeed(0);
       return;
     }
-    Serial.print(enc);
-    Serial.print(' ');
-    Serial.println(abs(ports[motorEncUse].count));
+//    Serial.print(enc);
+//    Serial.print(' ');
+//    Serial.println(abs(ports[motorEncUse].count));
 
     fix = (int)(PID(enc-abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.0, 1));
     Serial.println(fix);

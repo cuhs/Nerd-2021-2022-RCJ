@@ -1,5 +1,5 @@
 #include "TCS.h"
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcs;
 void setupTCSSensors() {
   tcaselect(3);
   if (tcs.begin()) {
@@ -37,8 +37,8 @@ bool detectBlack(){
   lux = tcs.calculateLux(r, g, b);
   Serial.print("lux: ");
   Serial.println(lux);
-  if(lux<=100){ //lux value changed
-    Serial2.write('b');
+  if(lux<=0){ //lux value changed
+    //Serial2.write('b');
     return true;
   }
   return false;
