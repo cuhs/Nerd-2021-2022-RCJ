@@ -17,8 +17,6 @@
 // For Turns and Movement
 const double WB = 16; //23.285
 const double D = 7; //6.9 6.5
-extern MegaPiPort ports[];
-extern char message[4];
 
 void goForwardTilesPID(int tiles);
 void goForwardPID(int dist);
@@ -46,5 +44,6 @@ class MegaPiPort: public MeMegaPiDCMotor {
       MeMegaPiDCMotor::run(true_speed);
     };
 };
-
+extern MegaPiPort ports[];
+extern char message[4];
 #endif
