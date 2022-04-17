@@ -35,7 +35,9 @@ bool detectBlack(){
   uint16_t r, g, b, c, lux;
   tcs.getRawData(&r, &g, &b, &c);
   lux = tcs.calculateLux(r, g, b);
-  if(lux<=1){
+  Serial.print("lux: ");
+  Serial.println(lux);
+  if(lux<=100){ //lux value changed
     Serial2.write('b');
     return true;
   }

@@ -40,54 +40,10 @@ void setup() {
 
 void loop() {
 
-  /*for(int i = 0; i<254; i++){
-     ports[RIGHT].setMotorSpeed(i);
-     ports[LEFT].setMotorSpeed(i);
-     Serial.println(i);
-     delay(100);
-  }*/
-    //imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-
-    //euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  //Serial.println(euler.x());
-
-  //turnLeftPID(90);
-  //while(1){};
+  goForwardTilesPID(1);
+  delay(5000);
   
-  //delay(1000);
-  //turnLeft(90);
-  //delay(1000);
-
-  //goForwardTiles(1);
-  //delay(5000);
-
-  //goForwardTilesPID(1);
-  //delay(5000);
-
-  //goForwardTiles(1);
-  //delay(10000);
-  //ports[RIGHT].setMotorSpeed(220);
-  //ports[LEFT].setMotorSpeed(-220);
-
-    //triangulate(getSensorReadings(0),getSensorReadings(1));
-
-    //turnAbs('r');
-    //turnAbs((int)90);
-    //Serial.println("Finish 90 turn");
-    //delay(2500);
-    //turnAbs((int)0);
-    //Serial.println("Finish 0 turn");
-    //delay(2500);
-    //turnLeftPID(90);
-    //delay(2500);
-    //turnAbs('l');
-    //delay(2500);
-    //turnRightPID(90);
-    //delay(2000);
-    //turnAbs('r');
-    //delay(2000);
-    //turnAbs('l');
-  
+  /*
   if(Serial2.available()){
     delay(1);
     char incoming_byte = Serial2.read();
@@ -138,5 +94,6 @@ void loop() {
     
     }
   }
+  */
 
 }

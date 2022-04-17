@@ -76,6 +76,7 @@ void goForwardTiles(int tiles) {
 }
 
 void goForwardTilesPID(int tiles) {
+  Serial.println("in goForwardTilesPID");
   int tileSize = 30; // Set to 30
   int motorEncUse = LEFT;
   
@@ -91,6 +92,7 @@ void goForwardTilesPID(int tiles) {
 
     victim();
     if(detectBlack()){
+      Serial.println("SAW BLACK");
       while(abs(ports[motorEncUse].count)>0){// this may not work if it skips past 0, may need update
         ports[RIGHT].setMotorSpeed(-80);
         ports[LEFT].setMotorSpeed(-80);

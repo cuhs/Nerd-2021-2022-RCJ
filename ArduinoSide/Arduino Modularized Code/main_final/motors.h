@@ -16,6 +16,7 @@ void doTurn(char dir, int deg);
 void goForward(int dist);
 void goForwardTiles(int tiles);
 void goForwardTilesPID(int tiles);
+void goForwardPID(int dist);
 void getDist(int start);
 void motorControl();
 void alignLeft();
