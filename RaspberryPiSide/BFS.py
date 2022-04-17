@@ -180,7 +180,7 @@ def searchForVictims():
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
             return
         
-        if config.victimDebug:
+        if config.victimDebug or config.saveVictimDebug:
             _, leftFrame = IO.cap[0].read()
             cv2.imshow("left", leftFrame)
             cv2.waitKey(1)
@@ -201,7 +201,7 @@ def searchForVictims():
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
                 IO.sendData(config.inputMode, leftLetterVictim)
                 if config.victimDebug:
-                    cv2.imwrite('saveImage/' + leftLetterVictim + str(time.time()) + '.png', leftFrame)
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                 break
 
             # send and record color victim
@@ -210,7 +210,7 @@ def searchForVictims():
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
                 IO.sendData(config.inputMode, leftColorVictim)
                 if config.victimDebug:
-                    cv2.imwrite('saveImage/' + leftColorVictim + str(time.time()) + '.png', leftFrame)
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                 break
 
         # check if searching is needed on right camera
@@ -224,7 +224,7 @@ def searchForVictims():
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightLetterVictim)
                 IO.sendData(config.inputMode, rightLetterVictim)
                 if config.victimDebug:
-                    cv2.imwrite('saveImage/' + rightLetterVictim + str(time.time()) + '.png', rightFrame)
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
                 break
 
             # send and record color victim
@@ -233,6 +233,6 @@ def searchForVictims():
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
                 IO.sendData(config.inputMode, rightColorVictim)
                 if config.victimDebug:
-                    cv2.imwrite('saveImage/' + rightColorVictim + str(time.time()) + '.png', rightFrame)
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
                 break
         

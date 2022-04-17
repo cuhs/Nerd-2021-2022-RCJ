@@ -12,6 +12,9 @@ import display
 from BFS import util
 from util import IO
 from util import config
+
+# time calculation
+IO.startTime = time.time()
     
 if config.importantDebug:
     print("\nRaspberryPiSide START")
@@ -22,9 +25,6 @@ if config.importantDebug:
 
 # set start tile walls
 inputWalls = util.setWalls()
-
-# time calculation
-start = time.time()
 
 # calculate next tile
 nextTile = BFS.nextTile(util.tile)
@@ -154,7 +154,7 @@ while nextTile is not None or util.tile != util.startTile:
 # print out entire path the robot took traversing the maze and how long the algorithm took
 end = time.time()
 if config.importantDebug:
-    print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - start) * 1000, '.2f') + "ms ")
+    print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - IO.startTime) * 1000, '.2f') + "ms ")
 display.show(-1, util.maze, 0)
 
 if config.inputMode == 2:

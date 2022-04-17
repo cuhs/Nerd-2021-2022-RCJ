@@ -1,7 +1,7 @@
 # config file, because some settings might differ while debugging, or on different systems
 
 mazeSideLen = 10  # must be even
-inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
+inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2)  # buffer added on setup
 
 wallPercentage = 50  # percentage of tiles that should be walls for random generation of maze
@@ -18,6 +18,7 @@ displaySize = displaySize // mazeSideLen  # adjust for equal image size
 importantDebug = True  # important print statements, overrides other settings
 BFSDebug = True  # print statements for maze traversal
 victimDebug = True  # shows camera feeds
+saveVictimDebug = True  # saves victim images if found
 serialDebug = True  # prints serial IO
 
 port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0)
@@ -41,3 +42,4 @@ fpALL = "../RaspberryPiSide/"
 fpKNN = fpALL + "KNN/"
 fpTXT = fpALL + "IOFiles/"
 fpIMG = fpALL + "IOFiles/"
+fpVIC = fpALL + "IOFiles/victimImages/"

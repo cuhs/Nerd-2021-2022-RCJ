@@ -2,6 +2,7 @@ import numpy as np
 import config
 import serial
 import time
+import os
 
 if config.inputMode == 2:
     ser = serial.Serial(config.port, config.rate)
@@ -14,6 +15,9 @@ sData = ""
 
 # cameras
 cap = []
+
+# starting time of the program
+startTime = None
 
 # get file editors
 def outputFile(mode):
@@ -113,8 +117,12 @@ def setupSerial():
     print("waiting")
 
     msg = getNextSerialByte()
-    if msg != 'a':  # setup acknowledgement
-        raise ValueError("Invalid Serial Setup Acknowledgement, Received: " + msg)
+    while msg != 'a':  # setup acknowledgement
+        print("INVALID SETUP ACKNOWLEDGEMENT: " + msg)
+        msg = getNextSerialByte()
+
+    if config.saveVictimDebug:
+        os.mkdir(config.fpVIC + (time.ctime(startTime)))
     return config.port
 
 # gets one byte of data from serial
