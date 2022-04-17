@@ -1,4 +1,6 @@
 #include "TCA.h"
+
+//selects MUX port
 void tcaselect(uint8_t i) {
   if (i > 7) return;
 

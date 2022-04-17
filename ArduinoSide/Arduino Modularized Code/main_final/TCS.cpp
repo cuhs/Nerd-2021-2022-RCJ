@@ -1,5 +1,8 @@
 #include "TCS.h"
+
 Adafruit_TCS34725 tcs;
+
+//sets up light sensors
 void setupTCSSensors() {
   tcaselect(3);
   if (tcs.begin()) {
@@ -10,7 +13,8 @@ void setupTCSSensors() {
   }
 }
 
-void getValues(){
+//for debugging
+void getValues() {
   tcaselect(3);
   uint16_t r, g, b, c, colorTemp, lux;
 
@@ -27,18 +31,17 @@ void getValues(){
   Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
   Serial.println(" ");
   delay(20);
-
 }
 
-bool detectBlack(){
+bool detectBlack() {
   tcaselect(3);
   uint16_t r, g, b, c, lux;
   tcs.getRawData(&r, &g, &b, &c);
   lux = tcs.calculateLux(r, g, b);
   Serial.print("lux: ");
   Serial.println(lux);
-  if(lux<=0){ //lux value changed
-    //Serial2.write('b');
+  if (lux <= 0) { //lux value changed
+    Serial.write('b');
     return true;
   }
   return false;

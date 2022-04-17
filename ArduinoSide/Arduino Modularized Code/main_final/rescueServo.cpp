@@ -1,4 +1,5 @@
 #include "rescueServo.h"
+
 Servo myservo;
 const int R_angle = 10;
 const int L_angle = 168;
@@ -16,6 +17,7 @@ void wiggle(char angle) {
     delay(100);
   }
 }
+
 void dropKits(char dir, int amt) {
   if (dir == 'L') {
     for (int i = 0; i < amt; i++) {
@@ -36,12 +38,12 @@ void dropKits(char dir, int amt) {
   }
 }
 
-void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
-{
+void RGB_color(int red_light_value, int green_light_value, int blue_light_value) {
   analogWrite(47, red_light_value);
   analogWrite(43, green_light_value);
   analogWrite(42, blue_light_value);
 }
+
 void victim() {
   doHeatVictim(getHeatSensorReadings(4), getHeatSensorReadings(5));
 
@@ -57,31 +59,35 @@ void victim() {
       case 'R': // 1 kit
         Serial.println("red/yellow");
         RGB_color(255, 0, 0); // Red
-        dropKits('L'/*direction*/, 1);
+        dropKits('L', 1);
         delay(1000);
         RGB_color(0, 0, 0); // Red
         break;
+
       case 'G': // 0 kits
         Serial.println("green");
         RGB_color(0, 255, 0); // Green
         delay(1000);
         RGB_color(0, 0, 0);
         break;
+
       case 'H': // 3 kits
         Serial.println("H");
         RGB_color(0, 0, 255); // Blue
-        dropKits('L'/*direction*/, 3);
+        dropKits('L', 3);
         delay(1000);
         RGB_color(0, 0, 0); //
         break;
+
       //turn left
       case 'S': // 2 kits
         Serial.println("S");
         RGB_color(0, 255, 255); // Cyan
-        dropKits('L'/*direction*/, 2);
+        dropKits('L', 2);
         delay(1000);
         RGB_color(0, 0, 0); //
         break;
+
       //turn right
       case 'U': // 0 kits
         Serial.println("U");
@@ -89,8 +95,10 @@ void victim() {
         delay(1000);
         RGB_color(0, 0, 0); //
         break;
+
       default:
-        Serial.println("hmmm wut is this");
+        Serial.print("hmmm wut is this: ");
+        Serial.println(incoming_byte);
     }
   }
 }

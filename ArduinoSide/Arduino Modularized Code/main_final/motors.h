@@ -1,29 +1,29 @@
 #ifndef _MOTOR_H_
 #define _MOTOR_H_
-#define LEFT 1
-#define RIGHT 0
+
 #include "new_global_vars.h"
 #include "Distance_Sensor.h"
 #include "PID.h"
 #include "rescueServo.h"
 #include "TCS.h"
 #include <MeMegaPi.h>
+
+#define LEFT 1
+#define RIGHT 0
+// macro to attach the interrupt to the port
+#define INIT_INTERRUPT_LEFT   attachInterrupt(digitalPinToInterrupt(ports[LEFT].intPin), motorinterruptleft, RISING)
+#define INIT_INTERRUPT_RIGHT   attachInterrupt(digitalPinToInterrupt(ports[RIGHT].intPin), motorinterruptright, RISING)
+
 // For Turns and Movement
 const double WB = 16; //23.285
 const double D = 7; //6.9 6.5
+extern MegaPiPort ports[];
+extern char message[4];
 
-void doTurn(char dir, int deg);
-void goForward(int dist);
-void goForwardTiles(int tiles);
 void goForwardTilesPID(int tiles);
 void goForwardPID(int dist);
-void getDist(int start);
-void motorControl();
-void alignLeft();
-void alignRight();
-//void alignFront();
-void alignRobot();
-void alignToTile();
+void motorinterruptleft();
+void motorinterruptright();
 
 class MegaPiPort: public MeMegaPiDCMotor {
   public:
@@ -46,12 +46,5 @@ class MegaPiPort: public MeMegaPiDCMotor {
       MeMegaPiDCMotor::run(true_speed);
     };
 };
-extern MegaPiPort ports[];
-extern char message[4];
-// macro to attach the interrupt to the port
-#define INIT_INTERRUPT_LEFT   attachInterrupt(digitalPinToInterrupt(ports[LEFT].intPin), motorinterruptleft, RISING)
-#define INIT_INTERRUPT_RIGHT   attachInterrupt(digitalPinToInterrupt(ports[RIGHT].intPin), motorinterruptright, RISING)
-//template <int PN>
-void motorinterruptleft();
-void motorinterruptright();
+
 #endif
