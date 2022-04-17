@@ -1,8 +1,6 @@
 """
 TODO:
-- Add supplemental turns to check all walls for victims
-- Add conditions for loading checkpoints
-
+    - add second layer
 """
 
 import cv2
