@@ -27,9 +27,6 @@ def reset():
     # set starting tile as visited
     util.maze[util.tile][util.visited] = True
 
-    # setup input from file or serial
-    IO.setupInput(config.inputMode)
-
 def init():
     if config.mazeSideLen % 2 != 0 or not(2 <= config.mazeSideLen <= 80):
         raise ValueError("Invalid Maze Size (check config!)")
@@ -57,6 +54,9 @@ def init():
 
     # display setup
     display.imgSetup()
+    
+    # setup input from file or serial
+    IO.setupInput(config.inputMode)
 
     # camera setup
     if config.inputMode == 2:
@@ -67,11 +67,13 @@ def init():
                 IO.cap.append(cv2.VideoCapture(0))
             IO.cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
             IO.cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
+            IO.cap[0].set(cv2.CAP_PROP_FPS,1)
 
         if config.cameraCount == 2:
             IO.cap.append(cv2.VideoCapture(1))
             IO.cap[1].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
             IO.cap[1].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
+            IO.cap[1].set(cv2.CAP_PROP_FPS,1)
 
         if 2 < config.cameraCount < 0:
             raise ValueError("Invalid cameraCount (check config!)")
@@ -180,20 +182,25 @@ def searchForVictims():
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
             return
         
+        leftRet, leftFrame = IO.cap[0].read()
+        leftFrame = leftFrame[:126,:152]
+        
         if config.victimDebug or config.saveVictimDebug:
-            _, leftFrame = IO.cap[0].read()
             cv2.imshow("left", leftFrame)
             cv2.waitKey(1)
             
-            if config.cameraCount == 2:
-                _, rightFrame = IO.cap[1].read()
+        if config.cameraCount == 2:
+            rightRet, rightFrame = IO.cap[1].read()
+            rightFrame = rightFrame[:,:152]
+            
+            if config.victimDebug or config.saveVictimDebug:
                 cv2.imshow("right", rightFrame)
                 cv2.waitKey(1)
 
         # check if searching needed on left camera
-        if util.maze[util.tile][util.dirToLeft(util.direction)] == 1 and util.maze[util.tile][util.nVictim + util.dirToLeft(util.direction)] == 0:
+        if util.maze[util.tile][util.nVictim + util.dirToLeft(util.direction)] == 0:
             # get letter and color victims
-            leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal()
+            leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(leftRet, leftFrame)
 
             # send and record letter victim
             if leftLetterVictim is not None:
@@ -214,9 +221,9 @@ def searchForVictims():
                 break
 
         # check if searching is needed on right camera
-        if config.cameraCount == 2 and util.maze[util.tile][util.dirToLeft(util.direction)] == 1 and util.maze[util.tile][util.nVictim + util.dirToRight(util.direction)] == 0:
+        if config.cameraCount == 2 and util.maze[util.tile][util.nVictim + util.dirToRight(util.direction)] == 0:
             # get letter and color victims
-            rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal()
+            rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(rightRet, rightFrame)
 
             # send and record letter victim
             if rightLetterVictim is not None:

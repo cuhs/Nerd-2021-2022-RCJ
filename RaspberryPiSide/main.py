@@ -18,10 +18,11 @@ IO.startTime = time.time()
     
 if config.importantDebug:
     print("\nRaspberryPiSide START")
+    
 BFS.init()
 
 if config.importantDebug:
-    print("Setup Finished\n\nrunning...")
+    print("Setup Finished, Running...")
 
 # set start tile walls
 inputWalls = util.setWalls()

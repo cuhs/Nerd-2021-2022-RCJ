@@ -135,6 +135,11 @@ while cap1.isOpened() and cap2.isOpened():
     
     ret1,frame1 = cap1.read()
     ret2,frame2 = cap2.read()
+    
+    frame1 = frame1[:126,:152] #H, W LEFT
+    frame2 = frame2[:,:152] #RIGHT
+    
+    frame1 = cv2.imread("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sun Apr 17 14:49:13 2022/-1650221372.643082.png")
                         
     if ret1 > 0 and ret2 > 0:
         
