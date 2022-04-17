@@ -36,6 +36,7 @@ tileType = 9
 tileLen = 10
 
 maze = None
+layer = None
 tile = None
 direction = None
 q = None
