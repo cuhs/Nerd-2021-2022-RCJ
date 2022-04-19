@@ -67,13 +67,11 @@ def init():
                 IO.cap.append(cv2.VideoCapture(0))
             IO.cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
             IO.cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
-            IO.cap[0].set(cv2.CAP_PROP_FPS,1)
 
         if config.cameraCount == 2:
             IO.cap.append(cv2.VideoCapture(1))
             IO.cap[1].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
             IO.cap[1].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
-            IO.cap[1].set(cv2.CAP_PROP_FPS,1)
 
         if 2 < config.cameraCount < 0:
             raise ValueError("Invalid cameraCount (check config!)")
@@ -90,26 +88,20 @@ def nextTile(cTile):
             print("\tBFS - END, Tile:\t" + str(cTile))
         return cTile
 
-    # stores how many tiles are unvisited
-    possibleTiles = [0, 0, 0, 0]
-
     for i in range(4):
         if not util.maze[cTile][i]:
             # no wall in direction i
             if util.parent[util.adjTiles[i] + cTile] == -1:
                 util.parent[util.adjTiles[i] + cTile] = cTile
                 util.q.append(util.adjTiles[i] + cTile)
-            possibleTiles[i] = 1
 
     if config.BFSDebug:
         print("\tQueue:\t" + str(util.q))
 
     # recursively finds unvisited tiles
-    for i in range(len(possibleTiles)):
-        if possibleTiles[i] == 1:
-            if not util.q:
-                return None
-            return nextTile(util.q.pop(0))
+    if not util.q:
+        return None
+    return nextTile(util.q.pop(0))
 
 # puts path to tile in a stack
 def pathToTile(cTile, target):
