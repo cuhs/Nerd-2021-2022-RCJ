@@ -7,6 +7,6 @@ venv/
 victimImages/
 
 # ignore input/output directions
-generatedMaze.*
-outputDirections.*
-savedMaze.*
+/RaspberryPiSide/IOFiles/outputDirections
+/RaspberryPiSide/IOFiles/generatedMaze
+/RaspberryPiSide/IOFiles/savedMaze
