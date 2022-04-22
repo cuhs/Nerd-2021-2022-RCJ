@@ -50,7 +50,7 @@ while nextTile is not None or util.tile != util.startTile:
 
     # display the maze
     if config.showDisplay:
-        display.show(nextTile, util.maze, config.displayRate)
+        display.show(nextTile, util.maze[util.floor], config.displayRate)
 
     # send BFS starting char '{'
     IO.sData += config.serialMessages[5]
@@ -125,7 +125,7 @@ while nextTile is not None or util.tile != util.startTile:
         util.pathLen = len(IO.sData)
 
         # set tile new tile to visited, clear parent array
-        util.maze[util.tile][util.visited] = True
+        util.maze[util.floor][util.tile][util.visited] = True
         util.parent.fill(-1)
 
         # get sensor/wall values, take care of special tiles
@@ -134,10 +134,10 @@ while nextTile is not None or util.tile != util.startTile:
     if loadingCheckpoint or inputWalls is False:
         BFS.loadCheckpoint(checkpoint)
         loadingCheckpoint = False
-        util.maze[util.tile][util.visited] = False
+        util.maze[util.floor][util.tile][util.visited] = False
     else:
-        if (inputWalls is None) or (config.inputMode != 2 and util.isBlackTile(util.maze, util.tile)):
-            util.maze = util.setBlackTile(util.maze, util.tile)
+        if (inputWalls is None) or (config.inputMode != 2 and util.isBlackTile(util.maze[util.floor], util.tile)):
+            util.maze[util.floor] = util.setBlackTile(util.maze[util.floor], util.tile)
         checkpoint = BFS.handleSpecialTiles(checkpoint)
 
     # calculate next tile
@@ -156,7 +156,7 @@ while nextTile is not None or util.tile != util.startTile:
 end = time.time()
 if config.importantDebug:
     print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - IO.startTime) * 1000, '.2f') + "ms ")
-display.show(-1, util.maze, 0)
+display.show(-1, util.maze[util.floor], 0)
 
 if config.inputMode == 2:
     for i in range(len(IO.cap)):
