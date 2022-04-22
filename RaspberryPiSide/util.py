@@ -21,15 +21,15 @@ adjTiles = [-config.mazeSideLen, 1, config.mazeSideLen, -1]
 # maze[tile][5] -> return visited. 0 = not visited, 1 = visited.
 visited = 4
 
-# tile states for victims (ascii code of char victim)
-# maze[tile][6] -> what victim on north wall of tile. "H" "S" "U", "R" "Y" "G" or None
+# tile states for victims (UNICODE of char victim)
+# maze[tile][6] -> what victim on north wall of tile. "H" "S" "U", "R" "Y" "G" or 0
 nVictim = 5
 eVictim = 6
 sVictim = 7
 wVictim = 8
 
 # tile type, normal, black, or checkpoint
-# maze[tile][9] -> special tile features: 0 = normal, 1 = black, 2 = checkpoint
+# maze[tile][9] -> special tile features: 0 = normal, 1 = black, 2 = checkpoint, 3 = ramp
 tileType = 9
 
 # length of attributes for each tile, for maze & array creation
@@ -37,6 +37,7 @@ tileLen = 10
 
 maze = None
 tile = None
+floor = None
 direction = None
 q = None
 parent = None
@@ -88,8 +89,8 @@ def setWalls():
     if config.inputMode != 2:
         for i in range(tileLen):
             # prevents overwriting of black tile
-            if maze[tile][i] == 0:
-                maze[tile][i] = sensorData[i]
+            if maze[floor][tile][i] == 0:
+                maze[floor][tile][i] = sensorData[i]
     else:
         # black tile
         if sensorData is None:
@@ -99,13 +100,13 @@ def setWalls():
 
         # adjust directions for bot alignment
         for i in range(4):
-            maze[tile][adjustDirections(direction)[i]] = sensorData[i]
-        maze[tile][5] = 1
+            maze[floor][tile][adjustDirections(direction)[i]] = sensorData[i]
+        maze[floor][tile][5] = 1
         for i in range(5, 10):
-            maze[tile][i] = 0
+            maze[floor][tile][i] = 0
 
     if config.BFSDebug:
-        print("\tTile Array for tile " + str(tile) + ": " + str(maze[tile]))
+        print("\tTile Array for tile " + str(tile) + ": " + str(maze[floor][tile]))
     return True
 
 # both are 90 degree turns
