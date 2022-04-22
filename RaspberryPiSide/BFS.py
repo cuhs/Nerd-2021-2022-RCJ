@@ -1,3 +1,4 @@
+# test
 import util
 import sys
 import time
@@ -11,8 +12,9 @@ import letterDetection
 import inspect
 
 def reset():
-    util.maze = np.zeros((config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
+    util.maze = np.zeros((3, config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
     util.tile = util.startTile  # creates start tile in the middle of size x size area
+    util.floor = 1  # floor level
     util.direction = util.Dir.N.value  # starting direction is set to north
 
     # queue (just a list) and parent array for BFS
@@ -25,7 +27,7 @@ def reset():
     util.pathLen = 0
 
     # set starting tile as visited
-    util.maze[util.tile][util.visited] = True
+    util.maze[util.floor][util.tile][util.visited] = True
 
 def init():
     if config.mazeSideLen % 2 != 0 or not(2 <= config.mazeSideLen <= 80):
@@ -45,7 +47,7 @@ def init():
 
     # display maze when repeating
     elif config.redoLastMaze:
-        dMaze = np.copy(util.maze)
+        dMaze = np.copy(util.maze[util.floor])
         r = IO.inputFile("r")
         r.readline()
         for i in range(config.mazeSideLen ** 2):
@@ -79,17 +81,17 @@ def init():
 # return next tile to visit recursively
 def nextTile(cTile):
     if config.BFSDebug:
-        print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[util.tile][util.visited]))
+        print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[util.floor][util.tile][util.visited]))
 
     # base case, BFS done and cTile is target tile
-    if not util.maze[cTile][util.visited]:
+    if not util.maze[util.floor][cTile][util.visited]:
         util.q.clear()
         if config.BFSDebug:
             print("\tBFS - END, Tile:\t" + str(cTile))
         return cTile
 
     for i in range(4):
-        if not util.maze[cTile][i]:
+        if not util.maze[util.floor][cTile][i]:
             # no wall in direction i
             if util.parent[util.adjTiles[i] + cTile] == -1:
                 util.parent[util.adjTiles[i] + cTile] = cTile
@@ -114,16 +116,16 @@ def pathToTile(cTile, target):
 # handles black and silver tiles
 def handleSpecialTiles(previousCheckpoint):
     # check if tile is a silver tile
-    if util.isCheckpoint(util.maze, util.tile):
+    if util.isCheckpoint(util.maze[util.floor], util.tile):
         if config.importantDebug or config.BFSDebug:
             print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
 
         # save maze to file
-        IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction], util.maze, True)
+        IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction], util.maze[util.floor], True)
         return util.tile
 
     # check if tile is a black tile
-    if util.isBlackTile(util.maze, util.tile):
+    if util.isBlackTile(util.maze[util.floor], util.tile):
         if config.importantDebug or config.BFSDebug:
             print("\tTile " + str(util.tile) + " is a black tile, going back")
 
@@ -152,13 +154,13 @@ def loadCheckpoint(checkpoint):
             raise ValueError("Checkpoint mismatch")
 
         # reset maze, tile, and direction
-        util.maze = np.copy(savedMaze)
+        util.maze[util.floor] = np.copy(savedMaze)
         util.tile = checkpoint
         util.direction = util.Dir[info[-1]].value
         if config.importantDebug or config.BFSDebug:
             print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
 
-    display.show(None, util.maze, config.displayRate)
+    display.show(None, util.maze[util.floor], config.displayRate)
 
 # searches for letter and color victims, marks and sends them
 def searchForVictims():
@@ -190,14 +192,14 @@ def searchForVictims():
                 cv2.waitKey(1)
 
         # check if searching needed on left camera
-        if util.maze[util.tile][util.nVictim + util.dirToLeft(util.direction)] == 0:
+        if util.maze[util.floor][util.tile][util.nVictim + util.dirToLeft(util.direction)] == 0:
             # get letter and color victims
             leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(leftRet, leftFrame)
 
             # send and record letter victim
             if leftLetterVictim is not None:
                 print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim)
-                util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
+                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
                 IO.sendData(config.inputMode, leftLetterVictim)
                 if config.victimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
@@ -206,21 +208,21 @@ def searchForVictims():
             # send and record color victim
             if leftColorVictim is not None:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim)
-                util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
+                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
                 IO.sendData(config.inputMode, leftColorVictim)
                 if config.victimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                 break
 
         # check if searching is needed on right camera
-        if config.cameraCount == 2 and util.maze[util.tile][util.nVictim + util.dirToRight(util.direction)] == 0:
+        if config.cameraCount == 2 and util.maze[util.floor][util.tile][util.nVictim + util.dirToRight(util.direction)] == 0:
             # get letter and color victims
             rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(rightRet, rightFrame)
 
             # send and record letter victim
             if rightLetterVictim is not None:
                 print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim)
-                util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightLetterVictim)
+                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightLetterVictim)
                 IO.sendData(config.inputMode, rightLetterVictim)
                 if config.victimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
@@ -229,7 +231,7 @@ def searchForVictims():
             # send and record color victim
             elif rightColorVictim is not None:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim)
-                util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
+                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
                 IO.sendData(config.inputMode, rightColorVictim)
                 if config.victimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
