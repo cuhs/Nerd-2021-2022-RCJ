@@ -78,5 +78,7 @@ void alignFront() {
 
 int getSensorReadings(int num) {
   tcaselect(num);
+  if(num==0)
+    return lox.readRangeContinuousMillimeters() /10 -1;
   return lox.readRangeContinuousMillimeters() / 10;
 }

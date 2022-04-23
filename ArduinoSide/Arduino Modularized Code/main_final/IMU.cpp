@@ -58,41 +58,46 @@ void turnAbs(char t) {
   }
 }
 
-void turnAbs(int degree) {
-  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+void displayIMU(){
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
+  while(true){
+    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
+    Serial.println(euler.x());
+  }
+}
+
+void turnAbs(int degree){
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
   int dir[4] = {0, 90, 180, 270};
   int fix;
-  int curDir = euler.x();
-  int targetDir = degree;
-  double integral = 0.0;
-  int error = targetDir - curDir;
+  int curDir=euler.x();
+  int targetDir=degree;
+  double integral=0.0;
+  int error=targetDir-curDir;
   double pastError = 0;
-
-  while (abs(error) > 2) {
+  while (abs(error)>=10) {
     victim();
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    curDir = euler.x();
-    error = targetDir - curDir;
-
-    if (error > 180)
-      error -= 360;
-    else if (error < -180)
-      error += 360;
-
-    fix = (int)(PID(error, pastError, integral, 1.6667, .005, 0));
-    if (fix > 0)
-      fix += 80;
-    else
-      fix -= 80;
-
+    curDir=euler.x();
+    error = targetDir-curDir;
+    if(error>180){
+      Serial.println("IN DIFSAJFA");
+      error-=360;
+    }else if(error<-180)
+      error=360+error;
+    fix = (int)(PID(error, pastError, integral, 1.6667, 0.05, 0));
+    if(fix>0)
+      fix+=80;
+    else 
+      fix-=80;
     Serial.print(fix);
     Serial.print("\tEuler: ");
     Serial.print(euler.x());
     Serial.print("\terror: ");
     Serial.println(error);
-
-    ports[RIGHT].setMotorSpeed(fix);
-    ports[LEFT].setMotorSpeed(-fix);
+    ports[RIGHT].setMotorSpeed(-fix);
+    ports[LEFT].setMotorSpeed(fix);
+    //Serial.println(euler.x());
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
@@ -113,22 +118,51 @@ void triangulation(int left, int right) {
 
   //closer to right wall
   if (left > right) {
-    distFromCenter = 15 - (right + ROBOT_WIDTH / 2);
-    angle = atan(30 / distFromCenter) * 360 / (2 * 3.1415927);
+    distFromCenter = abs(15 - (right + ROBOT_WIDTH / 2));
+    if(distFromCenter==0)
+      angle=0;
+    else
+      angle = (90-atan2(30, distFromCenter) * 360 / (2 * 3.1415927));
     forwardCm = sqrt(pow(distFromCenter, 2) + 900);
     currAngle = euler.x();
+    Serial.print("RIGHT, distFromCenter: ");
+    Serial.print(distFromCenter);
+    Serial.print(" angle: ");
+    Serial.print(angle);
+    Serial.print(" forwardCM: ");
+    Serial.print(forwardCm);
+    Serial.print(" currAng: ");
+    Serial.println(currAngle);
     turnAbs((int)(currAngle - angle + 360) % 360);
+    Serial.println("Done turn");
     goForwardPID(forwardCm);
+    Serial.println("Done forward");
     turnAbs(currAngle);
+    Serial.println("Done adjust");
 
     //closer to left wall
   } else {
-    distFromCenter = 15 - (left + ROBOT_WIDTH / 2);
-    angle = atan(30 / distFromCenter) * 360 / (2 * 3.1415927);
+    distFromCenter = abs(15 - (left + ROBOT_WIDTH / 2));
+    if(distFromCenter==0)
+      angle=0;
+    else
+      angle = (90-atan2(30, distFromCenter) * 360 / (2 * 3.1415927));
     forwardCm = sqrt(pow(distFromCenter, 2) + 900);
     currAngle = euler.x();
+    Serial.print("LEFT, distFromCenter: ");
+    Serial.print(distFromCenter);
+    Serial.print(" angle: ");
+    Serial.print(angle);
+    Serial.print(" forwardCM: ");
+    Serial.print(forwardCm);
+    Serial.print(" currAng: ");
+    Serial.println(currAngle);
     turnAbs((int)(currAngle + angle) % 360);
+     Serial.println("Done turn");
     goForwardPID(forwardCm);
+    Serial.println("Done forward");
     turnAbs(currAngle);
+    Serial.println("Done adjust");
+
   }
 }

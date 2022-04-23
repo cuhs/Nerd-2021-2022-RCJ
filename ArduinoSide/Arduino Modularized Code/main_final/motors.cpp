@@ -30,7 +30,7 @@ void goForwardTilesPID(int tiles) {
     }
 
     fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.0, 1));
-    Serial.println(fix);
+    //Serial.println(fix);
 
     ports[RIGHT].setMotorSpeed(fix + 40);
     ports[LEFT].setMotorSpeed(fix + 40);
@@ -62,12 +62,12 @@ void goForwardPID(int dist) {
       }
       return;
     }
-    Serial.print(enc);
-    Serial.print(' ');
-    Serial.println(abs(ports[motorEncUse].count));
+    //Serial.print(enc);
+//    Serial.print(' ');
+//    Serial.println(abs(ports[motorEncUse].count));
 
     fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.0, 1));
-    Serial.println(fix);
+    //Serial.println(fix);
 
     ports[RIGHT].setMotorSpeed(fix + 40);
     ports[LEFT].setMotorSpeed(fix + 40);
