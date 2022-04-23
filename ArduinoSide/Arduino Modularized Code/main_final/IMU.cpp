@@ -65,6 +65,22 @@ void displayIMU(){
     Serial.println(euler.x());
   }
 }
+void turnRight(int degree){
+    imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
+    int curr = euler.x();
+    int target = curr+degree%360;
+    int error = target-curr;
+    while(error >=8){
+      euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
+      error = target-euler.x();
+      Serial.print("error: ");
+      Serial.println(error);
+      ports[RIGHT].setMotorSpeed(-150);
+      ports[LEFT].setMotorSpeed(150);
+    }
+    ports[RIGHT].setMotorSpeed(0);
+    ports[LEFT].setMotorSpeed(0);
+}
 
 void turnAbs(int degree){
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
@@ -75,17 +91,16 @@ void turnAbs(int degree){
   double integral=0.0;
   int error=targetDir-curDir;
   double pastError = 0;
-  while (abs(error)>=10) {
-    victim();
+  while (abs(error)>=1) {
+    //victim();
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     curDir=euler.x();
     error = targetDir-curDir;
     if(error>180){
-      Serial.println("IN DIFSAJFA");
       error-=360;
     }else if(error<-180)
       error=360+error;
-    fix = (int)(PID(error, pastError, integral, 1.6667, 0.05, 0));
+    fix = (int)(PID(error, pastError, integral, 1.6667, 0.005, 0));
     if(fix>0)
       fix+=80;
     else 
