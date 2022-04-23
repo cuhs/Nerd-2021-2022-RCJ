@@ -2,7 +2,7 @@
 import util
 import sys
 import time
-import mazeToText
+import generateMaze
 import IO
 import display
 import cv2
@@ -12,9 +12,9 @@ import letterDetection
 import inspect
 
 def reset():
-    util.maze = np.zeros((3, config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
+    util.maze = np.zeros((config.floorCount, config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
     util.tile = util.startTile  # creates start tile in the middle of size x size area
-    util.floor = 1  # floor level
+    util.floor = util.startFloor  # floor level
     util.direction = util.Dir.N.value  # starting direction is set to north
 
     # queue (just a list) and parent array for BFS
@@ -33,7 +33,7 @@ def init():
     if config.mazeSideLen % 2 != 0 or not(2 <= config.mazeSideLen <= 80):
         raise ValueError("Invalid Maze Size (check config!)")
     if config.inputMode == 0 and config.displayRate is not 0:
-        raise ValueError("displayRate must be 0 for manual input!")
+        raise ValueError("config.displayRate Must Be 0 For Manual Input!")
     reset()
 
     # increase recursion limit for large mazes
@@ -41,18 +41,19 @@ def init():
 
     if config.inputMode == 1 and not config.redoLastMaze:
         if config.genFromImage:
-            mazeToText.genMazeFromImage()
+            generateMaze.genMazeFromImage()
         else:
-            mazeToText.genRandMaze()
+            generateMaze.genRandMaze()
 
     # display maze when repeating
     elif config.redoLastMaze:
-        dMaze = np.copy(util.maze[util.floor])
+        dMaze = np.copy(util.maze)
         r = IO.inputFile("r")
         r.readline()
-        for i in range(config.mazeSideLen ** 2):
-            dMaze[i][:] = [int(j) for j in str(r.readline())[:10]]
-        display.show(-1, dMaze, 0)
+        for i in range(config.floorCount):
+            for j in range(config.mazeSideLen ** 2):
+                dMaze[i][j][:] = [int(k) for k in str(r.readline())[:10]]
+        display.show(None, dMaze, 0)
 
     # display setup
     display.imgSetup()
@@ -121,7 +122,9 @@ def handleSpecialTiles(previousCheckpoint):
             print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
 
         # save maze to file
-        IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction], util.maze[util.floor], True)
+        IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction], util.maze[0], True)
+        for i in range(1, config.floorCount):
+            IO.writeMaze(IO.saveFile("a"), "", util.maze[i], False)
         return util.tile
 
     # check if tile is a black tile
@@ -151,16 +154,16 @@ def loadCheckpoint(checkpoint):
 
         # make sure file is up-to-date
         if checkpoint != int(info[:-1]):
-            raise ValueError("Checkpoint mismatch")
+            raise ValueError("Checkpoint Mismatch")
 
         # reset maze, tile, and direction
-        util.maze[util.floor] = np.copy(savedMaze)
+        util.maze = np.copy(savedMaze)
         util.tile = checkpoint
         util.direction = util.Dir[info[-1]].value
         if config.importantDebug or config.BFSDebug:
             print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
 
-    display.show(None, util.maze[util.floor], config.displayRate)
+    display.show(None, util.maze, config.displayRate)
 
 # searches for letter and color victims, marks and sends them
 def searchForVictims():

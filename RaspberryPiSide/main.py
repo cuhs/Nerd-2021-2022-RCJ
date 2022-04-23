@@ -1,10 +1,3 @@
-"""
-TODO:
-- Add supplemental turns to check all walls for victims
-- Add conditions for loading checkpoints
-
-"""
-
 import cv2
 import time
 import BFS
@@ -50,7 +43,7 @@ while nextTile is not None or util.tile != util.startTile:
 
     # display the maze
     if config.showDisplay:
-        display.show(nextTile, util.maze[util.floor], config.displayRate)
+        display.show(nextTile, util.maze, config.displayRate)
 
     # send BFS starting char '{'
     IO.sData += config.serialMessages[5]
@@ -156,7 +149,7 @@ while nextTile is not None or util.tile != util.startTile:
 end = time.time()
 if config.importantDebug:
     print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - IO.startTime) * 1000, '.2f') + "ms ")
-display.show(-1, util.maze[util.floor], 0)
+display.show(None, util.maze, 0)
 
 if config.inputMode == 2:
     for i in range(len(IO.cap)):

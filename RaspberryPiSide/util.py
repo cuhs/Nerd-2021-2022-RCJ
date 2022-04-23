@@ -8,6 +8,9 @@ from enum import Enum
 # "North" means the bot's north, or where the bot is facing. All other directions are relative to the bot
 
 # NESW -> 0123 True North is starting direction
+import util
+
+
 class Dir(Enum):
     N = 0
     E = 1
@@ -29,7 +32,7 @@ sVictim = 7
 wVictim = 8
 
 # tile type, normal, black, or checkpoint
-# maze[tile][9] -> special tile features: 0 = normal, 1 = black, 2 = checkpoint, 3 = ramp
+# maze[tile][9] -> special tile features: 0 = normal, 1 = black, 2 = checkpoint, 3 = up-ramp, 4 = down-ramp
 tileType = 9
 
 # length of attributes for each tile, for maze & array creation
@@ -44,8 +47,9 @@ parent = None
 path = None
 pathLen = None
 
-# home/starting tile
+# home/starting tile and floor
 startTile = int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))
+startFloor = config.floorCount // 2
 
 # hsv ranges for color victims
 hsv_lower = {
@@ -84,7 +88,7 @@ def tileExists(cTile):
 
 # direction must be adjusted from bot to the maze
 def setWalls():
-    sensorData = IO.getData(config.inputMode, tile)
+    sensorData = IO.getData(config.inputMode, tile, floor)
 
     if config.inputMode != 2:
         for i in range(tileLen):
@@ -130,17 +134,17 @@ def goBackward(cTile):
     # packet.sData += msg
     return cTile + adjTiles[oppositeDir(direction)]
 
-def setBlackTile(cMaze, cTile, setBorders=True):
+def setBlackTile(cFloor, cTile, setBorders=True):
     # set the borders of the black tile
     if setBorders:
         for i in range(4):
-            cMaze[cTile][i] = 1
+            cFloor[cTile][i] = 1
         for i in range(4):
             if tileExists(cTile + adjTiles[i]) and not (i == 1 and (cTile + 1) % config.mazeSideLen == 0) and not (i == 3 and cTile % config.mazeSideLen == 0):
-                cMaze[cTile + adjTiles[i]][adjustDirections(Dir.S.value)[i]] = 1
+                cFloor[cTile + adjTiles[i]][util.oppositeDir(i)] = 1
     # mark the tile as black
-    cMaze[cTile][tileType] = 1
-    return cMaze
+    cFloor[cTile][tileType] = 1
+    return cFloor
 
 def isBlackTile(cMaze, cTile):
     return cMaze[cTile][tileType] == 1
@@ -151,3 +155,55 @@ def setCheckpoint(cMaze, cTile):
 
 def isCheckpoint(cMaze, cTile):
     return cMaze[cTile][tileType] == 2
+
+def setRamp(cMaze, cTile, cFloor, cDirection, upRamp, rTile):
+    if upRamp and cFloor == config.floorCount - 1 or not upRamp and cFloor == 0:
+        raise ValueError("Invalid Ramp Creation (May Need To Increase config.floorCount)!")
+
+    cMaze[cFloor][cTile][tileType] = 3 if upRamp else 4
+    rampAdjust = 1 if upRamp else -1
+    if upRamp:
+        cMaze[cFloor + rampAdjust][rTile][tileType] = 4
+    else:
+        cMaze[cFloor + rampAdjust][rTile][tileType] = 3
+
+    # set the borders of the ramp tile
+    for i in range(4):
+        if i == cDirection:
+            cMaze[cFloor][cTile][i] = 0
+        else:
+            cMaze[cFloor][cTile][i] = 1
+
+    # set the borders of tiles bordering the ramp tile
+    for i in range(4):
+        if tileExists(cTile + adjTiles[i]) and not (i == 1 and (cTile + 1) % config.mazeSideLen == 0) and not (i == 3 and cTile % config.mazeSideLen == 0):
+            if i == cDirection:
+                cMaze[cFloor][cTile + adjTiles[i]][util.oppositeDir(i)] = 0
+            else:
+                cMaze[cFloor][cTile + adjTiles[i]][util.oppositeDir(i)] = 1
+
+    # set the borders of the top/bottom ramp tile
+    for i in range(4):
+        if i == util.oppositeDir(cDirection):
+            cMaze[cFloor + rampAdjust][rTile][i] = 0
+        else:
+            cMaze[cFloor + rampAdjust][rTile][i] = 1
+
+    # set the borders of tiles bordering the ramp tile
+    for i in range(4):
+        if tileExists(rTile + adjTiles[i]) and not (i == 1 and (rTile + 1) % config.mazeSideLen == 0) and not (i == 3 and rTile % config.mazeSideLen == 0):
+            if i == oppositeDir(cDirection):
+                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][i] = 0
+            else:
+                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][i] = 1
+
+    return cMaze
+
+def isRamp(cMaze, cTile):
+    return isUpRamp(cMaze, cTile) or isDownRamp(cMaze, cTile)
+
+def isUpRamp(cMaze, cTile):
+    return cMaze[cTile][tileType] == 3
+
+def isDownRamp(cMaze, cTile):
+    return cMaze[cTile][tileType] == 4

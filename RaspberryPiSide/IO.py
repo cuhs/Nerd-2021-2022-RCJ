@@ -41,11 +41,11 @@ def setupInput(mode):
         return setupSerial()
 
 # function to reroute where input is coming from
-def getData(mode, tile):
+def getData(mode, tile, floor):
     if mode == 0:
         return getManualData(tile)
     if mode == 1:
-        return getFileData(tile)
+        return getFileData(tile, floor)
     if mode == 2:
         return getSerialData()
 
@@ -79,10 +79,10 @@ def setupInputFile():
         raise ValueError("Invalid Input File Type!\nExpected: \"GENERATED\" or \"IMAGE\"\nGot: " + str(inputType))
 
 # gets data from file depending on whether from gen or input
-def getFileData(tile):
+def getFileData(tile, floor):
     # skips until desired tile
     f = inputFile("r")
-    for i in range(tile + 1):
+    for i in range((floor * (config.mazeSideLen ** 2) + tile) + 1):
         f.readline()
     return [int(j) for j in str(f.readline())[:10]]
 
@@ -103,10 +103,11 @@ def writeMaze(file, header, maze, delete):
     file.close()
 
 def readMaze(file):
-    maze = np.zeros((config.mazeSideLen ** 2, 10), dtype=np.int8)
+    maze = np.zeros((config.floorCount, config.mazeSideLen ** 2, 10), dtype=np.int8)
     header = file.readline()
-    for i in range(config.mazeSideLen ** 2):
-        maze[i][:] = [int(j) for j in str(file.readline())[:10]]
+    for i in range(config.floorCount):
+        for j in range(config.mazeSideLen ** 2):
+            maze[i][j][:] = [int(k) for k in file.readline()[:10]]
     file.close()
     return header[:len(header) - 1], maze
 

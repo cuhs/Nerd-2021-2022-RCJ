@@ -11,8 +11,8 @@ def imgSetup():
     # create blank white image
     img[:] = (255, 255, 255)
 
-# displays a passed maze with cv2
-def displayMaze(target, cMaze):
+# creates an image from maze
+def createMazeImage(cFloor, current, target, path):
     # parses maze by column
     for x in range(config.mazeSideLen):
         for y in range(config.mazeSideLen):
@@ -21,39 +21,51 @@ def displayMaze(target, cMaze):
             yPixel = y * config.displaySize
 
             # silver tiles are grey
-            if util.isCheckpoint(cMaze, tile):
+            if util.isCheckpoint(cFloor, tile):
                 cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (175, 175, 175), -1)
 
             # adds current tile as green
-            if tile == util.tile:
+            if tile == current:
                 cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 255, 0), -1)
             # adds path tiles as yellow
-            if util.path is not None:
-                if tile in util.path:
+            if path is not None:
+                if tile in path:
                     cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 230, 255), -1)
             # adds target tile as red
             if tile == target:
                 cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 255), -1)
             # black tiles are black
-            if util.isBlackTile(cMaze, tile):
+            if util.isBlackTile(cFloor, tile):
                 cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), -1)
+            # up ramp tiles are dark blue
+            if util.isUpRamp(cFloor, tile):
+                cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (255, 100, 0), -1)
+            # down ramp tiles are light blue
+            if util.isDownRamp(cFloor, tile):
+                cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (255, 200, 0), -1)
 
             # small grey center for seeing grey tiles when overwritten
-            if util.isCheckpoint(cMaze, tile):
+            if util.isCheckpoint(cFloor, tile):
                 cv2.rectangle(img, (xPixel + config.displaySize//4, yPixel + config.displaySize // 4), (xPixel + (config.displaySize//4)*3, yPixel + (config.displaySize//4)*3), (175, 175, 175), -1)
 
             # adds the walls for the tile
-            if cMaze[tile][util.Dir.N.value] == 1:
+            if cFloor[tile][util.Dir.N.value] == 1:
                 cv2.line(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel), (0, 0, 0), lineWidth)
-            if cMaze[tile][util.Dir.E.value] == 1:
+            if cFloor[tile][util.Dir.E.value] == 1:
                 cv2.line(img, (xPixel + config.displaySize, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), lineWidth)
-            if cMaze[tile][util.Dir.S.value] == 1:
+            if cFloor[tile][util.Dir.S.value] == 1:
                 cv2.line(img, (xPixel, yPixel + config.displaySize), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 0, 0), lineWidth)
-            if cMaze[tile][util.Dir.W.value] == 1:
+            if cFloor[tile][util.Dir.W.value] == 1:
                 cv2.line(img, (xPixel, yPixel), (xPixel, yPixel + config.displaySize), (0, 0, 0), lineWidth)
 
 def show(target, cMaze, ms):
-    imgSetup()
-    displayMaze(target, cMaze)
-    cv2.imshow("maze", img)
+    i = 0
+    while i <= config.floorCount and i < len(cMaze):
+        imgSetup()
+        if util.floor == i:
+            createMazeImage(cMaze[i], util.tile, target, util.path)
+        else:
+            createMazeImage(cMaze[i], None, None, None)
+        cv2.imshow("Floor " + str(i), img)
+        i += 1
     cv2.waitKey(ms)

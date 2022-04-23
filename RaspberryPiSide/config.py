@@ -1,6 +1,7 @@
 # config file, because some settings might differ while debugging, or on different systems
 
 mazeSideLen = 10  # must be even
+floorCount = 3  # starts at middle floor
 inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2)  # buffer added on setup
 
@@ -29,7 +30,7 @@ cameraCount = 2  # number of cameras, cam0 is left, cam1 is right. if only one c
 cameraWidth = 160  # width of camera feed for both cameras
 cameraHeight = 128  # height of camera feed for both cameras
 
-manualCheckpointLoading = True  # load back to last checkpoint when 'c' is pressed
+manualCheckpointLoading = False  # load back to last checkpoint when 'c' is pressed
 
 # serial messages in order for:
 # forward, left, right, back, EOI, (end of single instruction), SOD (start of dir.), EOD (end of directions)
