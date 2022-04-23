@@ -36,24 +36,24 @@ void turnAbs(char t) {
   int pos = euler.x();
   //turning right
   if (t == 'r') {
-    if (pos > 350 || pos < 10)
+    if (pos > 315 || pos < 45)
       turnAbs(90);
-    else if (pos > 80 && pos < 100)
+    else if (pos > 45 && pos < 135)
       turnAbs(180);
-    else if (pos > 170 && pos < 190)
+    else if (pos > 135 && pos < 225)
       turnAbs(270);
-    else if (pos > 260 && pos < 280)
+    else if (pos > 225 && pos < 315)
       turnAbs(0);
 
     //turning left
   } else if (t == 'l') {
-    if (pos > 350 || pos < 10)
+    if (pos > 315 || pos < 45)
       turnAbs(270);
-    else if (pos > 80 && pos < 100)
+    else if (pos > 45 && pos < 135)
       turnAbs(0);
-    else if (pos > 170 && pos < 190)
+    else if (pos > 135 && pos < 225)
       turnAbs(90);
-    else if (pos > 260 && pos < 280)
+    else if (pos > 225 && pos < 315)
       turnAbs(180);
   }
 }
@@ -70,7 +70,7 @@ void turnRight(int degree){
     int curr = euler.x();
     int target = curr+degree%360;
     int error = target-curr;
-    while(error >=8){
+    while(error >=2){
       euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
       error = target-euler.x();
       Serial.print("error: ");
@@ -91,7 +91,7 @@ void turnAbs(int degree){
   double integral=0.0;
   int error=targetDir-curDir;
   double pastError = 0;
-  while (abs(error)>=1) {
+  while (abs(error)>=2) {
     //victim();
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     curDir=euler.x();

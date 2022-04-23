@@ -33,61 +33,65 @@ void setup() {
 
 void loop() {
  // triangulation(getSensorReadings(1), getSensorReadings(0));
-// ports[RIGHT].setMotorSpeed(180);
-// ports[LEFT].setMotorSpeed(180);
- //displayIMU();
-//  while(true);
-  if (Serial2.available()) {
-    delay(1);
-    char incoming_byte = Serial2.read();
-    delay(1);
-    Serial.println("Message detected.");
-
-    switch (incoming_byte) {
-      case '{':
-        Serial.println("{");
-        break;
-
-      case 'F':
-        //get rid of semicolon
-        Serial2.read();
-        
-        Serial.println("forward!");
-        //goForwardTilesPID(1);
-        triangulation(getSensorReadings(1), getSensorReadings(0));
-        alignFront();
-        Serial2.write(';');
-        break;
-        
-      case 'L':
-        //get rid of semicolon
-        Serial2.read();
-        
-        Serial.println("left!");
-        turnAbs('l');
-        
-        Serial2.write(';');
-        break;
-
-      case 'R':
-        //get rid of semicolon
-        Serial2.read();
-        
-        Serial.println("right!");
-        turnAbs('r');
-        
-        Serial2.write(';');
-        break;
-        
-      case '}':
-        Serial.println("}");
-        sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
-        break;
-
-      default:
-        Serial.print("hmmm wut is this: ");
-        Serial.println(incoming_byte);
-        break;
-    }
-  }
+ turnAbs('l');
+ turnAbs('r');
+ turnAbs('l');
+ turnAbs('l');
+ turnAbs('l');
+ turnAbs('l');
+ while(true);
+  //while(true) displayIMU();
+//  if (Serial2.available()) {
+//    delay(1);
+//    char incoming_byte = Serial2.read();
+//    delay(1);
+//    Serial.println("Message detected.");
+//
+//    switch (incoming_byte) {
+//      case '{':
+//        Serial.println("{");
+//        break;
+//
+//      case 'F':
+//        //get rid of semicolon
+//        Serial2.read();
+//        
+//        Serial.println("forward!");
+//        //goForwardTilesPID(1);
+//        triangulation(getSensorReadings(1), getSensorReadings(0));
+//        alignFront();
+//        Serial2.write(';');
+//        break;
+//        
+//      case 'L':
+//        //get rid of semicolon
+//        Serial2.read();
+//        
+//        Serial.println("left!");
+//        turnAbs('l');
+//        
+//        Serial2.write(';');
+//        break;
+//
+//      case 'R':
+//        //get rid of semicolon
+//        Serial2.read();
+//        
+//        Serial.println("right!");
+//        turnAbs('r');
+//        
+//        Serial2.write(';');
+//        break;
+//        
+//      case '}':
+//        Serial.println("}");
+//        sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
+//        break;
+//
+//      default:
+//        Serial.print("hmmm wut is this: ");
+//        Serial.println(incoming_byte);
+//        break;
+//    }
+//  }
 }
