@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import KNN
+import time
 
 class detection():
 
@@ -120,55 +121,86 @@ hsv_upper = {
 main = detection()
 
 cap1 = cv2.VideoCapture(0)
-cap2 = cv2.VideoCapture(1)
+#cap2 = cv2.VideoCapture(1)
 
 cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
-cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+#cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+#cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
 
 total = 0
 correct = 0
 start = 0
 
-while cap1.isOpened() and cap2.isOpened():
+while cap1.isOpened(): #and cap2.isOpened():
     
     ret1,frame1 = cap1.read()
-    ret2,frame2 = cap2.read()
+    ret1,frame1 = cap1.read()
+    frame1 = cv2.flip(frame1, 0)
+
+    #ret2,frame2 = cap2.read()
     
     frame1 = frame1[:126,:152] #H, W LEFT
-    frame2 = frame2[:,:152] #RIGHT
+    #frame2 = frame2[:,:152] #RIGHT
     
-    frame1 = cv2.imread("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sun Apr 17 14:49:13 2022/-1650221372.643082.png")
+    #frame1 = cv2.imread("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sun Apr 17 14:49:13 2022/-1650221372.643082.png")
                         
-    if ret1 > 0 and ret2 > 0:
+    if ret1 > 0: #and ret2 > 0:
         
         main.colorDetect(frame1,hsv_lower,hsv_upper)
-        main.colorDetect(frame2,hsv_lower,hsv_upper)
+        #main.colorDetect(frame2,hsv_lower,hsv_upper)
 
         imgOutput1 = main.letterDetect(frame1,"frame1")
-        imgOutput2 = main.letterDetect(frame2, "frame2")
+        #imgOutput2 = main.letterDetect(frame2, "frame2")
         
         result1 = main.KNN_finish(imgOutput1,10000000)
-        result2 = main.KNN_finish(imgOutput2,10000000)
+        #result2 = main.KNN_finish(imgOutput2,10000000)
+        
+        #print(imgOutput1.shape[0], imgOutput1.shape[1])
+        
+        imgOutput1 = cv2.resize(imgOutput1,(126,126))
+        imgOutput1 = cv2.cvtColor(imgOutput1,cv2.COLOR_GRAY2BGR)
+
+        
+        #(h1, w1) = frame1.shape[:2]
+        #(h2, w2) = imgOutput1.shape[:2]
+
+        #out = np.zeros((h1, w1 + w2), dtype="uint8")
+
+        #out[0:h1, 0:w1] = frame1
+        #out[0:h1, w1:w1 + w2] = imgOutput1 
+
+        
+        print("image1: " + str(imgOutput1.shape))
+        print("frame1: " + str(frame1.shape))
+        
+        combine = cv2.hconcat([frame1, imgOutput1])
+
+        
+        
+        #cv2.imwrite("/home/pi/Documents/VictimImages/" + str(time.time()) + ".png", frame1)        
+        cv2.imwrite("/home/pi/Documents/VictimImages/" + str(result1) + "-" + str(time.time()) + ".png", combine)
+
         
         print()
             
         print("Camera1 " + result1)
-        print("Camera2 " + result2)
+        #print("Camera2 " + result2)
         
         print()
             
         if main.Debug:
                 
             cv2.imshow("frame1",frame1)
-            cv2.imshow("frame2",frame2)
+            cv2.imshow("imgOutput1",imgOutput1)
+            cv2.imshow("combine",combine)
+            #cv2.imshow("frame2",frame2)
 
             
     if cv2.waitKey(1) == ord('q'):
         break
 
 cap1.release()
-cap2.release()
+#cap2.release()
 cv2.destroyAllWindows()
 
