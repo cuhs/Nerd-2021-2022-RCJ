@@ -54,9 +54,6 @@ def init():
             for j in range(config.mazeSideLen ** 2):
                 dMaze[i][j][:] = [int(k) for k in str(r.readline())[:10]]
         display.show(None, dMaze, 0)
-
-    # display setup
-    display.imgSetup()
     
     # setup input from file or serial
     IO.setupInput(config.inputMode)

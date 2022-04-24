@@ -193,9 +193,9 @@ def setRamp(cMaze, cTile, cFloor, cDirection, upRamp, rTile):
     for i in range(4):
         if tileExists(rTile + adjTiles[i]) and not (i == 1 and (rTile + 1) % config.mazeSideLen == 0) and not (i == 3 and rTile % config.mazeSideLen == 0):
             if i == oppositeDir(cDirection):
-                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][i] = 0
+                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][oppositeDir(i)] = 0
             else:
-                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][i] = 1
+                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][oppositeDir(i)] = 1
 
     return cMaze
 
