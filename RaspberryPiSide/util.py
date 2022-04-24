@@ -49,7 +49,7 @@ pathLen = None
 
 # home/starting tile and floor
 startTile = int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))
-startFloor = config.floorCount // 2
+startFloor = (config.floorCount - 1) // 2
 
 # hsv ranges for color victims
 hsv_lower = {
