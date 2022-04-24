@@ -10,6 +10,7 @@ from util import np
 from util import config
 import letterDetection
 import inspect
+import ast
 
 def reset():
     util.maze = np.zeros((config.floorCount, config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
@@ -39,22 +40,28 @@ def init():
     # increase recursion limit for large mazes
     sys.setrecursionlimit(config.recursionLimit + len(inspect.stack()) + 10)
 
-    if config.inputMode == 1 and not config.redoLastMaze:
+    if config.inputMode == 1:
         if config.genFromImage:
             generateMaze.genMazeFromImage()
         else:
-            generateMaze.genRandMaze()
+            if not config.redoLastMaze:
+                generateMaze.genRandMaze()
 
-    # display maze when repeating
-    elif config.redoLastMaze:
-        dMaze = np.copy(util.maze)
-        r = IO.inputFile("r")
-        r.readline()
-        for i in range(config.floorCount):
-            for j in range(config.mazeSideLen ** 2):
-                dMaze[i][j][:] = [int(k) for k in str(r.readline())[:10]]
-        display.show(None, dMaze, 0)
-    
+            # display maze when repeating
+            dMaze = np.copy(util.maze)
+            r = IO.inputFile("r")
+            r.readline()
+            for i in range(config.floorCount):
+                for j in range(config.mazeSideLen ** 2):
+                    dMaze[i][j][:] = [int(k) for k in str(r.readline())[:10]]
+
+            # get ramp mappings
+            util.rampMap = ast.literal_eval(r.readline())
+            print(str(util.rampMap))
+
+            if config.redoLastMaze:
+                display.show(None, dMaze, 0)
+
     # setup input from file or serial
     IO.setupInput(config.inputMode)
 
@@ -93,7 +100,7 @@ def nextTile(cTile, cFloor):
             # no wall in direction i
             if util.parent[util.adjTiles[i] + cTile] == -1:
                 util.parent[util.adjTiles[i] + cTile] = cTile
-                util.q.append(util.adjTiles[i] + cTile)
+                util.q.append((util.adjTiles[i] + cTile, util.floor))
 
     if config.BFSDebug:
         print("\tQueue:\t" + str(util.q))
@@ -101,7 +108,7 @@ def nextTile(cTile, cFloor):
     # recursively finds unvisited tiles
     if not util.q:
         return None
-    return nextTile(util.q.pop(0), cFloor)
+    return nextTile(*(util.q.pop(0)))
 
 # puts path to tile in a stack
 def pathToTile(cTile, target):
@@ -143,20 +150,13 @@ def handleSpecialTiles(previousCheckpoint):
 
         # update tile
         if config.inputMode == 2:
+            # TODO
+            # add relative positioning for multiple ramps leading to the same floors
             util.tile = util.startTile
         else:
-            r = IO.inputFile("r")
-            r.readline()
-            for i in range(util.floor + rampAdjust):
-                for j in range(config.mazeSideLen ** 2):
-                    r.readline()
-            for j in range(config.mazeSideLen ** 2):
-                if (rampAdjust == 1 and r.readline()[util.tileType] == "4") or (rampAdjust == -1 and r.readline()[util.tileType] == "3"):
-                    util.setRampBorders(util.maze, util.tile, util.floor, util.oppositeDir(util.direction), rampAdjust == 1, j)
-                    util.tile = j
-                    util.maze[util.floor + rampAdjust][util.tile][util.visited] = True
-                    break
-            r.close()
+            util.setRampBorders(util.maze, util.tile, util.floor, util.oppositeDir(util.direction), rampAdjust == 1, util.rampMap[util.tile])
+            util.tile = util.rampMap[util.tile]
+            util.maze[util.floor + rampAdjust][util.tile][util.visited] = True
 
         # update floor
         util.floor += rampAdjust

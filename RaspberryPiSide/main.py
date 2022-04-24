@@ -137,8 +137,8 @@ while nextTile is not None or util.tile != util.startTile:
         # set ramps, checkpoints
         if config.inputMode == 2:
             # TODO
-            # integrate with up/down ramp detection
-            # integrate with silver tile detection
+            # integrate up/down ramp detection
+            # integrate silver tile detection
             if False:
                 util.maze = util.setCheckpoint(util.maze[util.floor], util.tile)
             if False:

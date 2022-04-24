@@ -85,6 +85,7 @@ def genRandMaze():
             maze[i] = util.setCheckpoint(maze[i], r)
 
     # create ramps
+    rampMappings = {}
     for i in range(config.floorCount - 1):
         # create direction of ramp
         rampDir = random.randint(0, 3)
@@ -94,7 +95,7 @@ def genRandMaze():
         while maze[i][bottomRampTile][util.tileType] > 0 \
                 or (bottomRampTile == util.startTile and i == util.startFloor) \
                 or not util.tileExists(bottomRampTile + util.adjTiles[rampDir]) \
-                or maze[i][bottomRampTile + util.adjTiles[rampDir]][util.tileType] == 1 \
+                or maze[i][bottomRampTile + util.adjTiles[rampDir]][util.tileType] in (1, 3) \
                 or rampDir == 1 and (bottomRampTile + 1) % config.mazeSideLen == 0 \
                 or rampDir == 3 and bottomRampTile % config.mazeSideLen == 0:
             bottomRampTile = random.randint(0, config.mazeSideLen ** 2 - 1)
@@ -104,18 +105,21 @@ def genRandMaze():
         while maze[i + 1][topRampTile][util.tileType] > 0 \
                 or (topRampTile == util.startTile and (i + 1) == util.startFloor) \
                 or not util.tileExists(topRampTile + util.adjTiles[util.oppositeDir(rampDir)]) \
-                or maze[i + 1][topRampTile + util.adjTiles[util.oppositeDir(rampDir)]][util.tileType] == 1 \
+                or maze[i + 1][topRampTile + util.adjTiles[util.oppositeDir(rampDir)]][util.tileType] in (1, 3) \
                 or util.oppositeDir(rampDir) == 1 and (topRampTile + 1) % config.mazeSideLen == 0 \
                 or util.oppositeDir(rampDir) == 3 and topRampTile % config.mazeSideLen == 0:
             topRampTile = random.randint(0, config.mazeSideLen ** 2 - 1)
 
         # create ramps at tiles generated above
         maze = util.setRampBorders(maze, bottomRampTile, i, rampDir, True, topRampTile)
+        rampMappings[bottomRampTile] = topRampTile
+        rampMappings[topRampTile] = bottomRampTile
 
     # writes maze values to "generatedMaze.txt"
     IO.writeMaze(IO.inputFile("a"), "GENERATED", maze[0], True)
     for i in range(1, config.floorCount):
         IO.writeMaze(IO.inputFile("a"), None, maze[i], False)
+    IO.inputFile("a").write(str(rampMappings))
 
     if config.showDisplay:
         display.show(None, maze, 0)

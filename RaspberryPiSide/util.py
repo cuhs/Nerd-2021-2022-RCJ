@@ -46,6 +46,7 @@ q = None
 parent = None
 path = None
 pathLen = None
+rampMap = None
 
 # home/starting tile and floor
 startTile = int(((config.mazeSideLen ** 2) / 2) + (config.mazeSideLen / 2))
