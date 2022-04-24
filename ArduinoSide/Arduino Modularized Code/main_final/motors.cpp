@@ -3,7 +3,7 @@
 char message[4] = {'a', 'a', 'a', 'a'};
 MegaPiPort ports[] = { {PORT1B, 18, 31}, {PORT2B, 19, 38}, {PORT3B, 3, 49}, {PORT4B, 2, A1}};
 
-void goForwardTilesPID(int tiles) {
+bool goForwardTilesPID(int tiles) {
   Serial.println("in goForwardTilesPID");
   int tileSize = 30; // Set to 30
   int motorEncUse = LEFT;
@@ -23,13 +23,13 @@ void goForwardTilesPID(int tiles) {
         ports[RIGHT].setMotorSpeed(-80);
         ports[LEFT].setMotorSpeed(-80);
       }
-      Serial2.write('b');
+      //Serial2.write('b');
       ports[RIGHT].setMotorSpeed(0);
       ports[LEFT].setMotorSpeed(0);
-      return;
+      return false;
     }
 
-    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.0, 1));
+    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.005, 1));
     //Serial.println(fix);
 
     ports[RIGHT].setMotorSpeed(fix + 40);
@@ -38,9 +38,10 @@ void goForwardTilesPID(int tiles) {
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
+  return true;
 }
 
-void goForwardPID(int dist) {
+bool goForwardPID(int dist) {
   int tileSize = 30; // Set to 30
   int motorEncUse = LEFT;
 
@@ -60,13 +61,13 @@ void goForwardPID(int dist) {
         ports[RIGHT].setMotorSpeed(-80);
         ports[LEFT].setMotorSpeed(-80);
       }
-      return;
+      return false;
     }
     //Serial.print(enc);
 //    Serial.print(' ');
 //    Serial.println(abs(ports[motorEncUse].count));
 
-    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.0, 1));
+    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.005, 1));
     //Serial.println(fix);
 
     ports[RIGHT].setMotorSpeed(fix + 40);
@@ -75,6 +76,7 @@ void goForwardPID(int dist) {
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
+  return true;
 }
 
 void motorinterruptleft() {
