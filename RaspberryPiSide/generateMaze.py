@@ -92,7 +92,7 @@ def genRandMaze():
         # find tile for bottom ramp tile
         bottomRampTile = random.randint(0, config.mazeSideLen ** 2 - 1)
         while maze[i][bottomRampTile][util.tileType] > 0 \
-                or bottomRampTile == util.startTile \
+                or (bottomRampTile == util.startTile and i == util.startFloor) \
                 or not util.tileExists(bottomRampTile + util.adjTiles[rampDir]) \
                 or maze[i][bottomRampTile + util.adjTiles[rampDir]][util.tileType] == 1 \
                 or rampDir == 1 and (bottomRampTile + 1) % config.mazeSideLen == 0 \
