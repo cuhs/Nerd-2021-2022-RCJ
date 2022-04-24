@@ -1,7 +1,7 @@
 # config file, because some settings might differ while debugging, or on different systems
 
-mazeSideLen = 10  # must be even
-inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
+mazeSideLen = 20  # must be even
+inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2)  # buffer added on setup
 
 wallPercentage = 50  # percentage of tiles that should be walls for random generation of maze
@@ -17,8 +17,8 @@ displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
 importantDebug = True  # important print statements, overrides other settings
 BFSDebug = True  # print statements for maze traversal
-victimDebug = True  # shows camera feeds
-saveVictimDebug = True  # saves victim images if found
+victimDebug = False  # shows camera feeds
+saveVictimDebug = False  # saves victim images if found
 serialDebug = True  # prints serial IO
 
 port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0)
@@ -26,8 +26,8 @@ rate = 9600  # serial port rate
 
 doVictim = True  # check for color and letter victims
 cameraCount = 2  # number of cameras, cam0 is left, cam1 is right. if only one camera, left
-cameraWidth = 160  # width of camera feed for both cameras
-cameraHeight = 128  # height of camera feed for both cameras
+cameraWidth = 160  # width of camera feed for both cameras 160
+cameraHeight = 128  # height of camera feed for both cameras 128
 
 manualCheckpointLoading = True  # load back to last checkpoint when 'c' is pressed
 

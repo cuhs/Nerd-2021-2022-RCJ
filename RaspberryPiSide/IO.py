@@ -1,5 +1,6 @@
 import numpy as np
 import config
+import cv2
 import serial
 import time
 import os
@@ -127,7 +128,18 @@ def setupSerial():
 
 # gets one byte of data from serial
 def getNextSerialByte():
-    return ser.read().decode("ascii", "ignore")
+    while (not ser.inWaiting()) and cap:
+        for i in range(len(cap)):
+            cap[i].read()
+            _, f = cap[i].read()
+            if config.victimDebug or config.saveVictimDebug:
+                cv2.imshow("left" if i == 0 else "right", f)
+                cv2.waitKey(1)
+
+    msg = ser.read().decode("ascii", "ignore")
+    if config.importantDebug or config.serialDebug:
+        print("MESSAGE RECEIVED: " + msg)
+    return msg
 
 # request and receive wall positions through serial
 def getSerialData():
@@ -143,7 +155,7 @@ def getSerialData():
             return None
         else:
             walls[9] = 2
-            msg = getNextSerialByte()
+            msg = getNextSerialByte()                
             if msg == 'a':
                 return msg
 

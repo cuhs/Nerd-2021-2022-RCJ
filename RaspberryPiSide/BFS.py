@@ -9,6 +9,7 @@ from util import np
 from util import config
 import letterDetection
 import inspect
+import RPi.GPIO as GPIO
 
 def reset():
     util.maze = np.zeros((config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
@@ -75,6 +76,18 @@ def init():
 
         if 2 < config.cameraCount < 0:
             raise ValueError("Invalid cameraCount (check config!)")
+        
+        #Sets up the LED for the PI
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(16,GPIO.OUT)
+        
+def blink():
+    for i in range(5):
+        GPIO.output(16, GPIO.HIGH) # Turn on
+        time.sleep(1)                  # Sleep for 1 second
+        GPIO.output(16, GPIO.LOW)  # Turn off
+        time.sleep(1)                  # Sleep for 1 second
 
 # return next tile to visit recursively
 def nextTile(cTile):
@@ -175,7 +188,7 @@ def searchForVictims():
             return
         
         leftRet, leftFrame = IO.cap[0].read()
-        leftFrame = leftFrame[:126,:152]
+        leftFrame = leftFrame[:,:152]
         
         if config.victimDebug or config.saveVictimDebug:
             cv2.imshow("left", leftFrame)
@@ -199,6 +212,7 @@ def searchForVictims():
                 print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
                 IO.sendData(config.inputMode, leftLetterVictim)
+                blink()
                 if config.victimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                 break
@@ -208,6 +222,7 @@ def searchForVictims():
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
                 IO.sendData(config.inputMode, leftColorVictim)
+                blink()
                 if config.victimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                 break
@@ -222,6 +237,7 @@ def searchForVictims():
                 print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightLetterVictim)
                 IO.sendData(config.inputMode, rightLetterVictim)
+                blink()
                 if config.victimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
                 break
@@ -231,6 +247,7 @@ def searchForVictims():
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
                 IO.sendData(config.inputMode, rightColorVictim)
+                blink()
                 if config.victimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
                 break
