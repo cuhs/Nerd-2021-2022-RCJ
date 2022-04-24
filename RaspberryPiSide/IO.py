@@ -33,6 +33,7 @@ def setupInput(mode):
     if mode == 1 or mode == 0:
         # clear output file
         outputFile("r+").truncate(0)
+        saveFile("r+").truncate(0)
     # from file
     if mode == 1:
         setupInputFile()

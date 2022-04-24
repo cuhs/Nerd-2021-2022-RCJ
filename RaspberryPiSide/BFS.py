@@ -18,10 +18,9 @@ def reset():
     util.floor = util.startFloor  # floor level
     util.direction = util.Dir.N.value  # starting direction is set to north
 
-    # queue (just a list) and parent array for BFS
+    # queue (just a list) and parent dictionary for BFS
     util.q = []
-    util.parent = np.zeros(config.mazeSideLen ** 2, dtype=np.int16)
-    util.parent.fill(-1)
+    util.parent = {}
 
     # stack (just a list) for path to tile
     util.path = []
@@ -60,7 +59,7 @@ def init():
             print(str(util.rampMap))
 
             if config.redoLastMaze:
-                display.show(None, dMaze, 0)
+                display.show(None, None, dMaze, 0)
 
     # setup input from file or serial
     IO.setupInput(config.inputMode)
@@ -86,37 +85,44 @@ def init():
 # return next tile to visit recursively
 def nextTile(cTile, cFloor):
     if config.BFSDebug:
-        print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[cFloor][util.tile][util.visited]))
+        print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[cFloor][cTile][util.visited]))
 
     # base case, BFS done and cTile is target tile
     if not util.maze[cFloor][cTile][util.visited]:
         util.q.clear()
         if config.BFSDebug:
             print("\tBFS - END, Tile:\t" + str(cTile))
-        return cTile
+        return cTile, cFloor
 
     for i in range(4):
         if not util.maze[cFloor][cTile][i]:
             # no wall in direction i
-            if util.parent[util.adjTiles[i] + cTile] == -1:
-                util.parent[util.adjTiles[i] + cTile] = cTile
-                util.q.append((util.adjTiles[i] + cTile, util.floor))
+            if not ((util.adjTiles[i] + cTile, cFloor) in util.parent):
+                util.parent[(util.adjTiles[i] + cTile, cFloor)] = (cTile, cFloor)
+                util.q.append((util.adjTiles[i] + cTile, cFloor))
+
+                # adjacent to ramp
+                if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] in (3, 4):
+                    util.parent[(util.rampMap[util.adjTiles[i] + cTile], cFloor + (1 if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] == 3 else -1))] = (util.adjTiles[i] + cTile, cFloor)
+                    util.q.append((util.rampMap[util.adjTiles[i] + cTile], cFloor + (1 if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] == 3 else -1)))
 
     if config.BFSDebug:
         print("\tQueue:\t" + str(util.q))
 
     # recursively finds unvisited tiles
     if not util.q:
-        return None
+        return None, None
     return nextTile(*(util.q.pop(0)))
 
 # puts path to tile in a stack
-def pathToTile(cTile, target):
+def pathToTile(cTile, cFloor, tTile, tFloor):
     util.path.clear()
-    i = target
-    while i != cTile:
-        util.path.append(int(i))
-        i = util.parent[int(i)]
+    pTile = tTile
+    pFloor = tFloor
+
+    while (pTile != cTile) or (pFloor != cFloor):
+        util.path.append((int(pTile), int(pFloor)))
+        (pTile, pFloor) = util.parent[(int(pTile), int(pFloor))]
 
 # handles black and silver tiles
 def handleSpecialTiles(previousCheckpoint):
@@ -126,7 +132,7 @@ def handleSpecialTiles(previousCheckpoint):
             print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
 
         # save maze to file
-        IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction], util.maze[0], True)
+        IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction] + str(util.floor), util.maze[0], True)
         for i in range(1, config.floorCount):
             IO.writeMaze(IO.saveFile("a"), "", util.maze[i], False)
         return util.tile
@@ -155,15 +161,13 @@ def handleSpecialTiles(previousCheckpoint):
             util.tile = util.startTile
         else:
             util.setRampBorders(util.maze, util.tile, util.floor, util.oppositeDir(util.direction), rampAdjust == 1, util.rampMap[util.tile])
-            util.tile = util.rampMap[util.tile]
-            util.maze[util.floor + rampAdjust][util.tile][util.visited] = True
-
-        # update floor
-        util.floor += rampAdjust
+            util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, rampAdjust == 1)
 
         if config.importantDebug or config.BFSDebug:
             print("\tTile is now " + str(util.tile) + " after ramp tile")
             print("\tFloor is now " + str(util.floor) + " after ramp tile")
+
+    return previousCheckpoint
 
 # reset program to checkpoint
 def loadCheckpoint(checkpoint):
@@ -179,17 +183,18 @@ def loadCheckpoint(checkpoint):
         info, savedMaze = IO.readMaze(IO.saveFile("r"))
 
         # make sure file is up-to-date
-        if checkpoint != int(info[:-1]):
+        if checkpoint != int(info[:-2]):
             raise ValueError("Checkpoint Mismatch")
 
         # reset maze, tile, and direction
         util.maze = np.copy(savedMaze)
         util.tile = checkpoint
-        util.direction = util.Dir[info[-1]].value
+        util.floor = int(info[-1])
+        util.direction = util.Dir[info[-2]].value
         if config.importantDebug or config.BFSDebug:
             print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
 
-    display.show(None, util.maze, config.displayRate)
+    display.show(None, None, util.maze, config.displayRate)
 
 # searches for letter and color victims, marks and sends them
 def searchForVictims():

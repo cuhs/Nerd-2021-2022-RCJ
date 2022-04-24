@@ -3,7 +3,7 @@
 mazeSideLen = 10  # must be even
 floorCount = 3  # starts at middle floor
 inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
-recursionLimit = (mazeSideLen ** 2)  # buffer added on setup
+recursionLimit = (mazeSideLen ** 2) * floorCount  # buffer added on setup
 
 wallPercentage = 50  # percentage of tiles that should be walls for random generation of maze
 blackTilePercentage = 5  # percent of black tiles when randomly generating a maze
@@ -30,13 +30,13 @@ cameraCount = 2  # number of cameras, cam0 is left, cam1 is right. if only one c
 cameraWidth = 160  # width of camera feed for both cameras
 cameraHeight = 128  # height of camera feed for both cameras
 
-manualCheckpointLoading = False  # load back to last checkpoint when 'c' is pressed
+manualCheckpointLoading = True  # load back to last checkpoint when 'c' is pressed
 
 # serial messages in order for:
 # forward, left, right, back, EOI, (end of single instruction), SOD (start of dir.), EOD (end of directions)
 # example: if ["a", "b", "c", "d", ".", "$", "%"], directions for forward, left, left, forward would be:
 # $a.b.b.a.% and will be sent as "$", "a.", "b." etc.      ALL MESSAGES MUST BE ONE CHAR
-serialMessages = ["F", "L", "R", "B", ";", "{", "}"]
+serialMessages = ["F", "L", "R", "B", "U", "D", ";", "{", "}"]
 
 # fp -> file path
 fpALL = "../RaspberryPiSide/"

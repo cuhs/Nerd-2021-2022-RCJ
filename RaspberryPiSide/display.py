@@ -12,7 +12,7 @@ def imgSetup():
     img[:] = (255, 255, 255)
 
 # creates an image from maze
-def createMazeImage(cFloor, current, target, path):
+def createMazeImage(cFloor, current, target, path, floor):
     # parses maze by column
     for x in range(config.mazeSideLen):
         for y in range(config.mazeSideLen):
@@ -29,7 +29,7 @@ def createMazeImage(cFloor, current, target, path):
                 cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 255, 0), -1)
             # adds path tiles as yellow
             if path is not None:
-                if tile in path:
+                if (tile, floor) in path:
                     cv2.rectangle(img, (xPixel, yPixel), (xPixel + config.displaySize, yPixel + config.displaySize), (0, 230, 255), -1)
             # adds target tile as red
             if tile == target:
@@ -58,14 +58,11 @@ def createMazeImage(cFloor, current, target, path):
             if cFloor[tile][util.Dir.W.value] == 1:
                 cv2.line(img, (xPixel, yPixel), (xPixel, yPixel + config.displaySize), (0, 0, 0), lineWidth)
 
-def show(target, cMaze, ms):
+def show(target, tFloor, cMaze, ms):
     i = 0
     while i <= config.floorCount and i < len(cMaze):
         imgSetup()
-        if util.floor == i:
-            createMazeImage(cMaze[i], util.tile, target, util.path)
-        else:
-            createMazeImage(cMaze[i], None, None, None)
+        createMazeImage(cMaze[i], util.tile if util.floor == i else None, target if tFloor == i else None, util.path, i)
         cv2.imshow("Floor " + str(i), img)
         i += 1
     cv2.waitKey(ms)

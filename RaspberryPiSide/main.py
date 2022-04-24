@@ -21,7 +21,7 @@ if config.importantDebug:
 inputWalls = util.setWalls()
 
 # calculate next tile
-nextTile = BFS.nextTile(util.tile, util.floor)
+nextTile, nextFloor = BFS.nextTile(util.tile, util.floor)
 checkpoint = -1
 loadingCheckpoint = False
 
@@ -35,18 +35,18 @@ while nextTile is not None or util.tile != util.startTile:
 
     # BFS start
     if config.BFSDebug:
-        print("\tCurrent Tile:\t" + str(util.tile) + "\n\tNext Tile:\t" + str(nextTile))
+        print("\tCurrent Tile:\t" + str((util.tile, util.floor)) + "\n\tNext Tile:\t" + str((nextTile, nextFloor)))
     # calculate path to target tile
-    BFS.pathToTile(util.tile, nextTile)
+    BFS.pathToTile(util.tile, util.floor, nextTile, nextFloor)
     if config.BFSDebug:
         print("\tTiles To Target Tile: " + str(len(util.path)))
 
     # display the maze
     if config.showDisplay:
-        display.show(nextTile, util.maze, config.displayRate)
+        display.show(nextTile, nextFloor, util.maze, config.displayRate)
 
     # send BFS starting char '{'
-    IO.sData += config.serialMessages[5]
+    IO.sData += config.serialMessages[7]
     IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1])
     if config.serialDebug:
         print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
@@ -59,8 +59,8 @@ while nextTile is not None or util.tile != util.startTile:
             print("\tPath: " + str(util.path))
 
         # set direction to the direction to be turned
-        nextTileInPath = util.path.pop()
-        while util.tile + util.adjTiles[util.direction] != nextTileInPath and not loadingCheckpoint:
+        (nextTileInPath, nextFloorInPath) = util.path.pop()
+        while util.floor == nextFloorInPath and util.tile + util.adjTiles[util.direction] != nextTileInPath and not loadingCheckpoint:
             # calculate next direction
             if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
                 util.direction = util.turnRight(util.direction)
@@ -87,8 +87,13 @@ while nextTile is not None or util.tile != util.startTile:
         if loadingCheckpoint:
             break
 
-        # set the tile to the tile to be moved to
-        util.tile = util.goForward(util.tile)
+        # go up ramp if needed
+        if util.floor != nextFloorInPath:
+            util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
+        else:
+            # set the tile to the tile to be moved to
+            util.tile = util.goForward(util.tile)
+
         IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
         if config.serialDebug:
             print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
@@ -108,7 +113,7 @@ while nextTile is not None or util.tile != util.startTile:
 
     # send BFS ending char '}'
     if not loadingCheckpoint:
-        IO.sData += config.serialMessages[6]
+        IO.sData += config.serialMessages[8]
         IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], True)
         if config.serialDebug:
             print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
@@ -119,7 +124,7 @@ while nextTile is not None or util.tile != util.startTile:
 
         # set tile new tile to visited, clear parent array
         util.maze[util.floor][util.tile][util.visited] = True
-        util.parent.fill(-1)
+        util.parent.clear()
 
         # get sensor/wall values, take care of special tiles
         inputWalls = util.setWalls()
@@ -148,7 +153,7 @@ while nextTile is not None or util.tile != util.startTile:
         checkpoint = BFS.handleSpecialTiles(checkpoint)
 
     # calculate next tile
-    nextTile = BFS.nextTile(util.tile, util.floor)
+    nextTile, nextFloor = BFS.nextTile(util.tile, util.floor)
 
     if config.BFSDebug:
         print("BFS START")
@@ -158,12 +163,13 @@ while nextTile is not None or util.tile != util.startTile:
         if config.importantDebug or config.BFSDebug:
             print("Maze fully traversed! Going back to start tile")
         nextTile = util.startTile
+        nextFloor = util.startFloor
 
 # print out entire path the robot took traversing the maze and how long the algorithm took
 end = time.time()
 if config.importantDebug:
     print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - IO.startTime) * 1000, '.2f') + "ms ")
-display.show(None, util.maze, 0)
+display.show(None, None, util.maze, 0)
 
 if config.inputMode == 2:
     for i in range(len(IO.cap)):

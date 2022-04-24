@@ -34,7 +34,7 @@ def genMazeFromImage():
         cv2.imshow('original', img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        display.show(None, maze, 0)
+        display.show(None, None, maze, 0)
 
     # writes maze values to "generatedMaze.txt"
     IO.writeMaze(IO.inputFile("a"), "IMAGE", maze[util.startFloor], True)
@@ -122,7 +122,7 @@ def genRandMaze():
     IO.inputFile("a").write(str(rampMappings))
 
     if config.showDisplay:
-        display.show(None, maze, 0)
+        display.show(None, None, maze, 0)
         cv2.destroyAllWindows()
 
     if config.importantDebug:
