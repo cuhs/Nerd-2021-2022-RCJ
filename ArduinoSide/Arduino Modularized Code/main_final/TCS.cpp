@@ -41,7 +41,9 @@ bool detectBlack() {
 //  Serial.print("lux: ");
 //  Serial.println(lux);
   if (lux <= 0) { //lux value changed
-    Serial.write('b');
+    Serial2.write(';');
+    Serial2.write('b');
+    //Serial2.write(';');
     return true;
   }
   return false;

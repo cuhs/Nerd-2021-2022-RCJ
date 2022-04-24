@@ -18,8 +18,8 @@
 const double WB = 16; //23.285
 const double D = 7; //6.9 6.5
 
-void goForwardTilesPID(int tiles);
-void goForwardPID(int dist);
+bool goForwardTilesPID(int tiles);
+bool goForwardPID(int dist);
 void motorinterruptleft();
 void motorinterruptright();
 

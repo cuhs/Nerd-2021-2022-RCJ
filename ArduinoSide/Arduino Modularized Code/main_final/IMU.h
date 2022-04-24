@@ -10,7 +10,7 @@ void initIMU();
 void reset();
 void turnAbs(char t);
 void turnAbs(int);
-void triangulation(int, int);
+bool triangulation(int, int);
 void displayIMU();
 void turnRight(int);
 

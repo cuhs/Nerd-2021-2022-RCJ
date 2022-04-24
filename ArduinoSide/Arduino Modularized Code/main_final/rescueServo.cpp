@@ -39,9 +39,17 @@ void dropKits(char dir, int amt) {
 }
 
 void RGB_color(int red_light_value, int green_light_value, int blue_light_value) {
-  analogWrite(47, red_light_value);
-  analogWrite(43, green_light_value);
-  analogWrite(42, blue_light_value);
+  for(int i = 0; i < 5; i++){
+    analogWrite(47, red_light_value);
+    analogWrite(43, green_light_value);
+    analogWrite(42, blue_light_value);
+    delay(500);
+    analogWrite(47, 0);
+    analogWrite(43, 0);
+    analogWrite(42, 0);
+    delay(500);
+  }
+  
 }
 
 void victim() {

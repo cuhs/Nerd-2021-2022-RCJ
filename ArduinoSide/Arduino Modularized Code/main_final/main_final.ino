@@ -27,6 +27,7 @@ void setup() {
   setupSensors2();
   initIMU();
   delay(1000);
+  Serial.println('a');
   Serial2.write('a');
   sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
 }
@@ -46,38 +47,54 @@ void loop() {
 
     switch (incoming_byte) {
       case '{':
-        Serial.println("{");
+       // Serial.println("read {");
         break;
 
       case 'F':
         //get rid of semicolon
+        delay(1);
         Serial2.read();
+        delay(1);
         
-        Serial.println("forward!");
+       // Serial.println("forward!");
         //goForwardTilesPID(1);
-        triangulation(getSensorReadings(1), getSensorReadings(0));
+        if(triangulation(getSensorReadings(1), getSensorReadings(0))){
         alignFront();
+        delay(1);
         Serial2.write(';');
+        delay(1);
+        Serial.println(';');
+        }
         break;
         
       case 'L':
         //get rid of semicolon
+        delay(1);
         Serial2.read();
+        delay(1);
         
-        Serial.println("left!");
+        //Serial.println("left!");
         turnAbs('l');
-        
+
+        delay(1);
         Serial2.write(';');
+        delay(1);
+        Serial.println(';');
         break;
 
       case 'R':
         //get rid of semicolon
+        delay(1);
         Serial2.read();
+        delay(1);
         
-        Serial.println("right!");
+       // Serial.println("right!");
         turnAbs('r');
-        
+
+        delay(1);
         Serial2.write(';');
+        delay(1);
+        Serial.println(';');
         break;
         
       case '}':
