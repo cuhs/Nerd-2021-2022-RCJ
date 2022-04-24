@@ -62,13 +62,13 @@ void displayIMU(){
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
   while(true){
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
-    Serial.println(euler.x());
+    Serial.println((int)euler.x());
   }
 }
 void turnRight(int degree){
     imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
     int curr = euler.x();
-    int target = curr+degree%360;
+    int target = (curr+degree)%360;
     int error = target-curr;
     while(error >=2){
       euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
