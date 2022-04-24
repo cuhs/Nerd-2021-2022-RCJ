@@ -21,7 +21,7 @@ if config.importantDebug:
 inputWalls = util.setWalls()
 
 # calculate next tile
-nextTile = BFS.nextTile(util.tile)
+nextTile = BFS.nextTile(util.tile, util.floor)
 checkpoint = -1
 loadingCheckpoint = False
 
@@ -124,17 +124,31 @@ while nextTile is not None or util.tile != util.startTile:
         # get sensor/wall values, take care of special tiles
         inputWalls = util.setWalls()
 
-    if loadingCheckpoint or inputWalls is False:
+    # load checkpoint
+    if loadingCheckpoint or inputWalls is None:
         BFS.loadCheckpoint(checkpoint)
         loadingCheckpoint = False
         util.maze[util.floor][util.tile][util.visited] = False
     else:
-        if (inputWalls is None) or (config.inputMode != 2 and util.isBlackTile(util.maze[util.floor], util.tile)):
+        # set black tile borders
+        if (inputWalls is False) or (config.inputMode != 2 and util.isBlackTile(util.maze[util.floor], util.tile)):
             util.maze[util.floor] = util.setBlackTile(util.maze[util.floor], util.tile)
+
+        # set ramps, checkpoints
+        if config.inputMode == 2:
+            # TODO
+            # integrate with up/down ramp detection
+            # integrate with silver tile detection
+            if False:
+                util.maze = util.setCheckpoint(util.maze[util.floor], util.tile)
+            if False:
+                util.maze = util.setRamp(util.maze, util.tile, util.floor, True)
+
+        # handle black, silver, and ramp tiles
         checkpoint = BFS.handleSpecialTiles(checkpoint)
 
     # calculate next tile
-    nextTile = BFS.nextTile(util.tile)
+    nextTile = BFS.nextTile(util.tile, util.floor)
 
     if config.BFSDebug:
         print("BFS START")

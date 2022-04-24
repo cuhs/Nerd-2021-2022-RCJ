@@ -77,19 +77,19 @@ def init():
             raise ValueError("Invalid cameraCount (check config!)")
 
 # return next tile to visit recursively
-def nextTile(cTile):
+def nextTile(cTile, cFloor):
     if config.BFSDebug:
-        print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[util.floor][util.tile][util.visited]))
+        print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[cFloor][util.tile][util.visited]))
 
     # base case, BFS done and cTile is target tile
-    if not util.maze[util.floor][cTile][util.visited]:
+    if not util.maze[cFloor][cTile][util.visited]:
         util.q.clear()
         if config.BFSDebug:
             print("\tBFS - END, Tile:\t" + str(cTile))
         return cTile
 
     for i in range(4):
-        if not util.maze[util.floor][cTile][i]:
+        if not util.maze[cFloor][cTile][i]:
             # no wall in direction i
             if util.parent[util.adjTiles[i] + cTile] == -1:
                 util.parent[util.adjTiles[i] + cTile] = cTile
@@ -101,7 +101,7 @@ def nextTile(cTile):
     # recursively finds unvisited tiles
     if not util.q:
         return None
-    return nextTile(util.q.pop(0))
+    return nextTile(util.q.pop(0), cFloor)
 
 # puts path to tile in a stack
 def pathToTile(cTile, target):
@@ -134,7 +134,36 @@ def handleSpecialTiles(previousCheckpoint):
         if config.importantDebug or config.BFSDebug:
             print("\tTile is now " + str(util.tile) + " after black tile")
 
-    return previousCheckpoint
+    # check if tile is a ramp
+    if util.isUpRamp(util.maze[util.floor], util.tile) or util.isDownRamp(util.maze[util.floor], util.tile):
+        if config.importantDebug or config.BFSDebug:
+            print("\tTile " + str(util.tile) + " is a ramp, going to next floor")
+
+        rampAdjust = 1 if util.isUpRamp(util.maze[util.floor], util.tile) else -1
+
+        # update tile
+        if config.inputMode == 2:
+            util.tile = util.startTile
+        else:
+            r = IO.inputFile("r")
+            r.readline()
+            for i in range(util.floor + rampAdjust):
+                for j in range(config.mazeSideLen ** 2):
+                    r.readline()
+            for j in range(config.mazeSideLen ** 2):
+                if (rampAdjust == 1 and r.readline()[util.tileType] == "4") or (rampAdjust == -1 and r.readline()[util.tileType] == "3"):
+                    util.setRampBorders(util.maze, util.tile, util.floor, util.oppositeDir(util.direction), rampAdjust == 1, j)
+                    util.tile = j
+                    util.maze[util.floor + rampAdjust][util.tile][util.visited] = True
+                    break
+            r.close()
+
+        # update floor
+        util.floor += rampAdjust
+
+        if config.importantDebug or config.BFSDebug:
+            print("\tTile is now " + str(util.tile) + " after ramp tile")
+            print("\tFloor is now " + str(util.floor) + " after ramp tile")
 
 # reset program to checkpoint
 def loadCheckpoint(checkpoint):

@@ -110,7 +110,7 @@ def genRandMaze():
             topRampTile = random.randint(0, config.mazeSideLen ** 2 - 1)
 
         # create ramps at tiles generated above
-        maze = util.setRamp(maze, bottomRampTile, i, rampDir, True, topRampTile)
+        maze = util.setRampBorders(maze, bottomRampTile, i, rampDir, True, topRampTile)
 
     # writes maze values to "generatedMaze.txt"
     IO.writeMaze(IO.inputFile("a"), "GENERATED", maze[0], True)

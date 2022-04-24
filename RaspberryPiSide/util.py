@@ -98,9 +98,10 @@ def setWalls():
     else:
         # black tile
         if sensorData is None:
-            return None
-        if (type(sensorData) is not np.ndarray) and sensorData == 'a':
             return False
+        # reset to checkpoint
+        if (type(sensorData) is not np.ndarray) and sensorData == 'a':
+            return None
 
         # adjust directions for bot alignment
         for i in range(4):
@@ -130,8 +131,6 @@ def goForward(cTile):
     return cTile + adjTiles[direction]
 
 def goBackward(cTile):
-    # msg = config.serialMessages[3] + config.serialMessages[4]
-    # packet.sData += msg
     return cTile + adjTiles[oppositeDir(direction)]
 
 def setBlackTile(cFloor, cTile, setBorders=True):
@@ -156,7 +155,7 @@ def setCheckpoint(cMaze, cTile):
 def isCheckpoint(cMaze, cTile):
     return cMaze[cTile][tileType] == 2
 
-def setRamp(cMaze, cTile, cFloor, cDirection, upRamp, rTile):
+def setRampBorders(cMaze, cTile, cFloor, cDirection, upRamp, rTile):
     if upRamp and cFloor == config.floorCount - 1 or not upRamp and cFloor == 0:
         raise ValueError("Invalid Ramp Creation (May Need To Increase config.floorCount)!")
 
@@ -199,8 +198,9 @@ def setRamp(cMaze, cTile, cFloor, cDirection, upRamp, rTile):
 
     return cMaze
 
-def isRamp(cMaze, cTile):
-    return isUpRamp(cMaze, cTile) or isDownRamp(cMaze, cTile)
+def setRamp(cMaze, cTile, cFloor, upRamp):
+    cMaze[cFloor][cTile][tileType] = 3 if upRamp else 4
+    return cMaze
 
 def isUpRamp(cMaze, cTile):
     return cMaze[cTile][tileType] == 3
