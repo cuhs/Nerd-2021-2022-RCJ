@@ -42,7 +42,6 @@ maze = None
 tile = None
 floor = None
 direction = None
-q = None
 parent = None
 path = None
 pathLen = None

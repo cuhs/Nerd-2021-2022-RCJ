@@ -1,4 +1,3 @@
-# test
 import util
 import sys
 import time
@@ -84,35 +83,42 @@ def init():
 
 # return next tile to visit recursively
 def nextTile(cTile, cFloor):
-    if config.BFSDebug:
-        print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[cFloor][cTile][util.visited]))
+    rampq = []
+    q = [(cTile, cFloor)]
 
-    # base case, BFS done and cTile is target tile
-    if not util.maze[cFloor][cTile][util.visited]:
-        util.q.clear()
+    while q or rampq:
+        # update tile being checked
+        if q:
+            cTile, cFloor = q.pop(0)
+        else:
+            cTile, cFloor = rampq.pop(0)
+
         if config.BFSDebug:
-            print("\tBFS - END, Tile:\t" + str(cTile))
-        return cTile, cFloor
+            print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[cFloor][cTile][util.visited]))
 
-    for i in range(4):
-        if not util.maze[cFloor][cTile][i]:
-            # no wall in direction i
-            if not ((util.adjTiles[i] + cTile, cFloor) in util.parent):
-                util.parent[(util.adjTiles[i] + cTile, cFloor)] = (cTile, cFloor)
-                util.q.append((util.adjTiles[i] + cTile, cFloor))
+        # base case, BFS done and cTile is target tile
+        if not util.maze[cFloor][cTile][util.visited]:
+            if config.BFSDebug:
+                print("\tBFS - END, Tile:\t" + str(cTile))
+            return cTile, cFloor
 
-                # adjacent to ramp
-                if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] in (3, 4):
-                    util.parent[(util.rampMap[util.adjTiles[i] + cTile], cFloor + (1 if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] == 3 else -1))] = (util.adjTiles[i] + cTile, cFloor)
-                    util.q.append((util.rampMap[util.adjTiles[i] + cTile], cFloor + (1 if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] == 3 else -1)))
+        for i in range(4):
+            if not util.maze[cFloor][cTile][i]:
+                # no wall in direction i
+                if not ((util.adjTiles[i] + cTile, cFloor) in util.parent):
+                    util.parent[(util.adjTiles[i] + cTile, cFloor)] = (cTile, cFloor)
+                    q.append((util.adjTiles[i] + cTile, cFloor))
 
-    if config.BFSDebug:
-        print("\tQueue:\t" + str(util.q))
+                    # adjacent to ramp
+                    if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] in (3, 4):
+                        util.parent[(util.rampMap[util.adjTiles[i] + cTile], cFloor + (1 if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] == 3 else -1))] = (util.adjTiles[i] + cTile, cFloor)
+                        rampq.append((util.rampMap[util.adjTiles[i] + cTile], cFloor + (1 if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] == 3 else -1)))
 
-    # recursively finds unvisited tiles
-    if not util.q:
-        return None, None
-    return nextTile(*(util.q.pop(0)))
+        if config.BFSDebug:
+            print("\tQueue:\t" + str(q))
+
+    # no tile
+    return None, None
 
 # puts path to tile in a stack
 def pathToTile(cTile, cFloor, tTile, tFloor):

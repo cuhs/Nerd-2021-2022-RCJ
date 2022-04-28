@@ -89,6 +89,9 @@ while nextTile is not None or util.tile != util.startTile:
 
         # go up ramp if needed
         if util.floor != nextFloorInPath:
+            # TODO
+            # fix output directions to not show F; before and after U;/D;
+            # fix {} formatting for U;/D;
             util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
         else:
             # set the tile to the tile to be moved to

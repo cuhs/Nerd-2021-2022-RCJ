@@ -18,8 +18,8 @@ displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
 importantDebug = True  # important print statements, overrides other settings
 BFSDebug = True  # print statements for maze traversal
-victimDebug = True  # shows camera feeds
-saveVictimDebug = True  # saves victim images if found
+victimDebug = False  # shows camera feeds
+saveVictimDebug = False  # saves victim images if found
 serialDebug = True  # prints serial IO
 
 port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0)
@@ -30,7 +30,7 @@ cameraCount = 2  # number of cameras, cam0 is left, cam1 is right. if only one c
 cameraWidth = 160  # width of camera feed for both cameras
 cameraHeight = 128  # height of camera feed for both cameras
 
-manualCheckpointLoading = True  # load back to last checkpoint when 'c' is pressed
+manualCheckpointLoading = False  # load back to last checkpoint when 'c' is pressed
 
 # serial messages in order for:
 # forward, left, right, back, EOI, (end of single instruction), SOD (start of dir.), EOD (end of directions)
