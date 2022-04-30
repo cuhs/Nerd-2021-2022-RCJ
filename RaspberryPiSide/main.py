@@ -79,7 +79,7 @@ while nextTile is not None or util.tile != util.startTile:
                 print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
             # find and send victims
             if config.inputMode == 2:
-                if config.doVictim:
+                if config.doVictim: 
                     BFS.searchForVictims()
 
                     victimMsg = IO.getNextSerialByte()

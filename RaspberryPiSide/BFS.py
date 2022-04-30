@@ -87,7 +87,7 @@ def init():
         GPIO.setup(16,GPIO.OUT)
         
 def blink():
-    for i in range(5):
+    for i in range(2):
         GPIO.output(16, GPIO.HIGH) # Turn on
         time.sleep(1)                  # Sleep for 1 second
         GPIO.output(16, GPIO.LOW)  # Turn off
@@ -196,7 +196,7 @@ def searchForVictims():
 
         leftFrame = leftFrame[:,:152]
         
-        if config.victimDebug or config.saveVictimDebug:
+        if config.victimDebug:
             cv2.imshow("left", leftFrame)
             cv2.waitKey(1)
             
@@ -208,7 +208,7 @@ def searchForVictims():
             
             rightFrame = rightFrame[:,:152]
             
-            if config.victimDebug or config.saveVictimDebug:
+            if config.victimDebug:
                 cv2.imshow("right", rightFrame)
                 cv2.waitKey(1)
 
@@ -222,8 +222,8 @@ def searchForVictims():
                 print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
                 IO.sendData(config.inputMode, leftLetterVictim)
-                #blink()
-                if config.victimDebug:
+                blink()
+                if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                 break
 
@@ -232,8 +232,8 @@ def searchForVictims():
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
                 IO.sendData(config.inputMode, leftColorVictim)
-                #blink()
-                if config.victimDebug:
+                blink()
+                if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                 break
 
@@ -247,8 +247,8 @@ def searchForVictims():
                 print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightLetterVictim)
                 IO.sendData(config.inputMode, rightLetterVictim)
-                #blink()
-                if config.victimDebug:
+                blink()
+                if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
                 break
 
@@ -257,8 +257,8 @@ def searchForVictims():
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim)
                 util.maze[util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
                 IO.sendData(config.inputMode, rightColorVictim)
-                #blink()
-                if config.victimDebug:
+                blink()
+                if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
                 break
         

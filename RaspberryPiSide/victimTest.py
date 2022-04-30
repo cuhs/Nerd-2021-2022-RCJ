@@ -61,7 +61,9 @@ class detection():
 
         cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        mask = cv2.inRange(frame, (0, 0, 0), (20, 20, 20))
+        mask = cv2.inRange(frame, (0, 0, 0), (50, 70, 70))
+        
+        cv2.imshow("mask",mask)
 
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -118,6 +120,8 @@ hsv_upper = {
      2: (50, 175, 255)
 }
 
+path = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sat Apr 30 16:48:05 2022/"
+
 main = detection()
 
 cap1 = cv2.VideoCapture(0)
@@ -136,14 +140,14 @@ while cap1.isOpened(): #and cap2.isOpened():
     
     ret1,frame1 = cap1.read()
     ret1,frame1 = cap1.read()
-    frame1 = cv2.flip(frame1, 0)
+    #frame1 = cv2.flip(frame1, 0)
 
     #ret2,frame2 = cap2.read()
     
-    frame1 = frame1[:126,:152] #H, W LEFT
+    frame1 = frame1[:,:152] #H, W LEFT
     #frame2 = frame2[:,:152] #RIGHT
     
-    #frame1 = cv2.imread("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sun Apr 17 14:49:13 2022/-1650221372.643082.png")
+    #frame1 = cv2.imread(path + "H-Sat Apr 30 16:49:10 2022.png")
                         
     if ret1 > 0: #and ret2 > 0:
         
@@ -153,33 +157,25 @@ while cap1.isOpened(): #and cap2.isOpened():
         imgOutput1 = main.letterDetect(frame1,"frame1")
         #imgOutput2 = main.letterDetect(frame2, "frame2")
         
-        result1 = main.KNN_finish(imgOutput1,10000000)
+        result1 =  main.KNN_finish(imgOutput1,9000000)
         #result2 = main.KNN_finish(imgOutput2,10000000)
         
         #print(imgOutput1.shape[0], imgOutput1.shape[1])
         
-        imgOutput1 = cv2.resize(imgOutput1,(126,126))
-        imgOutput1 = cv2.cvtColor(imgOutput1,cv2.COLOR_GRAY2BGR)
+        #imgOutput1 = cv2.resize(imgOutput1,(126,126))
+        #imgOutput1 = cv2.cvtColor(imgOutput1,cv2.COLOR_GRAY2BGR)
 
         
-        #(h1, w1) = frame1.shape[:2]
-        #(h2, w2) = imgOutput1.shape[:2]
-
-        #out = np.zeros((h1, w1 + w2), dtype="uint8")
-
-        #out[0:h1, 0:w1] = frame1
-        #out[0:h1, w1:w1 + w2] = imgOutput1 
-
+        #print("image1: " + str(imgOutput1.shape))
+        #print("frame1: " + str(frame1.shape))
         
-        print("image1: " + str(imgOutput1.shape))
-        print("frame1: " + str(frame1.shape))
-        
-        combine = cv2.hconcat([frame1, imgOutput1])
+        #combine = cv2.hconcat([frame1, imgOutput1])
 
         
         
         #cv2.imwrite("/home/pi/Documents/VictimImages/" + str(time.time()) + ".png", frame1)        
-        cv2.imwrite("/home/pi/Documents/VictimImages/" + str(result1) + "-" + str(time.time()) + ".png", combine)
+        #cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sat Apr 30 16:48:05 2022/"
+                    #+ str(result1) + "-" + str(time.time()) + ".png", combine)
 
         
         print()
@@ -193,7 +189,7 @@ while cap1.isOpened(): #and cap2.isOpened():
                 
             cv2.imshow("frame1",frame1)
             cv2.imshow("imgOutput1",imgOutput1)
-            cv2.imshow("combine",combine)
+            #cv2.imshow("combine",combine)
             #cv2.imshow("frame2",frame2)
 
             

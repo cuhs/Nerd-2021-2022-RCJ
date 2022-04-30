@@ -33,9 +33,7 @@ class VideoGet:
                     self.stop()
                 else:
                     (self.grabbed2, self.frame2) = self.stream2.read()
-                    print("hihihi")
-                    print(self.frame2)
-                    print("hihihi")
+                    #print("*")
                 
     def stop(self):
         self.stopped = True

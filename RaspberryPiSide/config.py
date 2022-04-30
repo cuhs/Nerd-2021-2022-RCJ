@@ -17,8 +17,8 @@ displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
 importantDebug = True  # important print statements, overrides other settings
 BFSDebug = True  # print statements for maze traversal
-victimDebug = False  # shows camera feeds
-saveVictimDebug = False  # saves victim images if found
+victimDebug = True  # shows camera feeds
+saveVictimDebug = True  # saves victim images if found
 serialDebug = True  # prints serial IO
 
 port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0)
