@@ -27,7 +27,7 @@ void setup() {
   Serial.println("--------------------STARTING NOW--------------------");
   setupSensors2();
   initIMU();
-  delay(1000);
+  delay(2000);
   Serial.println('a');
   Serial2.write('a');
   sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
@@ -44,8 +44,8 @@ void loop() {
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
-    Serial.println("Message detected.");
-
+    Serial.print("Message detected: ");
+    Serial.println(incoming_byte);
     switch (incoming_byte) {
       case '{':
        // Serial.println("read {");
@@ -65,6 +65,10 @@ void loop() {
         Serial2.write(';');
         delay(1);
         Serial.println(';');
+        }else{
+          delay(1);
+          Serial2.read();
+          delay(1);
         }
         break;
         

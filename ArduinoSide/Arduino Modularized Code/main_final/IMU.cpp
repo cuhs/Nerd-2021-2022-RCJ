@@ -73,8 +73,8 @@ void turnRight(int degree){
     while(error >=2){
       euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
       error = target-euler.x();
-      Serial.print("error: ");
-      Serial.println(error);
+//      Serial.print("error: ");
+//      Serial.println(error);
       ports[RIGHT].setMotorSpeed(-150);
       ports[LEFT].setMotorSpeed(150);
     }
@@ -105,11 +105,11 @@ void turnAbs(int degree){
       fix+=80;
     else 
       fix-=80;
-    Serial.print(fix);
-    Serial.print("\tEuler: ");
-    Serial.print(euler.x());
-    Serial.print("\terror: ");
-    Serial.println(error);
+//    Serial.print(fix);
+//    Serial.print("\tEuler: ");
+//    Serial.print(euler.x());
+//    Serial.print("\terror: ");
+//    Serial.println(error);
     ports[RIGHT].setMotorSpeed(-fix);
     ports[LEFT].setMotorSpeed(fix);
     //Serial.println(euler.x());

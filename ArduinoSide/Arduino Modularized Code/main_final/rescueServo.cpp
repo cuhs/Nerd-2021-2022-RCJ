@@ -23,17 +23,17 @@ void dropKits(char dir, int amt) {
     for (int i = 0; i < amt; i++) {
       wiggle(C_angle);
       myservo.write(C_angle);
-      delay(2000);
+      delay(100);
       myservo.write(L_angle);
-      delay(2000);
+      delay(500);
     }
   } else if (dir == 'R') {
     for (int i = 0; i < amt; i++) {
       wiggle(C_angle);
       myservo.write(C_angle);
-      delay(2000);
+      delay(100);
       myservo.write(R_angle);
-      delay(2000);
+      delay(500);
     }
   }
 }
@@ -53,7 +53,7 @@ void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
 }
 
 void victim() {
-  doHeatVictim(getHeatSensorReadings(4), getHeatSensorReadings(5));
+ // doHeatVictim(getHeatSensorReadings(4), getHeatSensorReadings(5));
 
   if (Serial2.available()) {
     delay(1);
@@ -64,27 +64,21 @@ void victim() {
     ports[LEFT].setMotorSpeed(0);
 
     switch (incoming_byte) {
-      case 'R': // 1 kit
+      case 'Y': // 1 kit
         Serial.println("red/yellow");
         RGB_color(255, 0, 0); // Red
         dropKits('L', 1);
-        delay(1000);
-        RGB_color(0, 0, 0); // Red
         break;
 
       case 'G': // 0 kits
         Serial.println("green");
         RGB_color(0, 255, 0); // Green
-        delay(1000);
-        RGB_color(0, 0, 0);
         break;
 
       case 'H': // 3 kits
         Serial.println("H");
         RGB_color(0, 0, 255); // Blue
         dropKits('L', 3);
-        delay(1000);
-        RGB_color(0, 0, 0); //
         break;
 
       //turn left
@@ -92,20 +86,16 @@ void victim() {
         Serial.println("S");
         RGB_color(0, 255, 255); // Cyan
         dropKits('L', 2);
-        delay(1000);
-        RGB_color(0, 0, 0); //
         break;
 
       //turn right
       case 'U': // 0 kits
         Serial.println("U");
         RGB_color(255, 0, 255); // Magenta
-        delay(1000);
-        RGB_color(0, 0, 0); //
         break;
 
       default:
-        Serial.print("hmmm wut is this: ");
+        Serial.print("#2 hmmm wut is this: ");
         Serial.println(incoming_byte);
     }
   }

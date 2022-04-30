@@ -46,6 +46,7 @@ bool detectBlack() {
   if (lux <= 0) { //lux value changed
     Serial2.write(';');
     Serial2.write('b');
+    //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
     return true;
   }
