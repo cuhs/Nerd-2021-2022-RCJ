@@ -8,5 +8,6 @@ void setupTCSSensors();
 void getValues();
 bool detectBlack();
 extern Adafruit_TCS34725 tcs;
+extern const int TCSLEDpin;
 
 #endif

@@ -1,10 +1,13 @@
 #include "TCS.h"
 
 Adafruit_TCS34725 tcs;
+const int TCSLEDpin = 48;
 
 //sets up light sensors
 void setupTCSSensors() {
   tcaselect(3);
+  pinMode(TCSLEDpin, OUTPUT);
+  digitalWrite(TCSLEDpin, HIGH);
   if (tcs.begin()) {
     Serial.println("Found sensor");
   } else {
