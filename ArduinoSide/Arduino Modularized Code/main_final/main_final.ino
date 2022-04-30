@@ -15,6 +15,7 @@ void setup() {
   Wire.begin();
 
   setupServo();
+  setupTCSSensors();
 
   // macros
   INIT_INTERRUPT_LEFT;
