@@ -92,7 +92,42 @@ void turnAbs(int degree){
   int error=targetDir-curDir;
   double pastError = 0;
   while (abs(error)>=2) {
+    Serial.println("In turnAbs degrees");
     victim();
+    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    curDir=euler.x();
+    error = targetDir-curDir;
+    if(error>180){
+      error-=360;
+    }else if(error<-180)
+      error=360+error;
+    fix = (int)(PID(error, pastError, integral, 1.6667, 0.005, 0));
+    if(fix>0)
+      fix+=80;
+    else 
+      fix-=80;
+//    Serial.print(fix);
+//    Serial.print("\tEuler: ");
+//    Serial.print(euler.x());
+//    Serial.print("\terror: ");
+//    Serial.println(error);
+    ports[RIGHT].setMotorSpeed(-fix);
+    ports[LEFT].setMotorSpeed(fix);
+    //Serial.println(euler.x());
+  }
+  ports[RIGHT].setMotorSpeed(0);
+  ports[LEFT].setMotorSpeed(0);
+}
+void turnAbsNoVictim(int degree){
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);  
+  int dir[4] = {0, 90, 180, 270};
+  int fix;
+  int curDir=euler.x();
+  int targetDir=degree;
+  double integral=0.0;
+  int error=targetDir-curDir;
+  double pastError = 0;
+  while (abs(error)>=2) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     curDir=euler.x();
     error = targetDir-curDir;
@@ -155,7 +190,11 @@ bool triangulation(int left, int right) {
     //Serial.println("Done turn");
     noBlack = goForwardPID(forwardCm);
     //Serial.println("Done forward");
-    turnAbs(currAngle);
+    if(noBlack){
+      turnAbs(currAngle);
+    }else{
+      turnAbsNoVictim(currAngle);
+    }
     //Serial.println("Done adjust");
 
     //closer to left wall
@@ -181,9 +220,27 @@ bool triangulation(int left, int right) {
      //Serial.println("Done turn");
     noBlack = goForwardPID(forwardCm);
     //Serial.println("Done forward");
-    turnAbs(currAngle);
+    if(noBlack){
+      turnAbs(currAngle);
+    }else{
+      turnAbsNoVictim(currAngle);
+    }
    // Serial.println("Done adjust");
 
   }
   return noBlack;
+}
+
+bool isOnRamp(){
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  if(euler.y()<-15)
+    return true;
+  return false;
+}
+
+bool notStable(){
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  if(abs(euler.y())<2)
+    return false;
+  return true;
 }

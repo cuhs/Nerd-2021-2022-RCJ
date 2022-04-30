@@ -48,6 +48,7 @@ bool detectBlack() {
     Serial2.write('b');
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
+    Serial.println("Saw Black");
     return true;
   }
   return false;

@@ -70,6 +70,7 @@ void loop() {
           Serial2.read();
           delay(1);
         }
+        Serial.println("finished going forward");
         break;
         
       case 'L':
@@ -106,7 +107,36 @@ void loop() {
         Serial.println("}");
         sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
         break;
+      case 'Y': // 1 kit
+        Serial.println("red/yellow");
+        RGB_color(255, 0, 0); // Red
+        dropKits('L', 1);
+        break;
 
+      case 'G': // 0 kits
+        Serial.println("green");
+        RGB_color(0, 255, 0); // Green
+        break;
+
+      case 'H': // 3 kits
+        Serial.println("H");
+        RGB_color(0, 0, 255); // Blue
+        dropKits('L', 3);
+        break;
+
+      //turn left
+      case 'S': // 2 kits
+        Serial.println("S");
+        RGB_color(0, 255, 255); // Cyan
+        dropKits('L', 2);
+        break;
+
+      //turn right
+      case 'U': // 0 kits
+        Serial.println("U");
+        RGB_color(255, 0, 255); // Magenta
+        break;
+        
       default:
         Serial.print("hmmm wut is this: ");
         Serial.println(incoming_byte);

@@ -59,7 +59,8 @@ void victim() {
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
-
+    Serial.print("Victim Message Received: ");
+    Serial.println(incoming_byte);
     ports[RIGHT].setMotorSpeed(0);
     ports[LEFT].setMotorSpeed(0);
 

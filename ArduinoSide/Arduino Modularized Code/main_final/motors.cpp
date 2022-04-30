@@ -4,7 +4,7 @@ char message[4] = {'a', 'a', 'a', 'a'};
 MegaPiPort ports[] = { {PORT1B, 18, 31}, {PORT2B, 19, 38}, {PORT3B, 3, 49}, {PORT4B, 2, A1}};
 
 bool goForwardTilesPID(int tiles) {
-  goForwardPID(tiles*30);
+  return goForwardPID(tiles*30);
 //  Serial.println("in goForwardTilesPID");
 //  int tileSize = 30; // Set to 30
 //  int motorEncUse = LEFT;
@@ -55,8 +55,17 @@ bool goForwardPID(int dist) {
   double enc = ((360 / (D * PI)) * dist);
 
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
-
+    Serial.println("In go forward PID");
     victim();
+    if(isOnRamp()){
+      while(notStable()){
+        ports[RIGHT].setMotorSpeed(210);
+        ports[LEFT].setMotorSpeed(210);
+      }
+       ports[RIGHT].setMotorSpeed(0);
+       ports[LEFT].setMotorSpeed(0);
+       return true;
+    }
     if (detectBlack()) {
       while (ports[motorEncUse].count > 0) {
         ports[RIGHT].setMotorSpeed(-80);
@@ -71,13 +80,15 @@ bool goForwardPID(int dist) {
     Serial.println(abs(ports[motorEncUse].count));
     
 
-    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.005, 1));
+    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.015, 1));
     //Serial.println(fix);
 
     ports[RIGHT].setMotorSpeed(fix + 40);
     ports[LEFT].setMotorSpeed(fix + 40);
 
   }
+  Serial.println("Finished going forward(in motors)");
+  delay(10);
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
   return true;
