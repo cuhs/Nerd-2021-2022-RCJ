@@ -61,7 +61,7 @@ class Detection:
     # process frame and return letter from getLetter
     def letterDetect(self, frame, name):
         cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        mask = cv2.inRange(frame, (0, 0, 0), (50, 50, 50))
+        mask = cv2.inRange(frame, (0, 0, 0), (20, 20, 20))
 
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         imgOutput = self.getLetter(contours, mask, name)

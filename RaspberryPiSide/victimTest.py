@@ -61,7 +61,7 @@ class detection():
 
         cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        mask = cv2.inRange(frame, (0, 0, 0), (50, 50, 50))
+        mask = cv2.inRange(frame, (0, 0, 0), (20, 20, 20))
 
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 

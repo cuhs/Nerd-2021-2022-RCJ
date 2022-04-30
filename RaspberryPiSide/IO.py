@@ -17,6 +17,8 @@ sData = ""
 # cameras
 cap = []
 
+video_getter = None
+
 # starting time of the program
 startTime = None
 

@@ -161,4 +161,5 @@ display.show(-1, util.maze, 0)
 if config.inputMode == 2:
     for i in range(len(IO.cap)):
         IO.cap[i].release()
+video_getter.stop()
 cv2.destroyAllWindows()
