@@ -1,10 +1,13 @@
 #include "TCS.h"
 
 Adafruit_TCS34725 tcs;
+const int TCSLEDpin = 48;
 
 //sets up light sensors
 void setupTCSSensors() {
   tcaselect(3);
+  pinMode(TCSLEDpin, OUTPUT);
+  digitalWrite(TCSLEDpin, HIGH);
   if (tcs.begin()) {
     Serial.println("Found sensor");
   } else {
@@ -43,7 +46,9 @@ bool detectBlack() {
   if (lux <= 0) { //lux value changed
     Serial2.write(';');
     Serial2.write('b');
+    //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
+    Serial.println("Saw Black");
     return true;
   }
   return false;
