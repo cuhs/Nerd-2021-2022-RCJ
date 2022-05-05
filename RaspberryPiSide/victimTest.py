@@ -88,7 +88,7 @@ class detection():
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        for i in range(1):
+        for i in range(3):
             mask = cv2.inRange(hsv, hsv_lower[i], hsv_upper[i])
             # cv2.imshow("mask",mask)
 
@@ -98,7 +98,7 @@ class detection():
 
                 contours = max(contours, key=cv2.contourArea)
 
-                if cv2.contourArea(contours) > 100:
+                if cv2.contourArea(contours) > 150:
 
                     if i == 0 or i == 2:
                         print("Red/Yellow")
@@ -109,15 +109,15 @@ class detection():
                         packages = 0
                         
 hsv_lower = {
-    0: (150, 230, 20),
-    1: (50, 40, 20),
-    2: (5, 95, 20)
+    0: (87, 115, 60),
+    1: (40, 30, 50),
+    2: (0, 55, 85)
 }
 
 hsv_upper = {
-     0: (179, 255, 255),
-     1: (90, 105, 255),
-     2: (50, 175, 255)
+     0: (180, 255, 170),
+     1: (100, 150, 155),
+     2: (36, 160, 185)
 }
 
 path = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sat Apr 30 16:48:05 2022/"

@@ -90,7 +90,7 @@ class Detection:
             if len(contours) > 0:
                 contours = max(contours, key=cv2.contourArea)
 
-                if cv2.contourArea(contours) > 50:
+                if cv2.contourArea(contours) > 150:
                     if i == 0 or i == 2:
                         return "Y"
                         # packages = 1
