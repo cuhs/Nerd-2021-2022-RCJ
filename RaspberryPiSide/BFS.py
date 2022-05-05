@@ -194,7 +194,7 @@ def searchForVictims():
         #leftRet, leftFrame = IO.cap[0].read()
         leftRet, leftFrame = IO.video_getter.grabbed1, IO.video_getter.frame1
 
-        leftFrame = leftFrame[:,:152]
+        leftFrame = leftFrame[:,:148]
         
         if config.victimDebug:
             cv2.imshow("left", leftFrame)

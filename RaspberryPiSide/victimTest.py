@@ -139,7 +139,7 @@ start = 0
 while cap1.isOpened(): #and cap2.isOpened():
     
     ret1,frame1 = cap1.read()
-    ret1,frame1 = cap1.read()
+    #ret1,frame1 = cap1.read()
     #frame1 = cv2.flip(frame1, 0)
 
     #ret2,frame2 = cap2.read()
@@ -151,7 +151,7 @@ while cap1.isOpened(): #and cap2.isOpened():
                         
     if ret1 > 0: #and ret2 > 0:
         
-        main.colorDetect(frame1,hsv_lower,hsv_upper)
+        print(main.colorDetect(frame1,hsv_lower,hsv_upper))
         #main.colorDetect(frame2,hsv_lower,hsv_upper)
 
         imgOutput1 = main.letterDetect(frame1,"frame1")
