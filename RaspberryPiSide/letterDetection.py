@@ -116,13 +116,13 @@ class Detection:
     # return letter and color victims from right camera
     def rightDetectFinal(self,ret,frame):
         if ret > 0:
-            return self.KNN_finish(self.letterDetect(frame, "frame1"), 9000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
+            return self.KNN_finish(self.letterDetect(frame, "frame1"), 8000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
         return None, None
     
     # return letter and color victims from left camera
     def leftDetectFinal(self,ret,frame):
         if ret > 0:
-            return self.KNN_finish(self.letterDetect(frame, "frame2"), 9000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
+            return self.KNN_finish(self.letterDetect(frame, "frame2"), 8000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
         return None, None
     
 # old main below

@@ -4,8 +4,8 @@ import old_detection
 
 cap = cv2.VideoCapture(0)
 
-labels = open("KNN/labels2.txt",'w')
-features = open("KNN/features2.txt",'w')
+labels = open("KNN/labels3.txt",'w')
+features = open("KNN/features3.txt",'w')
 
 size = 30
 
@@ -67,7 +67,7 @@ while(cap.isOpened):
             print(training_features)
             print(training_features.shape)
             
-            np.savetxt("KNN/labels2.txt",training_labels)
+            np.savetxt("KNN/labels3.txt",training_labels)
             np.savetxt(features,training_features)
             
             break 
