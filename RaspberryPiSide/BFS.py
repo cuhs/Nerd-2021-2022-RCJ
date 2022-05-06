@@ -55,7 +55,6 @@ def init():
 
             # get ramp mappings
             util.rampMap = ast.literal_eval(r.readline())
-            print(str(util.rampMap))
 
             if config.redoLastMaze:
                 display.show(None, None, dMaze, 0)
@@ -103,7 +102,7 @@ def nextTile(cTile, cFloor):
             return cTile, cFloor
 
         for i in range(4):
-            if not util.maze[cFloor][cTile][i]:
+            if not util.maze[cFloor][cTile][i] and util.tileExists(util.adjTiles[i] + cTile):
                 # no wall in direction i
                 if not ((util.adjTiles[i] + cTile, cFloor) in util.parent):
                     util.parent[(util.adjTiles[i] + cTile, cFloor)] = (cTile, cFloor)
@@ -118,6 +117,8 @@ def nextTile(cTile, cFloor):
             print("\tQueue:\t" + str(q))
 
     # no tile
+    if config.BFSDebug or config.importantDebug:
+        print("\tBFS - NO NEXT TILE FOUND")
     return None, None
 
 # puts path to tile in a stack
@@ -126,12 +127,44 @@ def pathToTile(cTile, cFloor, tTile, tFloor):
     pTile = tTile
     pFloor = tFloor
 
-    while (pTile != cTile) or (pFloor != cFloor):
+    while not (pTile == cTile and pFloor == cFloor):
         util.path.append((int(pTile), int(pFloor)))
         (pTile, pFloor) = util.parent[(int(pTile), int(pFloor))]
 
 # handles black and silver tiles
-def handleSpecialTiles(previousCheckpoint):
+def handleSpecialTiles(walls, previousCheckpoint):
+    # loading checkpoint
+    if type(walls) is not np.ndarray:
+        return previousCheckpoint
+
+    # check if tile is a ramp tile
+    if walls[util.tileType] in (3, 4):
+        if config.importantDebug or config.BFSDebug:
+            print("\t\tTILE, FLOOR: " + str(util.tile) + ", " + str(util.floor) + " is a ramp tile")
+            print("\t\t\tRAMP MAP -> " + str(util.rampMap[util.tile]))
+
+        # floor level adjustment depending on ramp direction
+        rampAdjust = 1 if walls[util.tileType] == 3 else -1
+        util.maze[util.floor][util.tile][util.tileType] = walls[util.tileType]
+
+        # create and go on ramp
+        util.setRampBorders(util.maze, util.tile, util.floor, util.oppositeDir(util.direction), rampAdjust == 1, util.rampMap[util.tile])
+        util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, rampAdjust == 1, False)
+
+        # update walls
+        if config.inputMode != 2:
+            walls = util.getWalls()
+
+        if config.importantDebug or config.BFSDebug:
+            print("\t\tTILE, FLOOR is now: " + str(util.tile) + ", " + str(util.floor) + " after ramp tile")
+
+    # set wall values
+    for i in range(4):
+        # prevent black tile walls from being overwritten
+        if util.maze[util.floor][util.tile][i] == 0:
+            util.maze[util.floor][util.tile][i] = walls[i]
+    util.maze[util.floor][util.tile][4:] = walls[4:]
+
     # check if tile is a silver tile
     if util.isCheckpoint(util.maze[util.floor], util.tile):
         if config.importantDebug or config.BFSDebug:
@@ -145,33 +178,17 @@ def handleSpecialTiles(previousCheckpoint):
 
     # check if tile is a black tile
     if util.isBlackTile(util.maze[util.floor], util.tile):
+        # set borders for black tiles
+        util.maze[util.floor] = util.setBlackTile(util.maze[util.floor], util.tile)
+
         if config.importantDebug or config.BFSDebug:
             print("\tTile " + str(util.tile) + " is a black tile, going back")
 
+        # update tile to avoid black tile
         util.tile = util.goBackward(util.tile)
 
         if config.importantDebug or config.BFSDebug:
             print("\tTile is now " + str(util.tile) + " after black tile")
-
-    # check if tile is a ramp
-    if util.isUpRamp(util.maze[util.floor], util.tile) or util.isDownRamp(util.maze[util.floor], util.tile):
-        if config.importantDebug or config.BFSDebug:
-            print("\tTile " + str(util.tile) + " is a ramp, going to next floor")
-
-        rampAdjust = 1 if util.isUpRamp(util.maze[util.floor], util.tile) else -1
-
-        # update tile
-        if config.inputMode == 2:
-            # TODO
-            # add relative positioning for multiple ramps leading to the same floors
-            util.tile = util.startTile
-        else:
-            util.setRampBorders(util.maze, util.tile, util.floor, util.oppositeDir(util.direction), rampAdjust == 1, util.rampMap[util.tile])
-            util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, rampAdjust == 1)
-
-        if config.importantDebug or config.BFSDebug:
-            print("\tTile is now " + str(util.tile) + " after ramp tile")
-            print("\tFloor is now " + str(util.floor) + " after ramp tile")
 
     return previousCheckpoint
 
@@ -183,7 +200,7 @@ def loadCheckpoint(checkpoint):
     # check if no checkpoints reached yet, reset if so
     if checkpoint == -1:
         reset()
-        util.setWalls()
+        util.getWalls()
     else:
         # retrieve saved maze from file
         info, savedMaze = IO.readMaze(IO.saveFile("r"))
@@ -215,18 +232,18 @@ def searchForVictims():
         if config.cameraCount == 2 and (not IO.cap[1].isOpened()):
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
             return
-        
+
         leftRet, leftFrame = IO.cap[0].read()
         leftFrame = leftFrame[:126,:152]
-        
+
         if config.victimDebug or config.saveVictimDebug:
             cv2.imshow("left", leftFrame)
             cv2.waitKey(1)
-            
+
         if config.cameraCount == 2:
             rightRet, rightFrame = IO.cap[1].read()
             rightFrame = rightFrame[:,:152]
-            
+
             if config.victimDebug or config.saveVictimDebug:
                 cv2.imshow("right", rightFrame)
                 cv2.waitKey(1)
@@ -276,4 +293,4 @@ def searchForVictims():
                 if config.victimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
                 break
-        
+

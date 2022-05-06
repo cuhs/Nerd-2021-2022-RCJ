@@ -95,7 +95,7 @@ def genRandMaze():
         while maze[i][bottomRampTile][util.tileType] > 0 \
                 or (bottomRampTile == util.startTile and i == util.startFloor) \
                 or not util.tileExists(bottomRampTile + util.adjTiles[rampDir]) \
-                or maze[i][bottomRampTile + util.adjTiles[rampDir]][util.tileType] in (1, 3) \
+                or maze[i][bottomRampTile + util.adjTiles[rampDir]][util.tileType] in (1, 3, 4) \
                 or rampDir == 1 and (bottomRampTile + 1) % config.mazeSideLen == 0 \
                 or rampDir == 3 and bottomRampTile % config.mazeSideLen == 0:
             bottomRampTile = random.randint(0, config.mazeSideLen ** 2 - 1)
@@ -105,7 +105,7 @@ def genRandMaze():
         while maze[i + 1][topRampTile][util.tileType] > 0 \
                 or (topRampTile == util.startTile and (i + 1) == util.startFloor) \
                 or not util.tileExists(topRampTile + util.adjTiles[util.oppositeDir(rampDir)]) \
-                or maze[i + 1][topRampTile + util.adjTiles[util.oppositeDir(rampDir)]][util.tileType] in (1, 3) \
+                or maze[i + 1][topRampTile + util.adjTiles[util.oppositeDir(rampDir)]][util.tileType] in (1, 3, 4) \
                 or util.oppositeDir(rampDir) == 1 and (topRampTile + 1) % config.mazeSideLen == 0 \
                 or util.oppositeDir(rampDir) == 3 and topRampTile % config.mazeSideLen == 0:
             topRampTile = random.randint(0, config.mazeSideLen ** 2 - 1)

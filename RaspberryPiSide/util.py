@@ -87,32 +87,30 @@ def tileExists(cTile):
     return 0 <= cTile < config.mazeSideLen ** 2
 
 # direction must be adjusted from bot to the maze
-def setWalls():
+def getWalls():
     sensorData = IO.getData(config.inputMode, tile, floor)
+    retData = np.zeros(util.tileLen, dtype=np.int8)
 
+    # reset to checkpoint
+    if (type(sensorData) is not np.ndarray) and sensorData == 'a':
+        return None
+
+    # set walls
     if config.inputMode != 2:
         for i in range(tileLen):
-            # prevents overwriting of black tile
-            if maze[floor][tile][i] == 0:
-                maze[floor][tile][i] = sensorData[i]
+            retData[i] = sensorData[i]
+        retData[util.visited] = 1
     else:
-        # black tile
-        if sensorData is None:
-            return False
-        # reset to checkpoint
-        if (type(sensorData) is not np.ndarray) and sensorData == 'a':
-            return None
-
         # adjust directions for bot alignment
         for i in range(4):
-            maze[floor][tile][adjustDirections(direction)[i]] = sensorData[i]
-        maze[floor][tile][5] = 1
+            retData[adjustDirections(direction)[i]] = sensorData[i]
         for i in range(5, 10):
-            maze[floor][tile][i] = 0
+            retData[i] = 0
 
     if config.BFSDebug:
-        print("\tTile Array for tile " + str(tile) + ": " + str(maze[floor][tile]))
-    return True
+        print("\tTile Array for tile " + str(tile) + ": " + str(retData))
+
+    return retData
 
 # both are 90 degree turns
 def turnLeft(facing):
@@ -126,8 +124,9 @@ def turnRight(facing):
     return facing
 
 # send forward message
-def goForward(cTile):
-    IO.sData += (config.serialMessages[0] + config.serialMessages[6])
+def goForward(cTile, sendMsg):
+    if sendMsg:
+        IO.sData += (config.serialMessages[0] + config.serialMessages[6])
     return cTile + adjTiles[direction]
 
 def goBackward(cTile):
@@ -159,12 +158,9 @@ def setRampBorders(cMaze, cTile, cFloor, cDirection, upRamp, rTile):
     if upRamp and cFloor == config.floorCount - 1 or not upRamp and cFloor == 0:
         raise ValueError("Invalid Ramp Creation (May Need To Increase config.floorCount)!")
 
-    cMaze[cFloor][cTile][tileType] = 3 if upRamp else 4
     rampAdjust = 1 if upRamp else -1
-    if upRamp:
-        cMaze[cFloor + rampAdjust][rTile][tileType] = 4
-    else:
-        cMaze[cFloor + rampAdjust][rTile][tileType] = 3
+    cMaze[cFloor][cTile][tileType] = 3 if upRamp else 4
+    cMaze[cFloor + rampAdjust][rTile][tileType] = 4 if upRamp else 3
 
     # set the borders of the ramp tile
     for i in range(4):
@@ -208,8 +204,20 @@ def isUpRamp(cMaze, cTile):
 def isDownRamp(cMaze, cTile):
     return cMaze[cTile][tileType] == 4
 
-def goOnRamp(cMaze, cTile, cFloor, upRamp):
+def goOnRamp(cMaze, cTile, cFloor, upRamp, sendMsg=True):
+    if sendMsg:
+        IO.sData += (config.serialMessages[4] if upRamp else config.serialMessages[5]) + config.serialMessages[6]
+        if path:
+            path.pop()
+
+    # set ramp tile on new floor visited, update tile
     cFloor += (1 if upRamp else -1)
-    IO.sData += (config.serialMessages[4] if upRamp else config.serialMessages[5]) + config.serialMessages[6]
-    cMaze[cFloor][util.rampMap[cTile]][visited] = True
-    return cMaze, util.rampMap[cTile], cFloor
+    cTile = rampMap[cTile]
+    cMaze[cFloor][cTile][visited] = True
+
+    # go to tile in front of ramp
+    cTile += util.adjTiles[util.direction]
+    cMaze[cFloor][cTile][visited] = True
+    if config.importantDebug:
+        print("\t\t\tCurrent Position: " + str(cTile) + ", " + str(cFloor))
+    return cMaze, cTile, cFloor

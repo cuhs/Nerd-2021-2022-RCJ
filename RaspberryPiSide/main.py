@@ -1,3 +1,4 @@
+import numpy as np
 import cv2
 import time
 import BFS
@@ -8,17 +9,18 @@ from util import config
 
 # time calculation
 IO.startTime = time.time()
-    
+
 if config.importantDebug:
     print("\nRaspberryPiSide START")
-    
+
 BFS.init()
 
 if config.importantDebug:
     print("Setup Finished, Running...")
 
 # set start tile walls
-inputWalls = util.setWalls()
+inputWalls = util.getWalls()
+util.maze[util.floor][util.tile] = inputWalls
 
 # calculate next tile
 nextTile, nextFloor = BFS.nextTile(util.tile, util.floor)
@@ -95,7 +97,7 @@ while nextTile is not None or util.tile != util.startTile:
             util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
         else:
             # set the tile to the tile to be moved to
-            util.tile = util.goForward(util.tile)
+            util.tile = util.goForward(util.tile, util.maze[util.floor][util.goForward(util.tile, False)][util.tileType] not in (3, 4))
 
         IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
         if config.serialDebug:
@@ -129,31 +131,17 @@ while nextTile is not None or util.tile != util.startTile:
         util.maze[util.floor][util.tile][util.visited] = True
         util.parent.clear()
 
-        # get sensor/wall values, take care of special tiles
-        inputWalls = util.setWalls()
+        # get sensor/wall values
+        inputWalls = util.getWalls()
+
+        # take care of special tiles and use wall values
+        checkpoint = BFS.handleSpecialTiles(inputWalls, checkpoint)
 
     # load checkpoint
     if loadingCheckpoint or inputWalls is None:
+        util.maze[util.floor][util.tile][util.visited] = False
         BFS.loadCheckpoint(checkpoint)
         loadingCheckpoint = False
-        util.maze[util.floor][util.tile][util.visited] = False
-    else:
-        # set black tile borders
-        if (inputWalls is False) or (config.inputMode != 2 and util.isBlackTile(util.maze[util.floor], util.tile)):
-            util.maze[util.floor] = util.setBlackTile(util.maze[util.floor], util.tile)
-
-        # set ramps, checkpoints
-        if config.inputMode == 2:
-            # TODO
-            # integrate up/down ramp detection
-            # integrate silver tile detection
-            if False:
-                util.maze = util.setCheckpoint(util.maze[util.floor], util.tile)
-            if False:
-                util.maze = util.setRamp(util.maze, util.tile, util.floor, True)
-
-        # handle black, silver, and ramp tiles
-        checkpoint = BFS.handleSpecialTiles(checkpoint)
 
     # calculate next tile
     nextTile, nextFloor = BFS.nextTile(util.tile, util.floor)
@@ -171,7 +159,8 @@ while nextTile is not None or util.tile != util.startTile:
 # print out entire path the robot took traversing the maze and how long the algorithm took
 end = time.time()
 if config.importantDebug:
-    print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - IO.startTime) * 1000, '.2f') + "ms ")
+    print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - IO.startTime) * 1000,
+                                                                                           '.2f') + "ms ")
 display.show(None, None, util.maze, 0)
 
 if config.inputMode == 2:

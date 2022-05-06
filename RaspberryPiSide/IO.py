@@ -142,7 +142,8 @@ def getSerialData():
     # account for black and silver tiles
     if not msg.isdigit():
         if msg == 'b':
-            return None
+            walls[9] = 1
+            return walls
         else:
             walls[9] = 2
             msg = getNextSerialByte()
