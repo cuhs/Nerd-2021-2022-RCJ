@@ -91,9 +91,6 @@ while nextTile is not None or util.tile != util.startTile:
 
         # go up ramp if needed
         if util.floor != nextFloorInPath:
-            # TODO
-            # fix output directions to not show F; before and after U;/D;
-            # fix {} formatting for U;/D;
             util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
         else:
             # set the tile to the tile to be moved to
@@ -159,8 +156,7 @@ while nextTile is not None or util.tile != util.startTile:
 # print out entire path the robot took traversing the maze and how long the algorithm took
 end = time.time()
 if config.importantDebug:
-    print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - IO.startTime) * 1000,
-                                                                                           '.2f') + "ms ")
+    print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - IO.startTime) * 1000, '.2f') + "ms ")
 display.show(None, None, util.maze, 0)
 
 if config.inputMode == 2:
