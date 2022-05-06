@@ -27,8 +27,8 @@ rate = 9600  # serial port rate
 
 doVictim = True  # check for color and letter victims
 cameraCount = 2  # number of cameras, cam0 is left, cam1 is right. if only one camera, left
-cameraWidth = 160  # width of camera feed for both cameras
-cameraHeight = 128  # height of camera feed for both cameras
+cameraWidth = 160  # width of camera feed for both cameras 160
+cameraHeight = 128  # height of camera feed for both cameras 128
 
 manualCheckpointLoading = False  # load back to last checkpoint when 'c' is pressed
 

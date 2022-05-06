@@ -61,8 +61,7 @@ class Detection:
     # process frame and return letter from getLetter
     def letterDetect(self, frame, name):
         cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        mask = cv2.inRange(frame, (0, 0, 0), (50, 50, 50))
-
+        mask = cv2.inRange(frame, (0, 0, 0), (50,50, 50))
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         imgOutput = self.getLetter(contours, mask, name)
         return imgOutput
@@ -91,9 +90,9 @@ class Detection:
             if len(contours) > 0:
                 contours = max(contours, key=cv2.contourArea)
 
-                if cv2.contourArea(contours) > 50:
+                if cv2.contourArea(contours) > 150:
                     if i == 0 or i == 2:
-                        return "R"
+                        return "Y"
                         # packages = 1
 
                     elif i == 1:
@@ -117,13 +116,13 @@ class Detection:
     # return letter and color victims from right camera
     def rightDetectFinal(self,ret,frame):
         if ret > 0:
-            return self.KNN_finish(self.letterDetect(frame, "frame1"), 10000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
+            return self.KNN_finish(self.letterDetect(frame, "frame1"), 8000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
         return None, None
     
     # return letter and color victims from left camera
     def leftDetectFinal(self,ret,frame):
         if ret > 0:
-            return self.KNN_finish(self.letterDetect(frame, "frame2"), 10000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
+            return self.KNN_finish(self.letterDetect(frame, "frame2"), 8000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
         return None, None
     
 # old main below

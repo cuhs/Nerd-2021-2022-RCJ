@@ -1,10 +1,13 @@
 #include "TCS.h"
 
 Adafruit_TCS34725 tcs;
+const int TCSLEDpin = 48;
 
 //sets up light sensors
 void setupTCSSensors() {
   tcaselect(3);
+  pinMode(TCSLEDpin, OUTPUT);
+  digitalWrite(TCSLEDpin, HIGH);
   if (tcs.begin()) {
     Serial.println("Found sensor");
   } else {
@@ -23,13 +26,13 @@ void getValues() {
   colorTemp = tcs.calculateColorTemperature_dn40(r, g, b, c);
   lux = tcs.calculateLux(r, g, b);
 
-  Serial.print("Color Temp: "); Serial.print(colorTemp, DEC); Serial.print(" K - ");
-  Serial.print("Lux: "); Serial.print(lux, DEC); Serial.print(" - ");
-  Serial.print("R: "); Serial.print(r, DEC); Serial.print(" ");
-  Serial.print("G: "); Serial.print(g, DEC); Serial.print(" ");
-  Serial.print("B: "); Serial.print(b, DEC); Serial.print(" ");
-  Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
-  Serial.println(" ");
+//  Serial.print("Color Temp: "); Serial.print(colorTemp, DEC); Serial.print(" K - ");
+//  Serial.print("Lux: "); Serial.print(lux, DEC); Serial.print(" - ");
+//  Serial.print("R: "); Serial.print(r, DEC); Serial.print(" ");
+//  Serial.print("G: "); Serial.print(g, DEC); Serial.print(" ");
+//  Serial.print("B: "); Serial.print(b, DEC); Serial.print(" ");
+//  Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
+//  Serial.println(" ");
   delay(20);
 }
 
@@ -38,10 +41,14 @@ bool detectBlack() {
   uint16_t r, g, b, c, lux;
   tcs.getRawData(&r, &g, &b, &c);
   lux = tcs.calculateLux(r, g, b);
-  Serial.print("lux: ");
-  Serial.println(lux);
+//  Serial.print("lux: ");
+//  Serial.println(lux);
   if (lux <= 0) { //lux value changed
-    Serial.write('b');
+    Serial2.write(';');
+    Serial2.write('b');
+    //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
+    //Serial2.write(';');
+    Serial.println("Saw Black");
     return true;
   }
   return false;

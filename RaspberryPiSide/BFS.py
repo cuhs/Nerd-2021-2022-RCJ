@@ -9,6 +9,8 @@ from util import np
 from util import config
 import letterDetection
 import inspect
+from vidThread import VideoGet
+import RPi.GPIO as GPIO
 import ast
 
 def reset():
@@ -79,6 +81,21 @@ def init():
 
         if 2 < config.cameraCount < 0:
             raise ValueError("Invalid cameraCount (check config!)")
+
+        #Start video threading
+        IO.video_getter = VideoGet().start()
+
+        #Sets up the LED for the PI
+        #GPIO.setwarnings(False)
+        #GPIO.setmode(GPIO.BOARD)
+        #GPIO.setup(16,GPIO.OUT)
+
+'''def blink():
+    for i in range(2):
+        GPIO.output(16, GPIO.HIGH) # Turn on
+        time.sleep(1)                  # Sleep for 1 second
+        GPIO.output(16, GPIO.LOW)  # Turn off
+        time.sleep(1)                  # Sleep for 1 second'''
 
 # return next tile to visit recursively
 def nextTile(cTile, cFloor):
@@ -238,19 +255,25 @@ def searchForVictims():
         if config.cameraCount == 2 and (not IO.cap[1].isOpened()):
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
             return
+        
+        #leftRet, leftFrame = IO.cap[0].read()
+        leftRet, leftFrame = IO.video_getter.grabbed1, IO.video_getter.frame1
 
-        leftRet, leftFrame = IO.cap[0].read()
-        leftFrame = leftFrame[:126,:152]
+        leftFrame = leftFrame[:,:148]
 
-        if config.victimDebug or config.saveVictimDebug:
+        if config.victimDebug:
             cv2.imshow("left", leftFrame)
             cv2.waitKey(1)
 
         if config.cameraCount == 2:
-            rightRet, rightFrame = IO.cap[1].read()
+            #rightRet, rightFrame = IO.cap[1].read()
+            rightRet, rightFrame = IO.video_getter.grabbed2, IO.video_getter.frame2
+
+            #print(IO.video_getter.frame2)
+
             rightFrame = rightFrame[:,:152]
 
-            if config.victimDebug or config.saveVictimDebug:
+            if config.victimDebug:
                 cv2.imshow("right", rightFrame)
                 cv2.waitKey(1)
 
@@ -264,7 +287,8 @@ def searchForVictims():
                 print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim)
                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
                 IO.sendData(config.inputMode, leftLetterVictim)
-                if config.victimDebug:
+                #blink()
+                if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                 break
 
@@ -273,7 +297,8 @@ def searchForVictims():
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim)
                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
                 IO.sendData(config.inputMode, leftColorVictim)
-                if config.victimDebug:
+                #blink()
+                if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                 break
 
@@ -287,7 +312,8 @@ def searchForVictims():
                 print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim)
                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightLetterVictim)
                 IO.sendData(config.inputMode, rightLetterVictim)
-                if config.victimDebug:
+                #blink()
+                if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
                 break
 
@@ -296,7 +322,8 @@ def searchForVictims():
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim)
                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
                 IO.sendData(config.inputMode, rightColorVictim)
-                if config.victimDebug:
+                #blink()
+                if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
                 break
 

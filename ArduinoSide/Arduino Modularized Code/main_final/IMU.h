@@ -10,7 +10,12 @@ void initIMU();
 void reset();
 void turnAbs(char t);
 void turnAbs(int);
-void triangulation(int, int);
+void turnAbsNoVictim(int);
+bool triangulation(int, int);
+bool isOnRamp();
+bool notStable();
+void displayIMU();
+void turnRight(int);
 
 extern int resetPinIMU;
 extern Adafruit_BNO055 bno;

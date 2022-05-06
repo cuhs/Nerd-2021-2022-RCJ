@@ -75,7 +75,7 @@ while nextTile is not None or util.tile != util.startTile:
                 print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
             # find and send victims
             if config.inputMode == 2:
-                if config.doVictim:
+                if config.doVictim: 
                     BFS.searchForVictims()
 
                     victimMsg = IO.getNextSerialByte()
@@ -162,4 +162,5 @@ display.show(None, None, util.maze, 0)
 if config.inputMode == 2:
     for i in range(len(IO.cap)):
         IO.cap[i].release()
+video_getter.stop()
 cv2.destroyAllWindows()

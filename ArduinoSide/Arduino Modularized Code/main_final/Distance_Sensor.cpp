@@ -5,7 +5,7 @@ VL53L0X sensor[numSensors];
 
 void sendWallValues(int frontDist, int rightDist, int leftDist) {
   char walls[3] = {'0', '0', '0'};
-  int minimumDist = 20; // Minimum distance to determine if there is a wall on the side
+  int minimumDist = 15; // Minimum distance to determine if there is a wall on the side
 
   if (leftDist < minimumDist)
     walls[2] = '1';
@@ -25,7 +25,9 @@ void sendWallValues(int frontDist, int rightDist, int leftDist) {
   }
   Serial.println();
 
+  delay(1);
   Serial2.write(walls, 3);
+  delay(1);
 }
 
 //max is eight sensors allowed
@@ -78,5 +80,7 @@ void alignFront() {
 
 int getSensorReadings(int num) {
   tcaselect(num);
+  if(num==0)
+    return lox.readRangeContinuousMillimeters() /10 -1;
   return lox.readRangeContinuousMillimeters() / 10;
 }
