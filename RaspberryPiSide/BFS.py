@@ -29,7 +29,7 @@ def reset():
     util.maze[util.floor][util.tile][util.visited] = True
 
 def init():
-    if config.mazeSideLen % 2 != 0 or not(2 <= config.mazeSideLen <= 80):
+    if config.mazeSideLen % 2 != 0 or not(4 <= config.mazeSideLen <= 80):
         raise ValueError("Invalid Maze Size (check config!)")
     if config.inputMode == 0 and config.displayRate is not 0:
         raise ValueError("config.displayRate Must Be 0 For Manual Input!")
@@ -110,8 +110,8 @@ def nextTile(cTile, cFloor):
 
                     # adjacent to ramp
                     if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] in (3, 4):
-                        util.parent[(util.rampMap[util.adjTiles[i] + cTile], cFloor + (1 if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] == 3 else -1))] = (util.adjTiles[i] + cTile, cFloor)
-                        rampq.append((util.rampMap[util.adjTiles[i] + cTile], cFloor + (1 if util.maze[cFloor][util.adjTiles[i] + cTile][util.tileType] == 3 else -1)))
+                        util.parent[util.rampMap[util.adjTiles[i] + cTile, cFloor]] = util.adjTiles[i] + cTile, cFloor
+                        rampq.append(util.rampMap[util.adjTiles[i] + cTile, cFloor])
 
         if config.BFSDebug:
             print("\tQueue:\t" + str(q))
@@ -139,16 +139,22 @@ def handleSpecialTiles(walls, previousCheckpoint):
 
     # check if tile is a ramp tile
     if walls[util.tileType] in (3, 4):
+
+        # floor adjustments
+        rampAdjust = 1 if walls[util.tileType] == 3 else -1
+
+        # add tile to ramp mappings
+        if (util.tile, util.floor) not in util.rampMap:
+            util.rampMap[util.tile, util.floor] = util.startTile, util.floor + rampAdjust
+            util.rampMap[util.startTile, util.floor + rampAdjust] = util.tile, util.floor
+
         if config.importantDebug or config.BFSDebug:
             print("\t\tTILE, FLOOR: " + str(util.tile) + ", " + str(util.floor) + " is a ramp tile")
-            print("\t\t\tRAMP MAP -> " + str(util.rampMap[util.tile]))
-
-        # floor level adjustment depending on ramp direction
-        rampAdjust = 1 if walls[util.tileType] == 3 else -1
-        util.maze[util.floor][util.tile][util.tileType] = walls[util.tileType]
+            print("\t\t\tRAMP MAP -> " + str(util.rampMap[util.tile, util.floor]))
 
         # create and go on ramp
-        util.setRampBorders(util.maze, util.tile, util.floor, util.oppositeDir(util.direction), rampAdjust == 1, util.rampMap[util.tile])
+        util.maze[util.floor][util.tile][util.tileType] = walls[util.tileType]
+        util.setRampBorders(util.maze, util.tile, util.floor, util.oppositeDir(util.direction), rampAdjust == 1, util.rampMap[util.tile, util.floor][0])
         util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, rampAdjust == 1, False)
 
         # update walls

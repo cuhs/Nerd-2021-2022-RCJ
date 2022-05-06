@@ -1,4 +1,5 @@
-import numpy as np
+# TODO
+# add floor to ramp mappings
 import cv2
 import time
 import BFS
@@ -154,9 +155,8 @@ while nextTile is not None or util.tile != util.startTile:
         nextFloor = util.startFloor
 
 # print out entire path the robot took traversing the maze and how long the algorithm took
-end = time.time()
 if config.importantDebug:
-    print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((end - IO.startTime) * 1000, '.2f') + "ms ")
+    print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((time.time() - IO.startTime) * 1000, '.2f') + "ms ")
 display.show(None, None, util.maze, 0)
 
 if config.inputMode == 2:

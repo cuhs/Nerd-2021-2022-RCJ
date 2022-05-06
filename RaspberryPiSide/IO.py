@@ -139,32 +139,44 @@ def getSerialData():
     if msg == 'a':
         return msg
 
-    # account for black and silver tiles
+    # account for special tiles
     if not msg.isdigit():
+        # black tile
         if msg == 'b':
             walls[9] = 1
             return walls
+        # ramp going up
+        elif msg == 'u':
+            walls[9] = 3
+        # ramp going down
+        elif msg == 'd':
+            walls[9] = 4
+        # checkpoint tile
         else:
             walls[9] = 2
             msg = getNextSerialByte()
             if msg == 'a':
                 return msg
 
+    # north wall
     walls[0] = msg
     time.sleep(0.1)
 
+    # east
     msg = getNextSerialByte()
     if msg == 'a':
         return msg
     walls[1] = msg
     time.sleep(0.1)
 
+    # west
     msg = getNextSerialByte()
     if msg == 'a':
         return msg
     walls[3] = msg
     time.sleep(0.1)
 
+    # south
     walls[2] = 0
     return walls
 

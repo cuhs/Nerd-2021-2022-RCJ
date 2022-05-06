@@ -112,8 +112,8 @@ def genRandMaze():
 
         # create ramps at tiles generated above
         maze = util.setRampBorders(maze, bottomRampTile, i, rampDir, True, topRampTile)
-        rampMappings[bottomRampTile] = topRampTile
-        rampMappings[topRampTile] = bottomRampTile
+        rampMappings[bottomRampTile, i] = topRampTile, i + 1
+        rampMappings[topRampTile, i + 1] = bottomRampTile, i
 
     # writes maze values to "generatedMaze.txt"
     IO.writeMaze(IO.inputFile("a"), "GENERATED", maze[0], True)

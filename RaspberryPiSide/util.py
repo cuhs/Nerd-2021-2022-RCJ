@@ -211,8 +211,7 @@ def goOnRamp(cMaze, cTile, cFloor, upRamp, sendMsg=True):
             path.pop()
 
     # set ramp tile on new floor visited, update tile
-    cFloor += (1 if upRamp else -1)
-    cTile = rampMap[cTile]
+    cTile, cFloor = rampMap[cTile, cFloor]
     cMaze[cFloor][cTile][visited] = True
 
     # go to tile in front of ramp
