@@ -73,7 +73,7 @@ bool goForwardPID(int dist) {
       }
       ports[RIGHT].setMotorSpeed(0);
       ports[LEFT].setMotorSpeed(0);
-      return true;
+      return false;
     }else if(onRamp==2){
       Serial2.write('d');
       while(notStable()){
@@ -82,13 +82,18 @@ bool goForwardPID(int dist) {
       }
        ports[RIGHT].setMotorSpeed(0);
        ports[LEFT].setMotorSpeed(0);
-       return true;
+       return false;
     }
     if (detectBlack()) {
       while (ports[motorEncUse].count > 0) {
         ports[RIGHT].setMotorSpeed(-80);
         ports[LEFT].setMotorSpeed(-80);
       }
+      ports[RIGHT].setMotorSpeed(0);
+      ports[LEFT].setMotorSpeed(0);
+      delay(1);
+      Serial2.read();
+      delay(1);
       return false;
     }
     if (ports[LEFT].count == prev_count && !checking) {

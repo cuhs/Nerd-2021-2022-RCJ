@@ -65,10 +65,6 @@ void loop() {
         Serial2.write(';');
         delay(1);
         Serial.println(';');
-        }else{
-          delay(1);
-          Serial2.read();
-          delay(1);
         }
         Serial.println("finished going forward");
         break;
