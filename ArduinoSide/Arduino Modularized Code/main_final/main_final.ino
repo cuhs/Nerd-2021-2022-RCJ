@@ -65,10 +65,6 @@ void loop() {
         Serial2.write(';');
         delay(1);
         Serial.println(';');
-        }else{
-          delay(1);
-          Serial2.read();
-          delay(1);
         }
         Serial.println("finished going forward");
         break;
@@ -105,6 +101,11 @@ void loop() {
         
       case '}':
         Serial.println("}");
+        if(finishedRamp==1)
+          Serial2.write('u');
+        else if(finishedRamp==2)
+          Serial2.write('d');
+        finishedRamp=0;
         sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
         break;
       case 'Y': // 1 kit

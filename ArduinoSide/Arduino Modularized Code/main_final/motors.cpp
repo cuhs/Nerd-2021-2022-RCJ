@@ -64,7 +64,9 @@ bool goForwardPID(int dist) {
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5) && !stalling) {
     Serial.println("In go forward PID");
     victim();
-    if (isOnRamp()) {
+    int onRamp = isOnRamp();
+    if (onRamp==1) {
+      //Serial2.write('u');
       while (notStable()) {
         ports[RIGHT].setMotorSpeed(210);
         ports[LEFT].setMotorSpeed(210);
@@ -72,12 +74,26 @@ bool goForwardPID(int dist) {
       ports[RIGHT].setMotorSpeed(0);
       ports[LEFT].setMotorSpeed(0);
       return true;
+    }else if(onRamp==2){
+      //Serial2.write('d');
+      while(notStable()){
+        ports[RIGHT].setMotorSpeed(150);
+        ports[LEFT].setMotorSpeed(150);
+      }
+       ports[RIGHT].setMotorSpeed(0);
+       ports[LEFT].setMotorSpeed(0);
+       return true;
     }
     if (detectBlack()) {
       while (ports[motorEncUse].count > 0) {
         ports[RIGHT].setMotorSpeed(-80);
         ports[LEFT].setMotorSpeed(-80);
       }
+      ports[RIGHT].setMotorSpeed(0);
+      ports[LEFT].setMotorSpeed(0);
+      delay(1);
+      Serial2.read();
+      delay(1);
       return false;
     }
     if (ports[LEFT].count == prev_count && !checking) {
