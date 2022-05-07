@@ -162,9 +162,11 @@ def getSerialData():
         # ramp going up
         elif msg == 'u':
             walls[9] = 3
+            msg = getNextSerialByte()
         # ramp going down
         elif msg == 'd':
             walls[9] = 4
+            msg = getNextSerialByte()
         # checkpoint tile
         else:
             walls[9] = 2
