@@ -3,6 +3,7 @@
 int resetPinIMU = A6;
 const int ROBOT_WIDTH = 17.5;
 Adafruit_BNO055 bno;
+int finishedRamp=0;
 
 void initIMU() {
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_IMUPLUS))
@@ -259,10 +260,14 @@ bool triangulation(int left, int right) {
 
 int isOnRamp() {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  if (euler.y() < -15)
+  if (euler.y() < -15){
+    finishedRamp=1;
     return 1;
-  else if(euler.y() > 15)
+  }
+  else if(euler.y() > 15){
+    finishedRamp=2;
     return 2;
+  }
   return 0;
 }
 

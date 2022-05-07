@@ -101,6 +101,11 @@ void loop() {
         
       case '}':
         Serial.println("}");
+        if(finishedRamp==1)
+          Serial2.write('u');
+        else if(finishedRamp==2)
+          Serial2.write('d');
+        finishedRamp=0;
         sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
         break;
       case 'Y': // 1 kit

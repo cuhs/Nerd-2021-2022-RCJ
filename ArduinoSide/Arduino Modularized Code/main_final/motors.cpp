@@ -66,23 +66,23 @@ bool goForwardPID(int dist) {
     victim();
     int onRamp = isOnRamp();
     if (onRamp==1) {
-      Serial2.write('u');
+      //Serial2.write('u');
       while (notStable()) {
         ports[RIGHT].setMotorSpeed(210);
         ports[LEFT].setMotorSpeed(210);
       }
       ports[RIGHT].setMotorSpeed(0);
       ports[LEFT].setMotorSpeed(0);
-      return false;
+      return true;
     }else if(onRamp==2){
-      Serial2.write('d');
+      //Serial2.write('d');
       while(notStable()){
         ports[RIGHT].setMotorSpeed(150);
         ports[LEFT].setMotorSpeed(150);
       }
        ports[RIGHT].setMotorSpeed(0);
        ports[LEFT].setMotorSpeed(0);
-       return false;
+       return true;
     }
     if (detectBlack()) {
       while (ports[motorEncUse].count > 0) {
