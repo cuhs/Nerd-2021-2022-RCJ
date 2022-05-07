@@ -50,7 +50,7 @@ void loop() {
       case '{':
        // Serial.println("read {");
         break;
-      case 'U':
+      case '*':
       case 'D':
       case 'F':
         //get rid of semicolon
