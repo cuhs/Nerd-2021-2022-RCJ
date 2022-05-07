@@ -257,16 +257,18 @@ bool triangulation(int left, int right) {
   return noBlack;
 }
 
-bool isOnRamp() {
+int isOnRamp() {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   if (euler.y() < -15)
-    return true;
-  return false;
+    return 1;
+  else if(euler.y() > 15)
+    return 2;
+  return 0;
 }
 
 bool notStable() {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  if (abs(euler.y()) < 2)
+  if (abs(euler.y()) > 2)
     return false;
   return true;
 }
