@@ -6,8 +6,11 @@ void setupHeatSensors() {
   mlx.begin();
 }
 
-int getHeatSensorReadings(int num) {
-  tcaselect(num);
+int getHeatSensorReadings(char side) {
+  if(side == 'L')
+    tcaselect(4);
+  if(side == 'R')
+    tcaselect(5);
   return (int)mlx.readObjectTempC();
 }
 
