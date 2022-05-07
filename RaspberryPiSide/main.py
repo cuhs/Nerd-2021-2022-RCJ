@@ -93,6 +93,7 @@ while nextTile is not None or util.tile != util.startTile:
         # go up ramp if needed
         if util.floor != nextFloorInPath:
             util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
+            util.pathLen -= 2
         else:
             # set the tile to the tile to be moved to
             util.tile = util.goForward(util.tile, util.maze[util.floor][util.goForward(util.tile, False)][util.tileType] not in (3, 4))
