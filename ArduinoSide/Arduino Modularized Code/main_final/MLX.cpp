@@ -15,8 +15,8 @@ int getHeatSensorReadings(char side) {
 }
 
 void doHeatVictim(int leftTemp, int rightTemp) {
-  if (leftTemp > (int)mlx.readAmbientTempC() + 9)
+  if (leftTemp > (int)mlx.readAmbientTempC() + 8)
     dropKits('L', 1);
-  if (rightTemp > (int)mlx.readAmbientTempC() + 9)
+  if (rightTemp > (int)mlx.readAmbientTempC() + 8)
     dropKits('R', 1);
 }
