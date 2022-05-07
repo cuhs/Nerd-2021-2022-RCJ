@@ -188,7 +188,7 @@ while cap1.isOpened(): #and cap2.isOpened():
         if main.Debug:
                 
             cv2.imshow("frame1",frame1)
-            cv2.imshow("imgOutput1",imgOutput1)
+            #cv2.imshow("imgOutput1",imgOutput1)
             #cv2.imshow("combine",combine)
             #cv2.imshow("frame2",frame2)
 
