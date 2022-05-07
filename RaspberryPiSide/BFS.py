@@ -287,7 +287,7 @@ def searchForVictims():
             if leftLetterVictim is not None:
                 print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim)
                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
-                IO.sendData(config.inputMode, leftLetterVictim)
+                IO.sendData(config.inputMode, leftLetterVictim.lower())
                 #blink()
                 if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
@@ -297,7 +297,7 @@ def searchForVictims():
             if leftColorVictim is not None:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim)
                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
-                IO.sendData(config.inputMode, leftColorVictim)
+                IO.sendData(config.inputMode, leftColorVictim.lower())
                 #blink()
                 if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
@@ -312,7 +312,7 @@ def searchForVictims():
             if rightLetterVictim is not None:
                 print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim)
                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightLetterVictim)
-                IO.sendData(config.inputMode, rightLetterVictim)
+                IO.sendData(config.inputMode, rightLetterVictim.upper())
                 #blink()
                 if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
@@ -322,7 +322,7 @@ def searchForVictims():
             elif rightColorVictim is not None:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim)
                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
-                IO.sendData(config.inputMode, rightColorVictim)
+                IO.sendData(config.inputMode, rightColorVictim.upper())
                 #blink()
                 if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
