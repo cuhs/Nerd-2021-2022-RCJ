@@ -82,7 +82,7 @@ class Detection:
     def colorDetectHSV(self, frame, hsv_lower, hsv_upper):
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        for i in range(3):
+        for i in range(2):
             mask = cv2.inRange(hsv, hsv_lower[i], hsv_upper[i])
             # cv2.imshow("mask",mask)
 

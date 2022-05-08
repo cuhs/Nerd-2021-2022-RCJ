@@ -16,7 +16,7 @@ sData = ""
 
 # cameras
 cap = []
-frame = [None, None]
+frame = []
 videoGetter = None
 
 # starting time of the program
@@ -133,8 +133,18 @@ def setupSerial():
 # gets one byte of data from serial
 def getNextSerialByte():
     msg = ser.read().decode("ascii", "ignore")
+    
+    while msg not in ('0', '1', 'd', 'u', ';', 'a', 'b'):
+        time.sleep(0.1)
+        
+        if config.importantDebug or config.serialDebug:
+            print("MESSAGE RECEIVED & IGNORED: " + msg)
+            
+        msg = ser.read().decode("ascii", "ignore")
+        
     if config.importantDebug or config.serialDebug:
         print("MESSAGE RECEIVED: " + msg)
+    
     return msg
 
 # request and receive wall positions through serial

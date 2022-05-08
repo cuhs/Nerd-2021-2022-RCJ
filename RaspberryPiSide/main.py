@@ -95,32 +95,34 @@ while nextTile is not None or util.tile != util.startTile:
         if loadingCheckpoint:
             break
 
+        nextTileIsRampStart = util.maze[util.floor][util.goForward(util.tile, False)][util.tileType] in (3, 4)
+        
         # go up ramp if needed
         if util.floor != nextFloorInPath:
             util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
-            util.pathLen -= 2
         else:
             # set the tile to the tile to be moved to, send message only if next tile is not a ramp
-            util.tile = util.goForward(util.tile, util.maze[util.floor][util.goForward(util.tile, False)][util.tileType] not in (3, 4))
+            util.tile = util.goForward(util.tile, not nextTileIsRampStart)
+                
+        if not nextTileIsRampStart:
+            IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
+            if config.serialDebug:
+                print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
 
-        IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
-        if config.serialDebug:
-            print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
+            # find and send victims
+            if config.inputMode == 2:
+                if config.doVictim:
+                    BFS.searchForVictims()
 
-        # find and send victims
-        if config.inputMode == 2:
-            if config.doVictim:
-                BFS.searchForVictims()
+                    victimMsg = IO.getNextSerialByte()
+                    if victimMsg == 'a':
+                        loadingCheckpoint = True
+                        break
 
-                victimMsg = IO.getNextSerialByte()
-                if victimMsg == 'a':
-                    loadingCheckpoint = True
-                    break
-
-                if config.serialDebug:
-                    print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
-        # update path length after forward/ramp movement
-        util.pathLen += 2
+                    if config.serialDebug:
+                        print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
+            # update path length after forward/ramp movement
+            util.pathLen += 2
 
     # send BFS ending char '}'
     if not loadingCheckpoint:

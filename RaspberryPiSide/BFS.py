@@ -163,6 +163,7 @@ def handleSpecialTiles(walls, previousCheckpoint):
 
         # floor adjustments
         rampAdjust = 1 if walls[util.tileType] == 3 else -1
+        walls[util.tileType] = 0
 
         # add tile to ramp mappings
         if (util.tile, util.floor) not in util.rampMap:
