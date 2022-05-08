@@ -67,7 +67,7 @@ hsv_upper = {
 # this adjusts it to true north, and all other directions
 def adjustDirections(facing):
     adjustedDirections = np.array([], dtype=np.int8)
-    for i in range(4):
+    for i in range(len(Dir)):
         adjustedDirections = np.append(adjustedDirections, facing)
         facing = dirToRight(facing)
     return adjustedDirections
@@ -97,15 +97,15 @@ def getWalls():
     if config.inputMode != 2:
         for i in range(tileLen):
             retData[i] = sensorData[i]
-        retData[visited] = 1
     else:
         # adjust directions for bot alignment
-        for i in range(4):
+        for i in range(len(Dir)):
             retData[adjustDirections(direction)[i]] = sensorData[i]
-        for i in range(5, 10):
-            retData[i] = 0
-        retData[util.visited] = 1
+        for i in range(len(Dir) + 1, tileLen):
+            retData[i] = sensorData[i]
 
+    # mark tile visited
+    retData[visited] = True
 
     if config.BFSDebug:
         print("\tTile Array for tile " + str(tile) + ": " + str(retData))
@@ -135,11 +135,11 @@ def goBackward(cTile):
 def setBlackTile(cFloor, cTile, setBorders=True):
     # set the borders of the black tile
     if setBorders:
-        for i in range(4):
-            cFloor[cTile][i] = 1
-        for i in range(4):
+        for i in range(len(Dir)):
+            cFloor[cTile][i] = True
+        for i in range(len(Dir)):
             if tileExists(cTile + adjTiles[i]) and not (i == 1 and (cTile + 1) % config.mazeSideLen == 0) and not (i == 3 and cTile % config.mazeSideLen == 0):
-                cFloor[cTile + adjTiles[i]][oppositeDir(i)] = 1
+                cFloor[cTile + adjTiles[i]][oppositeDir(i)] = True
     # mark the tile as black
     cFloor[cTile][tileType] = 1
     return cFloor
@@ -163,34 +163,34 @@ def setRampBorders(cMaze, cTile, cFloor, cDirection, upRamp, rTile):
     cMaze[cFloor + rampAdjust][rTile][tileType] = 4 if upRamp else 3
 
     # set the borders of the ramp tile
-    for i in range(4):
+    for i in range(len(Dir)):
         if i == cDirection:
-            cMaze[cFloor][cTile][i] = 0
+            cMaze[cFloor][cTile][i] = False
         else:
-            cMaze[cFloor][cTile][i] = 1
+            cMaze[cFloor][cTile][i] = True
 
     # set the borders of tiles bordering the ramp tile
-    for i in range(4):
+    for i in range(len(Dir)):
         if tileExists(cTile + adjTiles[i]) and not (i == 1 and (cTile + 1) % config.mazeSideLen == 0) and not (i == 3 and cTile % config.mazeSideLen == 0):
             if i == cDirection:
-                cMaze[cFloor][cTile + adjTiles[i]][oppositeDir(i)] = 0
+                cMaze[cFloor][cTile + adjTiles[i]][oppositeDir(i)] = False
             else:
-                cMaze[cFloor][cTile + adjTiles[i]][oppositeDir(i)] = 1
+                cMaze[cFloor][cTile + adjTiles[i]][oppositeDir(i)] = True
 
     # set the borders of the top/bottom ramp tile
-    for i in range(4):
+    for i in range(len(Dir)):
         if i == oppositeDir(cDirection):
-            cMaze[cFloor + rampAdjust][rTile][i] = 0
+            cMaze[cFloor + rampAdjust][rTile][i] = False
         else:
-            cMaze[cFloor + rampAdjust][rTile][i] = 1
+            cMaze[cFloor + rampAdjust][rTile][i] = True
 
     # set the borders of tiles bordering the ramp tile
-    for i in range(4):
+    for i in range(len(Dir)):
         if tileExists(rTile + adjTiles[i]) and not (i == 1 and (rTile + 1) % config.mazeSideLen == 0) and not (i == 3 and rTile % config.mazeSideLen == 0):
             if i == oppositeDir(cDirection):
-                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][oppositeDir(i)] = 0
+                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][oppositeDir(i)] = False
             else:
-                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][oppositeDir(i)] = 1
+                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][oppositeDir(i)] = True
 
     return cMaze
 

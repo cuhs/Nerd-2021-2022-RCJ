@@ -49,23 +49,23 @@ def genRandMaze():
     for i in range(config.floorCount):
         # create maze borders/edges
         for j in range(config.mazeSideLen):
-            maze[i][j][0] = 1
+            maze[i][j][0] = True
         for j in range(config.mazeSideLen - 1, config.mazeSideLen ** 2, config.mazeSideLen):
-            maze[i][j][1] = 1
+            maze[i][j][1] = True
         for j in range(0, config.mazeSideLen ** 2, config.mazeSideLen):
-            maze[i][j][3] = 1
+            maze[i][j][3] = True
         for j in range(((config.mazeSideLen ** 2) - config.mazeSideLen), config.mazeSideLen ** 2):
-            maze[i][j][2] = 1
+            maze[i][j][2] = True
     
         # generate random walls
         for j in range((config.mazeSideLen ** 2) * 4):
             if random.randint(0, int(100 / (config.wallPercentage / 2))) == 0:
                 # create wall
-                maze[i][j // 4][j % 4] = 1
+                maze[i][j // 4][j % 4] = True
 
                 # create wall on opposite side
                 if util.tileExists(j // 4 + util.adjTiles[j % 4]):
-                    maze[i][j // 4 + util.adjTiles[j % 4]][util.oppositeDir(j % 4)] = 1
+                    maze[i][j // 4 + util.adjTiles[j % 4]][util.oppositeDir(j % 4)] = True
     
         # generate black tiles
         for j in range(int(((config.mazeSideLen ** 2)/100) * config.blackTilePercentage)):

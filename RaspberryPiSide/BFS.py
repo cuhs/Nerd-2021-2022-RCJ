@@ -122,7 +122,7 @@ def nextTile(cTile, cFloor):
                 print("\tBFS - END, Tile:\t" + str(cTile))
             return cTile, cFloor
 
-        for i in range(4):
+        for i in range(len(util.Dir)):
             if not util.maze[cFloor][cTile][i] and util.tileExists(util.adjTiles[i] + cTile):
                 # no wall in direction i
                 if not ((util.adjTiles[i] + cTile, cFloor) in util.parent):
@@ -186,7 +186,7 @@ def handleSpecialTiles(walls, previousCheckpoint):
             print("\t\tTILE, FLOOR is now: " + str(util.tile) + ", " + str(util.floor) + " after ramp tile")
 
     # set wall values
-    for i in range(4):
+    for i in range(len(util.Dir)):
         # prevent black tile walls from being overwritten
         if util.maze[util.floor][util.tile][i] == 0:
             util.maze[util.floor][util.tile][i] = walls[i]
