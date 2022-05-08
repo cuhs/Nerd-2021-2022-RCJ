@@ -50,7 +50,8 @@ void loop() {
       case '{':
        // Serial.println("read {");
         break;
-
+      case '*':
+      case 'D':
       case 'F':
         //get rid of semicolon
         delay(1);

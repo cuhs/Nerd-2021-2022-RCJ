@@ -104,6 +104,8 @@ def getWalls():
             retData[adjustDirections(direction)[i]] = sensorData[i]
         for i in range(5, 10):
             retData[i] = 0
+        retData[util.visited] = 1
+
 
     if config.BFSDebug:
         print("\tTile Array for tile " + str(tile) + ": " + str(retData))
