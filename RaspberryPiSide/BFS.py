@@ -87,7 +87,7 @@ def init():
             raise ValueError("Invalid cameraCount (check config!)")
 
         # start video threading
-        IO.video_getter = VideoGet().start()
+        IO.videoGetter = VideoGet().start()
 
         #Sets up the LED for the PI
         #GPIO.setwarnings(False)
@@ -264,7 +264,7 @@ def searchForVictims():
             return
         
         #leftRet, leftFrame = IO.cap[0].read()
-        leftRet, leftFrame = IO.video_getter.grabbed1, IO.video_getter.frame1
+        leftRet, leftFrame = IO.frame[0]
 
         leftFrame = leftFrame[:,:148]
 
@@ -274,7 +274,7 @@ def searchForVictims():
 
         if config.cameraCount == 2:
             #rightRet, rightFrame = IO.cap[1].read()
-            rightRet, rightFrame = IO.video_getter.grabbed2, IO.video_getter.frame2
+            rightRet, rightFrame = IO.frame[1]
 
             #print(IO.video_getter.frame2)
 
