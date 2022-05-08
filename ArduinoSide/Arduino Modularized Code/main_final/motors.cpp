@@ -42,6 +42,35 @@ bool goForwardTilesPID(int tiles) {
   //  return true;
 }
 
+bool rampMoveForward(char dir){
+  int Lspeed = 0;
+  int Rspeed = 0;
+  if(dir=='u'){
+    Lspeed=210;
+    Rspeed=210;
+    finishedRamp=1;
+  }else if(dir=='d'){
+    Lspeed=150;
+    Rspeed=150;
+    finishedRamp=2;
+  }
+  while(notStable()){
+    ports[LEFT].setMotorSpeed(Lspeed);
+    ports[RIGHT].setMotorSpeed(Rspeed);
+    if(getSensorReadings(0)>getSensorReadings(1)){
+      Lspeed++;
+      Rspeed--;
+    }else{
+      Rspeed++;
+      Lspeed--;
+    }
+  }
+  ports[LEFT].setMotorSpeed(0);
+  ports[RIGHT].setMotorSpeed(0);
+  return true;
+  
+}
+
 bool goForwardPID(int dist) {
   unsigned long startTime;
   unsigned long endTime;
@@ -66,22 +95,26 @@ bool goForwardPID(int dist) {
     victim();
     int onRamp = isOnRamp();
     if (onRamp==1) {
-      //Serial2.write('u');
-      while (notStable()) {
-        ports[RIGHT].setMotorSpeed(210);
-        ports[LEFT].setMotorSpeed(210);
-      }
-      ports[RIGHT].setMotorSpeed(0);
-      ports[LEFT].setMotorSpeed(0);
+//      //Serial2.write('u');
+//      while (notStable()) {
+//        ports[RIGHT].setMotorSpeed(210);
+//        ports[LEFT].setMotorSpeed(210);
+//      }
+//      ports[RIGHT].setMotorSpeed(0);
+//      ports[LEFT].setMotorSpeed(0);
+//      finishedRamp=1;
+      rampMoveForward('u');
       return true;
     }else if(onRamp==2){
       //Serial2.write('d');
-      while(notStable()){
-        ports[RIGHT].setMotorSpeed(150);
-        ports[LEFT].setMotorSpeed(150);
-      }
-       ports[RIGHT].setMotorSpeed(0);
-       ports[LEFT].setMotorSpeed(0);
+//      while(notStable()){
+//        ports[RIGHT].setMotorSpeed(150);
+//        ports[LEFT].setMotorSpeed(150);
+//      }
+//       ports[RIGHT].setMotorSpeed(0);
+//       ports[LEFT].setMotorSpeed(0);
+//       finishedRamp=2;
+       rampMoveForward('d');
        return true;
     }
     if (detectBlack()) {

@@ -43,7 +43,7 @@ bool detectBlack() {
   lux = tcs.calculateLux(r, g, b);
 //  Serial.print("lux: ");
 //  Serial.println(lux);
-  if (lux <= 0) { //lux value changed
+  if (lux <= 1) { //lux value changed
     Serial2.write(';');
     Serial2.write('b');
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));

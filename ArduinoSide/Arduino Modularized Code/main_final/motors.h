@@ -6,6 +6,7 @@
 #include "PID.h"
 #include "rescueServo.h"
 #include "TCS.h"
+#include "Distance_Sensor.h"
 #include <MeMegaPi.h>
 
 #define LEFT 1
@@ -22,6 +23,7 @@ bool goForwardTilesPID(int tiles);
 bool goForwardPID(int dist);
 void motorinterruptleft();
 void motorinterruptright();
+bool rampMoveForward(char);
 
 class MegaPiPort: public MeMegaPiDCMotor {
   public:

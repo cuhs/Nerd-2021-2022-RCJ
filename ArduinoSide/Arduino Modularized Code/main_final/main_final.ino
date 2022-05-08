@@ -40,6 +40,10 @@ void loop() {
 //turnAbs(270);
 //while(true);
   //while(true) displayIMU();
+
+//  goForwardPID(30);
+//  while(true);
+  
   if (Serial2.available()) {
     delay(1);
     char incoming_byte = Serial2.read();
@@ -51,7 +55,21 @@ void loop() {
        // Serial.println("read {");
         break;
       case '*':
+        goForwardPID(30);
+        rampMoveForward('u');
+        finishedRamp=0;
+        delay(1);
+        Serial2.write(';');
+        delay(1);
+        break;
       case 'D':
+        goForwardPID(30);
+        rampMoveForward('d');
+        finishedRamp=0;
+        delay(1);
+        Serial2.write(';');
+        delay(1);
+        break;
       case 'F':
         //get rid of semicolon
         delay(1);

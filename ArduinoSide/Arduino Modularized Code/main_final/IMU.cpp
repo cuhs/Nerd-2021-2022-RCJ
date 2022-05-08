@@ -261,11 +261,9 @@ bool triangulation(int left, int right) {
 int isOnRamp() {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   if (euler.y() < -15){
-    finishedRamp=1;
     return 1;
   }
   else if(euler.y() > 15){
-    finishedRamp=2;
     return 2;
   }
   return 0;
@@ -274,6 +272,6 @@ int isOnRamp() {
 bool notStable() {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   if (abs(euler.y()) > 2)
-    return false;
-  return true;
+    return true;
+  return false;
 }
