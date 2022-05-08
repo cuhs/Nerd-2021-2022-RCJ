@@ -1,4 +1,4 @@
-# config file, because some settings might differ while debugging, or on different systems
+# config file for settings that may differ when debugging, on different systems, etc.
 
 mazeSideLen = 10  # must be even
 floorCount = 3  # starts at middle floor

@@ -8,8 +8,6 @@ from enum import Enum
 # "North" means the bot's north, or where the bot is facing. All other directions are relative to the bot
 
 # NESW -> 0123 True North is starting direction
-import util
-
 
 class Dir(Enum):
     N = 0
@@ -89,7 +87,7 @@ def tileExists(cTile):
 # direction must be adjusted from bot to the maze
 def getWalls():
     sensorData = IO.getData(config.inputMode, tile, floor)
-    retData = np.zeros(util.tileLen, dtype=np.int8)
+    retData = np.zeros(tileLen, dtype=np.int8)
 
     # reset to checkpoint
     if (type(sensorData) is not np.ndarray) and sensorData == 'a':
@@ -99,7 +97,7 @@ def getWalls():
     if config.inputMode != 2:
         for i in range(tileLen):
             retData[i] = sensorData[i]
-        retData[util.visited] = 1
+        retData[visited] = 1
     else:
         # adjust directions for bot alignment
         for i in range(4):
@@ -139,7 +137,7 @@ def setBlackTile(cFloor, cTile, setBorders=True):
             cFloor[cTile][i] = 1
         for i in range(4):
             if tileExists(cTile + adjTiles[i]) and not (i == 1 and (cTile + 1) % config.mazeSideLen == 0) and not (i == 3 and cTile % config.mazeSideLen == 0):
-                cFloor[cTile + adjTiles[i]][util.oppositeDir(i)] = 1
+                cFloor[cTile + adjTiles[i]][oppositeDir(i)] = 1
     # mark the tile as black
     cFloor[cTile][tileType] = 1
     return cFloor
@@ -173,13 +171,13 @@ def setRampBorders(cMaze, cTile, cFloor, cDirection, upRamp, rTile):
     for i in range(4):
         if tileExists(cTile + adjTiles[i]) and not (i == 1 and (cTile + 1) % config.mazeSideLen == 0) and not (i == 3 and cTile % config.mazeSideLen == 0):
             if i == cDirection:
-                cMaze[cFloor][cTile + adjTiles[i]][util.oppositeDir(i)] = 0
+                cMaze[cFloor][cTile + adjTiles[i]][oppositeDir(i)] = 0
             else:
-                cMaze[cFloor][cTile + adjTiles[i]][util.oppositeDir(i)] = 1
+                cMaze[cFloor][cTile + adjTiles[i]][oppositeDir(i)] = 1
 
     # set the borders of the top/bottom ramp tile
     for i in range(4):
-        if i == util.oppositeDir(cDirection):
+        if i == oppositeDir(cDirection):
             cMaze[cFloor + rampAdjust][rTile][i] = 0
         else:
             cMaze[cFloor + rampAdjust][rTile][i] = 1
@@ -215,7 +213,7 @@ def goOnRamp(cMaze, cTile, cFloor, upRamp, sendMsg=True):
     cMaze[cFloor][cTile][visited] = True
 
     # go to tile in front of ramp
-    cTile += util.adjTiles[util.direction]
+    cTile += adjTiles[direction]
     cMaze[cFloor][cTile][visited] = True
     if config.importantDebug:
         print("\t\t\tCurrent Position: " + str(cTile) + ", " + str(cFloor))

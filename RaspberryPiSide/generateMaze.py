@@ -60,7 +60,10 @@ def genRandMaze():
         # generate random walls
         for j in range((config.mazeSideLen ** 2) * 4):
             if random.randint(0, int(100 / (config.wallPercentage / 2))) == 0:
+                # create wall
                 maze[i][j // 4][j % 4] = 1
+
+                # create wall on opposite side
                 if util.tileExists(j // 4 + util.adjTiles[j % 4]):
                     maze[i][j // 4 + util.adjTiles[j % 4]][util.oppositeDir(j % 4)] = 1
     

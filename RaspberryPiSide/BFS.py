@@ -36,11 +36,14 @@ def init():
         raise ValueError("Invalid Maze Size (check config!)")
     if config.inputMode == 0 and config.displayRate is not 0:
         raise ValueError("config.displayRate Must Be 0 For Manual Input!")
+
+    # reset maze
     reset()
 
     # increase recursion limit for large mazes
     sys.setrecursionlimit(config.recursionLimit + len(inspect.stack()) + 10)
 
+    # generate maze if needed
     if config.inputMode == 1:
         if config.genFromImage:
             generateMaze.genMazeFromImage()
@@ -83,7 +86,7 @@ def init():
         if 2 < config.cameraCount < 0:
             raise ValueError("Invalid cameraCount (check config!)")
 
-        #Start video threading
+        # start video threading
         IO.video_getter = VideoGet().start()
 
         #Sets up the LED for the PI
@@ -98,13 +101,13 @@ def init():
         GPIO.output(16, GPIO.LOW)  # Turn off
         time.sleep(1)                  # Sleep for 1 second'''
 
-# return next tile to visit recursively
+# return next tile to visit using BFS
 def nextTile(cTile, cFloor):
     rampq = []
     q = [(cTile, cFloor)]
 
     while q or rampq:
-        # update tile being checked
+        # update tile and floor being checked
         if q:
             cTile, cFloor = q.pop(0)
         else:
@@ -113,7 +116,7 @@ def nextTile(cTile, cFloor):
         if config.BFSDebug:
             print("\tBFS - Tile: " + str(cTile) + " is visited: " + str(util.maze[cFloor][cTile][util.visited]))
 
-        # base case, BFS done and cTile is target tile
+        # BFS done and cTile is target tile
         if not util.maze[cFloor][cTile][util.visited]:
             if config.BFSDebug:
                 print("\tBFS - END, Tile:\t" + str(cTile))
@@ -134,12 +137,12 @@ def nextTile(cTile, cFloor):
         if config.BFSDebug:
             print("\tQueue:\t" + str(q))
 
-    # no tile
+    # no unvisited tiles
     if config.BFSDebug or config.importantDebug:
         print("\tBFS - NO NEXT TILE FOUND")
     return None, None
 
-# puts path to tile in a stack
+# puts path to tile in a stack for popping
 def pathToTile(cTile, cFloor, tTile, tFloor):
     util.path.clear()
     pTile = tTile
@@ -149,7 +152,7 @@ def pathToTile(cTile, cFloor, tTile, tFloor):
         util.path.append((int(pTile), int(pFloor)))
         (pTile, pFloor) = util.parent[(int(pTile), int(pFloor))]
 
-# handles black and silver tiles
+# handles black, silver, and ramp tiles
 def handleSpecialTiles(walls, previousCheckpoint):
     # loading checkpoint
     if type(walls) is not np.ndarray:
@@ -216,15 +219,15 @@ def handleSpecialTiles(walls, previousCheckpoint):
 
     return previousCheckpoint
 
-# reset program to checkpoint
+# reset program to last checkpoint
 def loadCheckpoint(checkpoint):
     if config.importantDebug or config.BFSDebug:
         print("\tLoading Checkpoint " + str(checkpoint))
 
-    # check if no checkpoints reached yet, reset if so
+    # reset to start if no previous checkpoints have been loaded
     if checkpoint == -1:
         reset()
-        util.getWalls()
+        util.maze[util.floor][util.tile] = util.getWalls()
     else:
         # retrieve saved maze from file
         info, savedMaze = IO.readMaze(IO.saveFile("r"))
@@ -240,6 +243,9 @@ def loadCheckpoint(checkpoint):
         util.direction = util.Dir[info[-2]].value
         if config.importantDebug or config.BFSDebug:
             print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
+
+        # get walls on startup
+        util.maze[util.floor][util.tile] = util.getWalls()
 
     display.show(None, None, util.maze, config.displayRate)
 

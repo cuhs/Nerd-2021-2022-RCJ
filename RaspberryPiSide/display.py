@@ -59,10 +59,10 @@ def createMazeImage(cFloor, current, target, path, floor):
                 cv2.line(img, (xPixel, yPixel), (xPixel, yPixel + config.displaySize), (0, 0, 0), lineWidth)
 
 def show(target, tFloor, cMaze, ms):
-    i = 0
-    while i <= config.floorCount and i < len(cMaze):
+    cFloor = 0
+    while cFloor <= config.floorCount and cFloor < len(cMaze):
         imgSetup()
-        createMazeImage(cMaze[i], util.tile if util.floor == i else None, target if tFloor == i else None, util.path, i)
-        cv2.imshow("Floor " + str(i), img)
-        i += 1
+        createMazeImage(cMaze[cFloor], util.tile if util.floor == cFloor else None, target if tFloor == cFloor else None, util.path, cFloor)
+        cv2.imshow("Floor " + str(cFloor), img)
+        cFloor += 1
     cv2.waitKey(ms)

@@ -14,6 +14,7 @@ IO.startTime = time.time()
 if config.importantDebug:
     print("\nRaspberryPiSide START")
 
+# initialize, (calls reset)
 BFS.init()
 
 if config.importantDebug:
@@ -39,6 +40,7 @@ while nextTile is not None or util.tile != util.startTile:
     # BFS start
     if config.BFSDebug:
         print("\tCurrent Tile:\t" + str((util.tile, util.floor)) + "\n\tNext Tile:\t" + str((nextTile, nextFloor)))
+
     # calculate path to target tile
     BFS.pathToTile(util.tile, util.floor, nextTile, nextFloor)
     if config.BFSDebug:
@@ -55,24 +57,25 @@ while nextTile is not None or util.tile != util.startTile:
         print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
     util.pathLen += 1
 
-    # calculate instructions for next tile
+    # calculate instructions for next tile in the path
     while util.path and not loadingCheckpoint:
-        # calculate driving instructions from path to next tile
         if config.BFSDebug:
             print("\tPath: " + str(util.path))
 
-        # set direction to the direction to be turned
+        # update next tile and floor in path
         (nextTileInPath, nextFloorInPath) = util.path.pop()
         while util.floor == nextFloorInPath and util.tile + util.adjTiles[util.direction] != nextTileInPath and not loadingCheckpoint:
-            # calculate next direction
+            # calculate next direction and turns required
             if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
                 util.direction = util.turnRight(util.direction)
             else:
                 util.direction = util.turnLeft(util.direction)
-            # send direction
+
+            # send turns
             IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
             if config.serialDebug:
                 print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
+
             # find and send victims
             if config.inputMode == 2:
                 if config.doVictim: 
@@ -85,6 +88,8 @@ while nextTile is not None or util.tile != util.startTile:
 
                     if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
+
+            # update length after sending turn
             util.pathLen += 2
 
         if loadingCheckpoint:
@@ -95,12 +100,13 @@ while nextTile is not None or util.tile != util.startTile:
             util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
             util.pathLen -= 2
         else:
-            # set the tile to the tile to be moved to
+            # set the tile to the tile to be moved to, send message only if next tile is not a ramp
             util.tile = util.goForward(util.tile, util.maze[util.floor][util.goForward(util.tile, False)][util.tileType] not in (3, 4))
 
         IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
         if config.serialDebug:
             print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
+
         # find and send victims
         if config.inputMode == 2:
             if config.doVictim:
@@ -113,6 +119,7 @@ while nextTile is not None or util.tile != util.startTile:
 
                 if config.serialDebug:
                     print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
+        # update path length after forward/ramp movement
         util.pathLen += 2
 
     # send BFS ending char '}'
@@ -160,6 +167,7 @@ if config.importantDebug:
     print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((time.time() - IO.startTime) * 1000, '.2f') + "ms ")
 display.show(None, None, util.maze, 0)
 
+# stop all cameras/windows
 if config.inputMode == 2:
     for i in range(len(IO.cap)):
         IO.cap[i].release()
