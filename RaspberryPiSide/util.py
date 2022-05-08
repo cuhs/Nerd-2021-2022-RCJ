@@ -164,33 +164,21 @@ def setRampBorders(cMaze, cTile, cFloor, cDirection, upRamp, rTile):
 
     # set the borders of the ramp tile
     for i in range(len(Dir)):
-        if i == cDirection:
-            cMaze[cFloor][cTile][i] = False
-        else:
-            cMaze[cFloor][cTile][i] = True
+        cMaze[cFloor][cTile][i] = i != cDirection
 
     # set the borders of tiles bordering the ramp tile
     for i in range(len(Dir)):
         if tileExists(cTile + adjTiles[i]) and not (i == 1 and (cTile + 1) % config.mazeSideLen == 0) and not (i == 3 and cTile % config.mazeSideLen == 0):
-            if i == cDirection:
-                cMaze[cFloor][cTile + adjTiles[i]][oppositeDir(i)] = False
-            else:
-                cMaze[cFloor][cTile + adjTiles[i]][oppositeDir(i)] = True
+            cMaze[cFloor][cTile + adjTiles[i]][oppositeDir(i)] = i != cDirection
 
     # set the borders of the top/bottom ramp tile
     for i in range(len(Dir)):
-        if i == oppositeDir(cDirection):
-            cMaze[cFloor + rampAdjust][rTile][i] = False
-        else:
-            cMaze[cFloor + rampAdjust][rTile][i] = True
+        cMaze[cFloor + rampAdjust][rTile][i] = i != oppositeDir(cDirection)
 
     # set the borders of tiles bordering the ramp tile
     for i in range(len(Dir)):
         if tileExists(rTile + adjTiles[i]) and not (i == 1 and (rTile + 1) % config.mazeSideLen == 0) and not (i == 3 and rTile % config.mazeSideLen == 0):
-            if i == oppositeDir(cDirection):
-                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][oppositeDir(i)] = False
-            else:
-                cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][oppositeDir(i)] = True
+            cMaze[cFloor + rampAdjust][rTile + adjTiles[i]][oppositeDir(i)] = i != oppositeDir(cDirection)
 
     return cMaze
 
