@@ -2,7 +2,7 @@
 
 mazeSideLen = 10  # must be even
 floorCount = 2  # starts at middle floor
-inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
+inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) * floorCount  # buffer added on setup
 
 wallPercentage = 25  # percentage of tiles that should be walls for random generation of maze
@@ -12,7 +12,7 @@ genFromImage = False  # if false, will generate random maze
 redoLastMaze = False  # allows you to rerun last generated maze, for debugging
 
 showDisplay = True  # 0 no display, 1 is display
-displayRate = 1  # in milliseconds, 0 for until keypress
+displayRate = 1000  # in milliseconds, 0 for until keypress
 displaySize = 500  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
 

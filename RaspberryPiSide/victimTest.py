@@ -90,7 +90,7 @@ class detection():
 
         for i in range(3):
             mask = cv2.inRange(hsv, hsv_lower[i], hsv_upper[i])
-            # cv2.imshow("mask",mask)
+            #cv2.imshow("mask",mask)
 
             contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -139,12 +139,13 @@ start = 0
 while cap1.isOpened(): #and cap2.isOpened():
     
     ret1,frame1 = cap1.read()
+    frame1 = cv2.imread("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sun May  8 15:52:21 2022/Y-Sun May  8 15:52:34 2022.png")
     #ret1,frame1 = cap1.read()
     #frame1 = cv2.flip(frame1, 0)
 
     #ret2,frame2 = cap2.read()
     
-    frame1 = frame1[:,:152] #H, W LEFT
+    #frame1 = frame1[:,:152] #H, W LEFT
     #frame2 = frame2[:,:152] #RIGHT
     
     #frame1 = cv2.imread(path + "H-Sat Apr 30 16:49:10 2022.png")
