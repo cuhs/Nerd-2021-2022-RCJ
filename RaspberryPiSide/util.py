@@ -206,5 +206,5 @@ def goOnRamp(cMaze, cTile, cFloor, upRamp, sendMsg=True):
     cTile += adjTiles[direction]
     cMaze[cFloor][cTile][visited] = True
     if config.importantDebug:
-        print("\t\t\tCurrent Position: " + str(cTile) + ", " + str(cFloor))
+        print("\t\t\tC   urrent Position: " + str(cTile) + ", " + str(cFloor))
     return cMaze, cTile, cFloor
