@@ -1,5 +1,3 @@
-# TODO
-# add floor to ramp mappings
 import cv2
 import time
 import BFS

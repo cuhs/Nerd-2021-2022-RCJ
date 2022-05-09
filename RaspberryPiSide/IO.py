@@ -1,8 +1,8 @@
 import numpy as np
 import config
-import cv2
 import serial
 import time
+import util
 import os
 
 if config.inputMode == 2:
@@ -61,13 +61,13 @@ def sendData(mode, msg, newLine=False):
 
 # receiving manual data from console
 def getManualData(tile):
-    walls = np.zeros(10, dtype=np.int8)
+    walls = np.zeros(util.tileLen, dtype=np.int8)
     inputStr = input("\tEnter MegaPi input data for Tile " + str(tile) + ": ")  # 1010 -> 1010100000
-    for i in range(4):
+    for i in range(len(util.Dir)):
         walls[i] = int(inputStr[i])
-    walls[4] = 1
-    for i in range(5, 10):
-        walls[i] = 0
+    walls[util.visited] = True
+    for i in range(len(util.Dir) + 1, util.tileLen):
+        walls[i] = False
     return walls
 
 # sets up file input, determines whether from generated or image
@@ -107,11 +107,11 @@ def writeMaze(file, header, maze, delete):
     file.close()
 
 def readMaze(file):
-    maze = np.zeros((config.floorCount, config.mazeSideLen ** 2, 10), dtype=np.int8)
+    maze = np.zeros((config.floorCount, config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)
     header = file.readline()
     for i in range(config.floorCount):
         for j in range(config.mazeSideLen ** 2):
-            maze[i][j][:] = [int(k) for k in file.readline()[:10]]
+            maze[i][j][:] = [int(k) for k in file.readline()[:util.tileLen]]
     file.close()
     return header[:len(header) - 1], maze
 
@@ -149,7 +149,7 @@ def getNextSerialByte():
 
 # request and receive wall positions through serial
 def getSerialData():
-    walls = np.zeros(10)
+    walls = np.zeros(util.tileLen)
     msg = getNextSerialByte()
 
     if msg == 'a':
@@ -159,43 +159,43 @@ def getSerialData():
     if not msg.isdigit():
         # black tile
         if msg == 'b':
-            walls[9] = 1
+            walls[util.tileType] = 1
             return walls
         # ramp going up
         elif msg == 'u':
-            walls[9] = 3
+            walls[util.tileType] = 3
             msg = getNextSerialByte()
         # ramp going down
         elif msg == 'd':
-            walls[9] = 4
+            walls[util.tileType] = 4
             msg = getNextSerialByte()
         # checkpoint tile
         else:
-            walls[9] = 2
+            walls[util.tileType] = 2
             msg = getNextSerialByte()                
             if msg == 'a':
                 return msg
 
     # north wall
-    walls[0] = msg
+    walls[util.Dir.N] = msg
     time.sleep(0.1)
 
     # east
     msg = getNextSerialByte()
     if msg == 'a':
         return msg
-    walls[1] = msg
+    walls[util.Dir.E] = msg
     time.sleep(0.1)
 
     # west
     msg = getNextSerialByte()
     if msg == 'a':
         return msg
-    walls[3] = msg
+    walls[util.Dir.W] = msg
     time.sleep(0.1)
 
     # south
-    walls[2] = 0
+    walls[util.Dir.S] = False
     return walls
 
 # send path instructions through serial
