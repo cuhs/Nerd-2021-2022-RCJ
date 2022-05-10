@@ -46,7 +46,7 @@ while nextTile is not None or util.tile != util.startTile:
 
     # display the maze
     if config.showDisplay:
-        display.show(nextTile, nextFloor, util.maze, config.displayRate)
+        display.show(display.img, util.maze, nextFloor, nextTile, config.displayRate)
 
     # send BFS starting char '{'
     IO.sData += config.serialMessages[7]
@@ -165,7 +165,7 @@ while nextTile is not None or util.tile != util.startTile:
 # print out entire path the robot took traversing the maze and how long the algorithm took
 if config.importantDebug:
     print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((time.time() - IO.startTime) * 1000, '.2f') + "ms ")
-display.show(None, None, util.maze, 0)
+display.show(display.img, util.maze, None, None, 0)
 
 # stop all cameras/windows
 if config.inputMode == 2:

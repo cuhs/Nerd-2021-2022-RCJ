@@ -31,8 +31,11 @@ def reset():
     # set starting tile as visited
     util.maze[util.floor][util.tile][util.visited] = True
 
+    # reset display
+    display.img = display.setupImg()
+
 def init():
-    if config.mazeSideLen % 2 != 0 or not(4 <= config.mazeSideLen <= 80):
+    if config.mazeSideLen % 2 != 0 or not(4 <= config.mazeSideLen <= 100):
         raise ValueError("Invalid Maze Size (check config!)")
     if config.inputMode == 0 and config.displayRate is not 0:
         raise ValueError("config.displayRate Must Be 0 For Manual Input!")
@@ -63,7 +66,7 @@ def init():
             util.rampMap = ast.literal_eval(r.readline())
 
             if config.redoLastMaze:
-                display.show(None, None, dMaze, 0)
+                display.show(display.img, dMaze, None, None, 0)
 
     # setup input from file or serial
     IO.setupInput(config.inputMode)
@@ -242,13 +245,14 @@ def loadCheckpoint(checkpoint):
         util.tile = checkpoint
         util.floor = int(info[-1])
         util.direction = util.Dir[info[-2]].value
+        display.img = display.resetImg(util.maze)
         if config.importantDebug or config.BFSDebug:
             print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
 
         # get walls on startup
         util.maze[util.floor][util.tile] = util.getWalls()
 
-    display.show(None, None, util.maze, config.displayRate)
+    display.show(display.img, util.maze, None, None, config.displayRate)
 
 # searches for letter and color victims, marks and sends them
 def searchForVictims():

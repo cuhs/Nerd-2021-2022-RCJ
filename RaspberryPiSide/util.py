@@ -1,6 +1,7 @@
 import numpy as np
 import IO
 import config
+import display
 from enum import Enum
 
 # two different types of directions
@@ -198,13 +199,16 @@ def goOnRamp(cMaze, cTile, cFloor, upRamp, sendMsg=True):
         if path:
             path.pop()
 
-    # set ramp tile on new floor visited, update tile
+    # set ramp tile on new floor visited, update tile and image
+    display.img = display.createWallsForTile(display.img, cFloor, maze[cFloor], cTile)
     cTile, cFloor = rampMap[cTile, cFloor]
     cMaze[cFloor][cTile][visited] = True
 
-    # go to tile in front of ramp
+    # go to tile in front of ramp, update display
+    display.img = display.createWallsForTile(display.img, cFloor, maze[cFloor], cTile)
     cTile += adjTiles[direction]
     cMaze[cFloor][cTile][visited] = True
     if config.importantDebug:
         print("\t\t\tCurrent Position: " + str(cTile) + ", " + str(cFloor))
+
     return cMaze, cTile, cFloor
