@@ -10,17 +10,20 @@ void setupServo() {
 }
 
 void wiggle(char angle) {
-  myservo.attach(A7, 550, 2600); // attaches the servo on pin A7 to the servo object
+  Serial.println("In wiggle");
+//  myservo.attach(A7, 550, 2600); // attaches the servo on pin A7 to the servo object
   for (int i = 5; i < 10; i++) {
     myservo.write(angle - i);
     delay(100);
     myservo.write(angle + i);
     delay(100);
   }
-  myservo.detach();
+//  myservo.detach();
+  Serial.println("Done wiggle");
 }
 
 void dropKits(char dir, int amt) {
+  Serial.println("In dropKits");
   myservo.attach(A7, 550, 2600); // attaches the servo on pin A7 to the servo object
   if (dir == 'L') {
     for (int i = 0; i < amt; i++) {
@@ -40,6 +43,7 @@ void dropKits(char dir, int amt) {
     }
   }
   myservo.detach();
+  Serial.println("Done dropKits");
 }
 
 void RGB_color(int red_light_value, int green_light_value, int blue_light_value) {
