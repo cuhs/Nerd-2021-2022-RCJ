@@ -227,6 +227,9 @@ bool triangulation(int left, int right) {
   bool noBlack = true;
   //no walls
   if (left > 15 && right > 15) {
+    int di = getDirection(euler.x());
+    if(di!=-1)
+      turnAbs(di);
     if (!goForwardTilesPID(1))
       return false;
     return true;
@@ -240,7 +243,10 @@ bool triangulation(int left, int right) {
     else
       angle = (90 - atan2(30, distFromCenter) * 360 / (2 * 3.1415927));
     forwardCm = sqrt(pow(distFromCenter, 2) + 900);
-    currAngle = euler.x();
+    if(getDirection(euler.x()!=-1))
+      currAngle = getDirection(euler.x());
+     else
+      currAngle = euler.x();
     //    Serial.print("RIGHT, distFromCenter: ");
     //    Serial.print(distFromCenter);
     //    Serial.print(" angle: ");
@@ -270,7 +276,10 @@ bool triangulation(int left, int right) {
     else
       angle = (90 - atan2(30, distFromCenter) * 360 / (2 * 3.1415927));
     forwardCm = sqrt(pow(distFromCenter, 2) + 900);
-    currAngle = euler.x();
+    if(getDirection(euler.x()!=-1))
+      currAngle = getDirection(euler.x());
+     else
+      currAngle = euler.x();
     //    Serial.print("LEFT, distFromCenter: ");
     //    Serial.print(distFromCenter);
     //    Serial.print(" angle: ");
