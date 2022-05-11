@@ -66,7 +66,7 @@ def init():
             util.rampMap = ast.literal_eval(r.readline())
 
             if config.redoLastMaze:
-                display.show(display.img, dMaze, None, None, 0)
+                display.show(display.resetImg(dMaze), dMaze, None, None, 0)
 
     # setup input from file or serial
     IO.setupInput(config.inputMode)
@@ -245,6 +245,7 @@ def loadCheckpoint(checkpoint):
         util.tile = checkpoint
         util.floor = int(info[-1])
         util.direction = util.Dir[info[-2]].value
+        util.parent = {}
         display.img = display.resetImg(util.maze)
         if config.importantDebug or config.BFSDebug:
             print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
@@ -252,7 +253,8 @@ def loadCheckpoint(checkpoint):
         # get walls on startup
         util.maze[util.floor][util.tile] = util.getWalls()
 
-    display.show(display.img, util.maze, None, None, config.displayRate)
+    if config.showDisplay:
+        display.show(display.img, util.maze, None, None, config.displayRate)
 
 # searches for letter and color victims, marks and sends them
 def searchForVictims():

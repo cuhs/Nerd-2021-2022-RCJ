@@ -117,6 +117,9 @@ while nextTile is not None or util.tile != util.startTile:
                         loadingCheckpoint = True
                         break
 
+                    if victimMsg == '!':
+                        pass
+
                     if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
             # update path length after forward/ramp movement

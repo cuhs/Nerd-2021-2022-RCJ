@@ -9,18 +9,18 @@ wallPercentage = 25  # percentage of tiles that should be walls for random gener
 blackTilePercentage = 5  # percent of black tiles when randomly generating a maze
 silverTilePercentage = 2  # percent of silver tiles when randomly generating a maze
 genFromImage = False  # if false, will generate random maze
-redoLastMaze = False  # allows you to rerun last generated maze, for debugging
+redoLastMaze = True  # allows you to rerun last generated maze, for debugging
 
 showDisplay = True  # 0 no display, 1 is display
 displayRate = 1  # in milliseconds, 0 for until keypress
-displaySize = 500  # display size, range from (0 - 1000), see line below
+displaySize = 250  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
-importantDebug = False  # important print statements, overrides other settings
-BFSDebug = False  # print statements for maze traversal
-victimDebug = False  # shows camera feeds
-saveVictimDebug = False  # saves victim images if found
-serialDebug = False  # prints serial IO
+importantDebug = True  # important print statements, overrides other settings
+BFSDebug = True  # print statements for maze traversal
+victimDebug = True  # shows camera feeds
+saveVictimDebug = True  # saves victim images if found
+serialDebug = True  # prints serial IO
 
 port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0)
 rate = 9600  # serial port rate
@@ -30,7 +30,7 @@ cameraCount = 2  # number of cameras, cam0 is left, cam1 is right. if only one c
 cameraWidth = 160  # width of camera feed for both cameras 160
 cameraHeight = 128  # height of camera feed for both cameras 128
 
-manualCheckpointLoading = False  # load back to last checkpoint when 'c' is pressed
+manualCheckpointLoading = True  # load back to last checkpoint when 'c' is pressed
 
 # serial messages in order for:
 # forward, left, right, back, EOI, (end of single instruction), SOD (start of dir.), EOD (end of directions)
