@@ -9,6 +9,7 @@
 
 void initIMU();
 void reset();
+int getDirection(int);
 void turnAbs(char t);
 void turnAbs(int);
 void turnAbsNoVictim(int);

@@ -3,7 +3,7 @@
 int resetPinIMU = A6;
 const int ROBOT_WIDTH = 17.5;
 Adafruit_BNO055 bno;
-int finishedRamp=0;
+int finishedRamp = 0;
 
 void initIMU() {
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_IMUPLUS))
@@ -28,6 +28,18 @@ void reset() {
   digitalWrite(resetPinIMU, HIGH);
 
   bno.begin();
+}
+
+int getDirection(int dir) {
+  if (dir <= 15 || dir >= 345)
+    return 0;
+  if (dir <= 105 && dir >= 75)
+    return 90;
+  if (dir <= 195 && dir >= 165)
+    return 180;
+  if (dir <= 285 && dir >= 255)
+    return 270;
+  return -1;
 }
 
 void turnAbs(char t) {
@@ -121,7 +133,7 @@ void turnAbs(int degree) {
     if (ports[LEFT].count == prev_count && !stalling) {
       Serial.println("motors might be stalling");
       endTime = millis();
-      if (endTime - startTime > 1000) {
+      if (endTime - startTime > 1000 && getDirection((int)euler.x()) != -1) {
         Serial.println("STALLING");
         stalling = true;
       }
@@ -146,6 +158,13 @@ void turnAbs(int degree) {
   ports[LEFT].setMotorSpeed(0);
 }
 void turnAbsNoVictim(int degree) {
+  unsigned long startTime;
+  unsigned long endTime;
+
+  int prev_count = 0;
+  bool stalling = false;
+  bool checking = false;
+
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int dir[4] = {0, 90, 180, 270};
   int fix;
@@ -162,6 +181,25 @@ void turnAbsNoVictim(int degree) {
       error -= 360;
     } else if (error < -180)
       error = 360 + error;
+
+    if (ports[LEFT].count == prev_count && !checking) {
+      Serial.println("set start time");
+      startTime = millis();
+      checking = true;
+    } else if (ports[LEFT].count != prev_count) {
+      Serial.println("checking false");
+      checking = false;
+    }
+    if (ports[LEFT].count == prev_count && !stalling) {
+      Serial.println("motors might be stalling");
+      endTime = millis();
+      if (endTime - startTime > 1000 && getDirection((int)euler.x()) != -1) {
+        Serial.println("STALLING");
+        stalling = true;
+      }
+    }
+    prev_count = ports[LEFT].count;
+
     fix = (int)(PID(error, pastError, integral, 1.6667, 0.005, 0));
     if (fix > 0)
       fix += 80;
@@ -189,6 +227,9 @@ bool triangulation(int left, int right) {
   bool noBlack = true;
   //no walls
   if (left > 15 && right > 15) {
+    int di = getDirection(euler.x());
+    if(di!=-1)
+      turnAbs(di);
     if (!goForwardTilesPID(1))
       return false;
     return true;
@@ -202,7 +243,10 @@ bool triangulation(int left, int right) {
     else
       angle = (90 - atan2(30, distFromCenter) * 360 / (2 * 3.1415927));
     forwardCm = sqrt(pow(distFromCenter, 2) + 900);
-    currAngle = euler.x();
+    if(getDirection(euler.x()!=-1))
+      currAngle = getDirection(euler.x());
+     else
+      currAngle = euler.x();
     //    Serial.print("RIGHT, distFromCenter: ");
     //    Serial.print(distFromCenter);
     //    Serial.print(" angle: ");
@@ -232,7 +276,10 @@ bool triangulation(int left, int right) {
     else
       angle = (90 - atan2(30, distFromCenter) * 360 / (2 * 3.1415927));
     forwardCm = sqrt(pow(distFromCenter, 2) + 900);
-    currAngle = euler.x();
+    if(getDirection(euler.x()!=-1))
+      currAngle = getDirection(euler.x());
+     else
+      currAngle = euler.x();
     //    Serial.print("LEFT, distFromCenter: ");
     //    Serial.print(distFromCenter);
     //    Serial.print(" angle: ");
@@ -260,10 +307,10 @@ bool triangulation(int left, int right) {
 
 int isOnRamp() {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  if (euler.y() < -15){
+  if (euler.y() < -15) {
     return 1;
   }
-  else if(euler.y() > 15){
+  else if (euler.y() > 15) {
     return 2;
   }
   return 0;

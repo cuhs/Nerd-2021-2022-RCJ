@@ -6,7 +6,7 @@
 #include "rescueServo.h"
 
 void setupHeatSensors();
-int getHeatSensorReadings(int num);
+int getHeatSensorReadings(char);
 void doHeatVictim(int leftTemp, int rightTemp);
 
 extern Adafruit_MLX90614 mlx;
