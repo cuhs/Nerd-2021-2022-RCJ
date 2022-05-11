@@ -69,6 +69,10 @@ while nextTile is not None or util.tile != util.startTile:
             else:
                 util.direction = util.turnLeft(util.direction)
 
+            # update checkpoint
+            if util.isCheckpoint(util.maze[util.floor], util.tile):
+                checkpoint = BFS.saveCheckpoint()
+
             # send turns
             IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
             if config.serialDebug:
@@ -84,6 +88,9 @@ while nextTile is not None or util.tile != util.startTile:
                         loadingCheckpoint = True
                         break
 
+                    if victimMsg == '!':
+                        pass
+
                     if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
 
@@ -94,14 +101,19 @@ while nextTile is not None or util.tile != util.startTile:
             break
 
         nextTileIsRampStart = util.maze[util.floor][util.goForward(util.tile, False)][util.tileType] in (3, 4)
-        
+
         # go up ramp if needed
         if util.floor != nextFloorInPath:
             util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
         else:
             # set the tile to the tile to be moved to, send message only if next tile is not a ramp
             util.tile = util.goForward(util.tile, not nextTileIsRampStart)
-                
+
+        # update checkpoint
+        if util.isCheckpoint(util.maze[util.floor], util.tile):
+            checkpoint = BFS.saveCheckpoint()
+
+        # send next IO message
         if not nextTileIsRampStart:
             IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
             if config.serialDebug:

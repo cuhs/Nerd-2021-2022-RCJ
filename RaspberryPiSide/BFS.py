@@ -155,6 +155,17 @@ def pathToTile(cTile, cFloor, tTile, tFloor):
         util.path.append((int(pTile), int(pFloor)))
         (pTile, pFloor) = util.parent[(int(pTile), int(pFloor))]
 
+# save checkpoint
+def saveCheckpoint():
+    if config.importantDebug or config.BFSDebug:
+        print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
+
+    # save maze to file
+    IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction] + str(util.floor), util.maze[0], True)
+    for i in range(1, config.floorCount):
+        IO.writeMaze(IO.saveFile("a"), "", util.maze[i], False)
+    return util.tile
+
 # handles black, silver, and ramp tiles
 def handleSpecialTiles(walls, previousCheckpoint):
     # loading checkpoint
@@ -198,14 +209,7 @@ def handleSpecialTiles(walls, previousCheckpoint):
 
     # check if tile is a silver tile
     if util.isCheckpoint(util.maze[util.floor], util.tile):
-        if config.importantDebug or config.BFSDebug:
-            print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
-
-        # save maze to file
-        IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction] + str(util.floor), util.maze[0], True)
-        for i in range(1, config.floorCount):
-            IO.writeMaze(IO.saveFile("a"), "", util.maze[i], False)
-        return util.tile
+        return saveCheckpoint()
 
     # check if tile is a black tile
     if util.isBlackTile(util.maze[util.floor], util.tile):
