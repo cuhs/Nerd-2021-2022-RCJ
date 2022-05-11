@@ -1,8 +1,8 @@
 #include "rescueServo.h"
 
 Servo myservo;
-const int R_angle = 10;
-const int L_angle = 168;
+const int R_angle = 168;
+const int L_angle = 10;
 const int C_angle = 82;
 
 void setupServo() {
@@ -57,7 +57,7 @@ void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
 }
 
 void victim() {
- // doHeatVictim(getHeatSensorReadings('L'), getHeatSensorReadings('R'));
+  doHeatVictim(getHeatSensorReadings('L'), getHeatSensorReadings('R'));
 
   if (Serial2.available()) {
     delay(1);
