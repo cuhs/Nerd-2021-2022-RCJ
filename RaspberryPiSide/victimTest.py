@@ -117,7 +117,7 @@ hsv_lower = {
 hsv_upper = {
      0: (180, 255, 170),
      1: (100, 150, 155),
-     2: (36, 160, 185)
+     2: (36, 205, 185)
 }
 
 path = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sat Apr 30 16:48:05 2022/"

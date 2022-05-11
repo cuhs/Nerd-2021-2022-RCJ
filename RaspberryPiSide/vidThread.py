@@ -20,16 +20,17 @@ class VideoGet:
     
     def get(self):
         while not self.stopped:
+            #print("working 9 to 5")
             if config.cameraCount >= 1:
                 if not IO.frame[0][0]:
                     self.stop()
-                else:
+                elif self.stream1.read()[1] is not None:
                     IO.frame[0] = self.stream1.read()
                     
             if config.cameraCount == 2:
                 if not IO.frame[1][0]:
                     self.stop()
-                else:
+                elif self.stream2.read()[1] is not None:
                     IO.frame[1] = self.stream2.read()
 
     def stop(self):

@@ -60,7 +60,7 @@ hsv_lower = {
 hsv_upper = {
      0: (180, 255, 170),
      1: (100, 150, 155),
-     2: (36, 160, 185)
+     2: (36, 205, 185) #160 for [1]
 }
 
 # adjust which position is facing true north

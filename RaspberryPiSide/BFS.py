@@ -80,7 +80,6 @@ def init():
                 IO.cap.append(cv2.VideoCapture(0))
             IO.cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
             IO.cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
-
         if config.cameraCount == 2:
             IO.cap.append(cv2.VideoCapture(1))
             IO.cap[1].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
@@ -88,7 +87,12 @@ def init():
 
         if 2 < config.cameraCount < 0:
             raise ValueError("Invalid cameraCount (check config!)")
-
+        
+        if config.recordCams:
+            IO.outputL = cv2.VideoWriter(config.fpVIC + time.ctime(IO.startTime) + "/outputL.avi", cv2.VideoWriter_fourcc(*'XVID'), 30, (config.cameraHeight, config.cameraWidth))
+            IO.outputR =  cv2.VideoWriter(config.fpVIC + time.ctime(IO.startTime) + "/outputR.avi", cv2.VideoWriter_fourcc(*'XVID'), 30, (config.cameraHeight, config.cameraWidth))
+            
+                
         # start video threading
         IO.videoGetter = VideoGet().start()
 
@@ -272,6 +276,9 @@ def searchForVictims():
         leftRet, leftFrame = IO.frame[0]
 
         leftFrame = leftFrame[:,:148]
+        
+        if config.recordCams:
+            IO.outputL.write(leftFrame)
 
         if config.victimDebug:
             cv2.imshow("left", leftFrame)
@@ -284,6 +291,9 @@ def searchForVictims():
             #print(IO.video_getter.frame2)
 
             rightFrame = rightFrame[:,:152]
+            
+            if config.recordCams:
+                IO.outputR.write(rightFrame)
 
             if config.victimDebug:
                 cv2.imshow("right", rightFrame)
