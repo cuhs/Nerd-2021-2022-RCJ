@@ -16,6 +16,8 @@ sData = ""
 
 # cameras
 cap = []
+outputR = None
+outputL = None
 frame = []
 videoGetter = None
 
@@ -177,25 +179,25 @@ def getSerialData():
                 return msg
 
     # north wall
-    walls[util.Dir.N] = msg
+    walls[0] = msg
     time.sleep(0.1)
 
     # east
     msg = getNextSerialByte()
     if msg == 'a':
         return msg
-    walls[util.Dir.E] = msg
+    walls[1] = msg
     time.sleep(0.1)
 
     # west
     msg = getNextSerialByte()
     if msg == 'a':
         return msg
-    walls[util.Dir.W] = msg
+    walls[3] = msg
     time.sleep(0.1)
 
     # south
-    walls[util.Dir.S] = False
+    walls[2] = False
     return walls
 
 # send path instructions through serial
