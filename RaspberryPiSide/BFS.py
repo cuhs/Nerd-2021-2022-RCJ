@@ -90,9 +90,8 @@ def init():
         
         if config.recordCams:
             IO.outputL = cv2.VideoWriter(config.fpVIC + time.ctime(IO.startTime) + "/outputL.avi", cv2.VideoWriter_fourcc(*'XVID'), 30, (config.cameraHeight, config.cameraWidth))
-            IO.outputR =  cv2.VideoWriter(config.fpVIC + time.ctime(IO.startTime) + "/outputR.avi", cv2.VideoWriter_fourcc(*'XVID'), 30, (config.cameraHeight, config.cameraWidth))
+            IO.outputR = cv2.VideoWriter(config.fpVIC + time.ctime(IO.startTime) + "/outputR.avi", cv2.VideoWriter_fourcc(*'XVID'), 30, (config.cameraHeight, config.cameraWidth))
             
-                
         # start video threading
         IO.videoGetter = VideoGet().start()
 

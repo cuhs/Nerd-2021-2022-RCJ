@@ -100,7 +100,8 @@ while nextTile is not None or util.tile != util.startTile:
         if loadingCheckpoint:
             break
 
-        nextTileIsRampStart = util.maze[util.floor][util.goForward(util.tile, False)][util.tileType] in (3, 4)
+        nextTileIsRampStart = util.tileExists(util.goForward(util.tile, False)) and util.maze[util.floor][util.goForward(util.tile, False)][util.tileType] in (3, 4)
+
 
         # go up ramp if needed
         if util.floor != nextFloorInPath:
