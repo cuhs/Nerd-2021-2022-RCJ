@@ -280,7 +280,7 @@ def searchForVictims():
         #leftRet, leftFrame = IO.cap[0].read()
         leftRet, leftFrame = IO.frame[0]
 
-        leftFrame = leftFrame[:,:148]
+        leftFrame = leftFrame[:,:150]
         
         if config.recordCams:
             IO.outputL.write(leftFrame)
@@ -295,7 +295,7 @@ def searchForVictims():
 
             #print(IO.video_getter.frame2)
 
-            rightFrame = rightFrame[:,:152]
+            rightFrame = rightFrame[:,:150]
             
             if config.recordCams:
                 IO.outputR.write(rightFrame)

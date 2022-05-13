@@ -1,6 +1,7 @@
 from threading import Thread
 import config
 import IO
+#import BFS
 
 class VideoGet:
     
@@ -26,12 +27,14 @@ class VideoGet:
                     self.stop()
                 elif self.stream1.read()[1] is not None:
                     IO.frame[0] = self.stream1.read()
+                    #BFS.searchForVictims()
                     
             if config.cameraCount == 2:
                 if not IO.frame[1][0]:
                     self.stop()
                 elif self.stream2.read()[1] is not None:
                     IO.frame[1] = self.stream2.read()
+                    #BFS.searchForVictims()
 
     def stop(self):
         self.stopped = True

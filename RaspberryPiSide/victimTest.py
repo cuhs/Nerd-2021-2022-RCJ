@@ -125,12 +125,12 @@ path = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOF
 main = detection()
 
 cap1 = cv2.VideoCapture(0)
-#cap2 = cv2.VideoCapture(1)
+cap2 = cv2.VideoCapture(1)
 
 cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
-#cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-#cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
 
 total = 0
 correct = 0
@@ -139,11 +139,11 @@ start = 0
 while cap1.isOpened(): #and cap2.isOpened():
     
     ret1,frame1 = cap1.read()
-    frame1 = cv2.imread("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sun May  8 15:52:21 2022/Y-Sun May  8 15:52:34 2022.png")
+    #frame1 = cv2.imread("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sun May  8 15:52:21 2022/Y-Sun May  8 15:52:34 2022.png")
     #ret1,frame1 = cap1.read()
     #frame1 = cv2.flip(frame1, 0)
 
-    #ret2,frame2 = cap2.read()
+    ret2,frame2 = cap2.read()
     
     #frame1 = frame1[:,:152] #H, W LEFT
     #frame2 = frame2[:,:152] #RIGHT
@@ -191,7 +191,7 @@ while cap1.isOpened(): #and cap2.isOpened():
             cv2.imshow("frame1",frame1)
             #cv2.imshow("imgOutput1",imgOutput1)
             #cv2.imshow("combine",combine)
-            #cv2.imshow("frame2",frame2)
+            cv2.imshow("frame2",frame2)
 
             
     if cv2.waitKey(1) == ord('q'):
