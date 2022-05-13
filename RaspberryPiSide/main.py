@@ -49,7 +49,7 @@ while nextTile is not None or util.tile != util.startTile:
         display.show(display.img, util.maze, nextFloor, nextTile, config.displayRate)
 
     # send BFS starting char '{'
-    IO.sData += config.serialMessages[7]
+    IO.sData += config.serialOutMsgs[7]
     IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1])
     if config.serialDebug:
         print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
@@ -88,8 +88,13 @@ while nextTile is not None or util.tile != util.startTile:
                         loadingCheckpoint = True
                         break
 
-                    if victimMsg == '!':
-                        pass
+                    if victimMsg in ('x', 'X'):
+                        heatDirection = util.dirToLeft(util.direction) if victimMsg == 'x' else util.dirToRight(util.direction)
+                        if not util.maze[util.floor][util.tile][util.nVictim + heatDirection]:
+                            IO.sendSerial('y')
+                            util.maze[util.floor][util.tile][util.nVictim + heatDirection] = ord(victimMsg)
+                        else:
+                            IO.sendSerial('n')
 
                     if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
@@ -101,7 +106,6 @@ while nextTile is not None or util.tile != util.startTile:
             break
 
         nextTileIsRampStart = util.tileExists(util.goForward(util.tile, False)) and util.maze[util.floor][util.goForward(util.tile, False)][util.tileType] in (3, 4)
-
 
         # go up ramp if needed
         if util.floor != nextFloorInPath:
@@ -130,8 +134,13 @@ while nextTile is not None or util.tile != util.startTile:
                         loadingCheckpoint = True
                         break
 
-                    if victimMsg == '!':
-                        pass
+                    if victimMsg in ('x', 'X'):
+                        heatDirection = util.dirToLeft(util.direction) if victimMsg == 'x' else util.dirToRight(util.direction)
+                        if not util.maze[util.floor][util.tile][util.nVictim + heatDirection]:
+                            IO.sendSerial('y')
+                            util.maze[util.floor][util.tile][util.nVictim + heatDirection] = ord(victimMsg)
+                        else:
+                            IO.sendSerial('n')
 
                     if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
@@ -140,7 +149,7 @@ while nextTile is not None or util.tile != util.startTile:
 
     # send BFS ending char '}'
     if not loadingCheckpoint:
-        IO.sData += config.serialMessages[8]
+        IO.sData += config.serialOutMsgs[8]
         IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], True)
         if config.serialDebug:
             print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
@@ -181,7 +190,7 @@ while nextTile is not None or util.tile != util.startTile:
 # print out entire path the robot took traversing the maze and how long the algorithm took
 if config.importantDebug:
     print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((time.time() - IO.startTime) * 1000, '.2f') + "ms ")
-display.show(display.img, util.maze, None, None, 0)
+display.show(display.img if config.showDisplay else display.resetImg(util.maze), util.maze, None, None, 0)
 
 # stop all cameras/windows
 if config.inputMode == 2:

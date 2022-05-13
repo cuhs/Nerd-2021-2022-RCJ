@@ -88,7 +88,8 @@ def setupInputFile():
 def getFileData(tile, floor):
     # skips until desired tile
     f = inputFile("r")
-    for i in range((floor * (config.mazeSideLen ** 2) + tile) + 1):
+    inputType = f.readline()
+    for i in range(((floor if inputType != "IMAGE\n" else 0) * (config.mazeSideLen ** 2)) + tile):
         f.readline()
     return [int(j) for j in str(f.readline())[:10]]
 
@@ -136,7 +137,7 @@ def setupSerial():
 def getNextSerialByte():
     msg = ser.read().decode("ascii", "ignore")
     
-    while msg not in ('0', '1', 'd', 'u', ';', 'a', 'b'):
+    while msg not in ('0', '1', 'd', 'u', ';', 'a', 'b', 'x', 'X'):
         time.sleep(0.1)
         
         if config.importantDebug or config.serialDebug:

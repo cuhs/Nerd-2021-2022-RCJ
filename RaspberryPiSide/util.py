@@ -116,18 +116,18 @@ def getWalls():
 # both are 90 degree turns
 def turnLeft(facing):
     facing = dirToLeft(facing)
-    IO.sData += (config.serialMessages[1] + config.serialMessages[6])
+    IO.sData += (config.serialOutMsgs[1] + config.serialOutMsgs[6])
     return facing
 
 def turnRight(facing):
     facing = dirToRight(facing)
-    IO.sData += (config.serialMessages[2] + config.serialMessages[6])
+    IO.sData += (config.serialOutMsgs[2] + config.serialOutMsgs[6])
     return facing
 
 # send forward message
 def goForward(cTile, sendMsg):
     if sendMsg:
-        IO.sData += (config.serialMessages[0] + config.serialMessages[6])
+        IO.sData += (config.serialOutMsgs[0] + config.serialOutMsgs[6])
     return cTile + adjTiles[direction]
 
 def goBackward(cTile):
@@ -195,7 +195,7 @@ def isDownRamp(cMaze, cTile):
 
 def goOnRamp(cMaze, cTile, cFloor, upRamp, sendMsg=True):
     if sendMsg:
-        IO.sData += (config.serialMessages[4] if upRamp else config.serialMessages[5]) + config.serialMessages[6]
+        IO.sData += (config.serialOutMsgs[4] if upRamp else config.serialOutMsgs[5]) + config.serialOutMsgs[6]
         if path:
             path.pop()
 

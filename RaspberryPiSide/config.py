@@ -2,7 +2,7 @@
 
 mazeSideLen = 10  # must be even
 floorCount = 3  # starts at middle floor
-inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
+inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) * floorCount  # buffer added on setup
 
 wallPercentage = 25  # percentage of tiles that should be walls for random generation of maze
@@ -11,18 +11,18 @@ silverTilePercentage = 2  # percent of silver tiles when randomly generating a m
 genFromImage = False  # if false, will generate random maze
 redoLastMaze = False  # allows you to rerun last generated maze, for debugging
 
-showDisplay = False  # 0 no display, 1 is display
+showDisplay = True  # 0 no display, 1 is display
 displayRate = 1  # in milliseconds, 0 for until keypress
 displaySize = 500  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
-importantDebug = False  # important print statements, overrides other settings
+importantDebug = True  # important print statements, overrides other settings
 BFSDebug = False  # print statements for maze traversal
 victimDebug = False  # shows camera feeds
 saveVictimDebug = False  # saves victim images if found
 serialDebug = False  # prints serial IO
 
-recordCams = False  #saves camera feeds, only works if cameraCount is 2
+recordCams = False  # saves camera feeds, only works if cameraCount is 2
 
 port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0)
 rate = 9600  # serial port rate
@@ -38,7 +38,7 @@ manualCheckpointLoading = False  # load back to last checkpoint when 'c' is pres
 # forward, left, right, back, EOI, (end of single instruction), SOD (start of dir.), EOD (end of directions)
 # example: if ["a", "b", "c", "d", ".", "$", "%"], directions for forward, left, left, forward would be:
 # $a.b.b.a.% and will be sent as "$", "a.", "b." etc.      ALL MESSAGES MUST BE ONE CHAR
-serialMessages = ["F", "L", "R", "B", "*", "D", ";", "{", "}"]
+serialOutMsgs = ["F", "L", "R", "B", "W", "M", ";", "{", "}"]
 
 # fp -> file path
 fpALL = "../RaspberryPiSide/"
