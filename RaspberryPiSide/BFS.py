@@ -278,12 +278,11 @@ def searchForVictims():
             return
         
         #leftRet, leftFrame = IO.cap[0].read()
-        leftRet, leftFrame = IO.frame[0]
-
-        leftFrame = leftFrame[:,:150]
+        #leftRet, leftFrame = IO.frame[0]
+        #leftFrame = leftFrame[:,:150]
         
         if config.recordCams:
-            IO.outputL.write(leftFrame)
+            IO.outputL.write(IO.frame[0][1])
 
         #if config.victimDebug:
             #cv2.imshow("left", leftFrame)
@@ -291,14 +290,14 @@ def searchForVictims():
 
         if config.cameraCount == 2:
             #rightRet, rightFrame = IO.cap[1].read()
-            rightRet, rightFrame = IO.frame[1]
+            #rightRet, rightFrame = IO.frame[1]
 
             #print(IO.video_getter.frame2)
 
-            rightFrame = rightFrame[:,:150]
+            #rightFrame = rightFrame[:,:150]
             
             if config.recordCams:
-                IO.outputR.write(rightFrame)
+                IO.outputR.write(IO.frame[1][1])
 
             #if config.victimDebug:
                 #cv2.imshow("right", rightFrame)
@@ -307,7 +306,11 @@ def searchForVictims():
         # check if searching needed on left camera
         if util.maze[util.floor][util.tile][util.nVictim + util.dirToLeft(util.direction)] == 0:
             # get letter and color victims
-            leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(leftRet, leftFrame)
+            #leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(leftRet, leftFrame)
+            leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][:,:150])
+
+            #leftLetterVictim = IO.victim[0]
+            #leftColorVictim = IO.victim[2]
 
             # send and record letter victim
             if leftLetterVictim is not None:
@@ -317,7 +320,9 @@ def searchForVictims():
                 IO.sendData(config.inputMode, leftLetterVictim)
                 #blink()
                 if config.saveVictimDebug:
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
+                    #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:,:150])
+                
                 break
 
             # send and record color victim
@@ -328,13 +333,18 @@ def searchForVictims():
                 IO.sendData(config.inputMode, leftColorVictim)
                 #blink()
                 if config.saveVictimDebug:
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
+                    #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:,:150])
+               
                 break
 
         # check if searching is needed on right camera
         if config.cameraCount == 2 and util.maze[util.floor][util.tile][util.nVictim + util.dirToRight(util.direction)] == 0:
             # get letter and color victims
-            rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(rightRet, rightFrame)
+            #rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(rightRet, rightFrame)
+            rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][:,:150])
+            #rightLetterVictim = IO.victim[1]
+            #rightColorVictim = IO.victim[3]
 
             # send and record letter victim
             if rightLetterVictim is not None:
@@ -344,7 +354,9 @@ def searchForVictims():
                 IO.sendData(config.inputMode, rightLetterVictim)
                 #blink()
                 if config.saveVictimDebug:
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
+                    #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:,:150])
+                
                 break
 
             # send and record color victim
@@ -355,6 +367,8 @@ def searchForVictims():
                 IO.sendData(config.inputMode, rightColorVictim)
                 #blink()
                 if config.saveVictimDebug:
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
+                    #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:,:150])
+
                 break
 

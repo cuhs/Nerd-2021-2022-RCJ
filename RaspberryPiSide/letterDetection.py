@@ -22,7 +22,7 @@ class Detection:
         if len(contour) > 0:
             contour = max(contour, key=cv2.contourArea)
 
-            if cv2.contourArea(contour) > 20:
+            if cv2.contourArea(contour) > 175:
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
                 box = np.float32(box)
@@ -90,7 +90,7 @@ class Detection:
             if len(contours) > 0:
                 contours = max(contours, key=cv2.contourArea)
 
-                if cv2.contourArea(contours) > 250:
+                if cv2.contourArea(contours) > 200:
                     if i == 0:
                         print("red")
                     if i == 2:
@@ -120,13 +120,13 @@ class Detection:
     # return letter and color victims from right camera
     def rightDetectFinal(self,ret,frame):
         if ret > 0:
-            return self.KNN_finish(self.letterDetect(frame, "frame1"), 8000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
+            return self.KNN_finish(self.letterDetect(frame, "frame1"), 10005000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
         return None, None
     
     # return letter and color victims from left camera
     def leftDetectFinal(self,ret,frame):
         if ret > 0:
-            return self.KNN_finish(self.letterDetect(frame, "frame2"), 8000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
+            return self.KNN_finish(self.letterDetect(frame, "frame2"), 10005000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
         return None, None
     
 # old main below

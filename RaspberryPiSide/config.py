@@ -20,7 +20,7 @@ importantDebug = True  # important print statements, overrides other settings
 BFSDebug = False  # print statements for maze traversal
 victimDebug = True  # shows camera feeds
 saveVictimDebug = True  # saves victim images if found
-serialDebug = False  # prints serial IO
+serialDebug = True  # prints serial IO
 
 recordCams = False  # saves camera feeds, only works if cameraCount is 2
 
