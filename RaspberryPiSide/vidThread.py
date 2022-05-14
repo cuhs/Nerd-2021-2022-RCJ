@@ -1,7 +1,9 @@
 from threading import Thread
+#import letterDetection
 import config
 import IO
 import cv2
+#import time
 #import BFS
 
 class VideoGet:
@@ -27,22 +29,44 @@ class VideoGet:
                 if not IO.frame[0][0]:
                     self.stop()
                 elif self.stream1.read()[1] is not None:
+                    
                     IO.frame[0] = self.stream1.read()
+                    
+                    #IO.frame[0][1] = IO.frame[0][1][:,:150]
+
+                    
+                    #leftRet = IO.frame[0][0]
+                    #leftFrame = IO.frame[0][1][:,:150]
+                    
                     if config.victimDebug:
                         cv2.imshow("left", IO.frame[0][1])
                         cv2.waitKey(1)
+                        
+                    #if config.saveVictimDebug:
+                        #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                     
-                    #BFS.searchForVictims()
-                    
+                    #IO.victim[0], IO.victim[2] =  letterDetection.Detection().leftDetectFinal(leftRet, leftFrame)
+                                        
             if config.cameraCount == 2:
                 if not IO.frame[1][0]:
                     self.stop()
                 elif self.stream2.read()[1] is not None:
                     IO.frame[1] = self.stream2.read()
+                    
+                    #IO.frame[0][0] = IO.frame[0][0][:,:150]
+
+                    
+                    #rightRet = IO.frame[1][0]
+                    #rightFrame = IO.frame[1][1][:,:150]
+                   
                     if config.victimDebug:
                         cv2.imshow("right", IO.frame[1][1])
                         cv2.waitKey(1)
-                    #BFS.searchForVictims()
+                        
+                    #if config.saveVictimDebug:
+                        #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
+                        
+                    #IO.victim[1], IO.victim[3] = letterDetection.Detection().rightDetectFinal(rightRet, rightFrame)
 
     def stop(self):
         self.stopped = True
