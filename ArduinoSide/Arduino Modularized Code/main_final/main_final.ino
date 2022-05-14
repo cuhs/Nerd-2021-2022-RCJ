@@ -5,6 +5,7 @@
 #include "TCS.h"
 #include "motors.h"
 #include "rescueServo.h"
+#include "limitswitch.h"
 
 //N E S W --> South always 0
 
@@ -16,6 +17,7 @@ void setup() {
 
   setupServo();
   setupTCSSensors();
+  setupSwitches();
 
   // macros
   INIT_INTERRUPT_LEFT;
