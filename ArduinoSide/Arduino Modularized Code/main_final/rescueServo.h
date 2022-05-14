@@ -14,6 +14,6 @@ void wiggle(char angle);
 void dropKits(char dir, int amt);
 void setupServo();
 void victim();
-void RGB_color(int red_light_value, int green_light_value, int blue_light_value);
+void RGB_color(int red_light_value, int green_light_value, int blue_light_value, int, char);
 
 #endif

@@ -42,33 +42,80 @@ bool goForwardTilesPID(int tiles) {
   //  return true;
 }
 
-bool rampMoveForward(char dir){
+bool rampMoveForward(char dir) {
   int Lspeed = 0;
+  int KP = 5;
   int Rspeed = 0;
-  if(dir=='u'){
-    Lspeed=210;
-    Rspeed=210;
-    finishedRamp=1;
-  }else if(dir=='d'){
-    Lspeed=150;
-    Rspeed=150;
-    finishedRamp=2;
+  if (dir == 'u') {
+    Lspeed = 210;
+    Rspeed = 210;
+    KP = 5;
+    finishedRamp = 1;
+  } else if (dir == 'd') {
+    Lspeed = 150;
+    Rspeed = 150;
+    KP=2;
+    finishedRamp = 2;
   }
-  while(notStable()){
-    ports[LEFT].setMotorSpeed(Lspeed);
-    ports[RIGHT].setMotorSpeed(Rspeed);
-    if(getSensorReadings(0)>getSensorReadings(1)){
-      Lspeed++;
-      Rspeed--;
-    }else{
-      Rspeed++;
-      Lspeed--;
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  int angle = euler.x();
+  angle=getDirection(angle);
+  double error;
+  double pastError=0;
+  double integral=0;
+  int currAng;
+  while (!notStable()) {
+    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    currAng=euler.x();
+    if(currAng>345)
+      currAng=currAng-360;
+    error = angle - currAng;
+    int fix = PID(error, pastError, integral, KP, 0, 0);
+    if(fix>0){
+      ports[RIGHT].setMotorSpeed(Rspeed-fix);
+      ports[LEFT].setMotorSpeed(Lspeed+fix);
     }
+    else{
+      ports[LEFT].setMotorSpeed(Lspeed-fix);
+      ports[RIGHT].setMotorSpeed(Rspeed+fix);
+    }
+    Serial.print("target: ");
+    Serial.print(angle);
+    Serial.print(" error: ");
+    Serial.print(error);
+    Serial.print(" curr ang: ");
+    Serial.print(currAng);
+    Serial.print(" fix: ");
+    Serial.println(fix);
+  }
+  while (notStable()) {
+    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    currAng=euler.x();
+    if(currAng>345)
+      currAng=currAng-360;
+    error = angle - currAng;
+    int fix = PID(error, pastError, integral, KP, 0, 0);
+    if(fix>0){
+      ports[RIGHT].setMotorSpeed(Rspeed-fix);
+      ports[LEFT].setMotorSpeed(Lspeed+fix);
+    }
+    else{
+      ports[LEFT].setMotorSpeed(Lspeed-fix);
+      ports[RIGHT].setMotorSpeed(Rspeed+fix);
+    }
+    Serial.print("target: ");
+    Serial.print(angle);
+    Serial.print(" error: ");
+    Serial.print(error);
+    Serial.print(" curr ang: ");
+    Serial.print(currAng);
+    Serial.print(" fix: ");
+    Serial.println(fix);
   }
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
   return true;
-  
+
 }
 
 bool goForwardPID(int dist) {
@@ -94,28 +141,28 @@ bool goForwardPID(int dist) {
     Serial.println("In go forward PID");
     victim();
     int onRamp = isOnRamp();
-    if (onRamp==1) {
-//      //Serial2.write('u');
-//      while (notStable()) {
-//        ports[RIGHT].setMotorSpeed(210);
-//        ports[LEFT].setMotorSpeed(210);
-//      }
-//      ports[RIGHT].setMotorSpeed(0);
-//      ports[LEFT].setMotorSpeed(0);
-//      finishedRamp=1;
+    if (onRamp == 1) {
+      //      //Serial2.write('u');
+      //      while (notStable()) {
+      //        ports[RIGHT].setMotorSpeed(210);
+      //        ports[LEFT].setMotorSpeed(210);
+      //      }
+      //      ports[RIGHT].setMotorSpeed(0);
+      //      ports[LEFT].setMotorSpeed(0);
+      //      finishedRamp=1;
       rampMoveForward('u');
       return true;
-    }else if(onRamp==2){
+    } else if (onRamp == 2) {
       //Serial2.write('d');
-//      while(notStable()){
-//        ports[RIGHT].setMotorSpeed(150);
-//        ports[LEFT].setMotorSpeed(150);
-//      }
-//       ports[RIGHT].setMotorSpeed(0);
-//       ports[LEFT].setMotorSpeed(0);
-//       finishedRamp=2;
-       rampMoveForward('d');
-       return true;
+      //      while(notStable()){
+      //        ports[RIGHT].setMotorSpeed(150);
+      //        ports[LEFT].setMotorSpeed(150);
+      //      }
+      //       ports[RIGHT].setMotorSpeed(0);
+      //       ports[LEFT].setMotorSpeed(0);
+      //       finishedRamp=2;
+      rampMoveForward('d');
+      return true;
     }
     if (detectBlack()) {
       while (ports[motorEncUse].count > 0) {

@@ -7,6 +7,7 @@
 #include "rescueServo.h"
 #include "TCS.h"
 #include "Distance_Sensor.h"
+#include "IMU.h"
 #include <MeMegaPi.h>
 
 #define LEFT 1
