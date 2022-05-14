@@ -78,13 +78,14 @@ void loop() {
         
        // Serial.println("forward!");
         //goForwardTilesPID(1);
-        if(triangulation(getSensorReadings(1), getSensorReadings(0))){
+        if(triangulation(getSensorReadings(1), getSensorReadings(0)) && !isHeat){
         alignFront();
         delay(1);
         Serial2.write(';');
         delay(1);
         Serial.println(';');
         }
+        isHeat = false;
         Serial.println("finished going forward");
         break;
         

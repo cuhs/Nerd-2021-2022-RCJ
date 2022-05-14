@@ -1,6 +1,7 @@
 #include "MLX.h"
 
 Adafruit_MLX90614 mlx = Adafruit_MLX90614();
+bool isHeat = false;
 
 void setupHeatSensors() {
   mlx.begin();
@@ -23,8 +24,11 @@ void doHeatVictim(int leftTemp, int rightTemp) {
     delay(1);
     while(!Serial2.available());
     char c = Serial2.read();
-    if(c=='y')
-      dropKits('L', 1);
+    if(c=='y'){
+      isHeat = true;
+      RGB_color(255,165,0,1,'L');
+    }
+      //dropKits('L', 1);
   }
   if (rightTemp > 27) {
     ports[LEFT].setMotorSpeed(0);
@@ -34,7 +38,10 @@ void doHeatVictim(int leftTemp, int rightTemp) {
     delay(1);
    while(!Serial2.available());
     char c = Serial2.read();
-    if(c=='y')
-      dropKits('R', 1);
+    if(c=='y'){
+      isHeat = true;
+      RGB_color(255,165,0,1,'R');
+    }
+      //dropKits('R', 1);
   }
 }

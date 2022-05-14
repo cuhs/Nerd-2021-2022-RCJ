@@ -49,7 +49,7 @@ bool rampMoveForward(char dir) {
   if (dir == 'u') {
     Lspeed = 210;
     Rspeed = 210;
-    KP = 1;
+    KP = 2;
     finishedRamp = 1;
   } else if (dir == 'd') {
     Lspeed = 120;
@@ -136,7 +136,6 @@ bool goForwardPID(int dist) {
   ports[motorEncUse].count = 0;
 
   double enc = ((360 / (D * PI)) * dist);
-
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5) && !stalling) {
     Serial.println("In go forward PID");
     victim();
@@ -181,13 +180,13 @@ bool goForwardPID(int dist) {
     Serial.println(c);
     if(c=='l'){
       while(obstacleDetect()=='l'){
-        ports[LEFT].setMotorSpeed(80);
-        ports[RIGHT].setMotorSpeed(-80);
+        ports[LEFT].setMotorSpeed(100);
+        ports[RIGHT].setMotorSpeed(-140);
       }
     }else if(c=='r'){
       while(obstacleDetect()=='r'){
-        ports[LEFT].setMotorSpeed(-80);
-        ports[RIGHT].setMotorSpeed(80);
+        ports[LEFT].setMotorSpeed(-140);
+        ports[RIGHT].setMotorSpeed(100);
       }
     }
     if (ports[LEFT].count == prev_count && !checking) {

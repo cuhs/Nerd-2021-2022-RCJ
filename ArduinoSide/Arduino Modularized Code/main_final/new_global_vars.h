@@ -7,4 +7,5 @@
 #include <Adafruit_Sensor.h>
 
 extern int finishedRamp;
+extern bool isHeat;
 #endif

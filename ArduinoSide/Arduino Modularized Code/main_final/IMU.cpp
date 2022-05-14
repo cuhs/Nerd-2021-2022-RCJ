@@ -111,7 +111,7 @@ void turnAbs(int degree) {
   double integral = 0.0;
   int error = targetDir - curDir;
   double pastError = 0;
-  while (abs(error) >= 2 && !stalling) {
+  while (abs(error) >= 3 && !stalling) {
     Serial.println("In turnAbs degrees");
     victim();
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
