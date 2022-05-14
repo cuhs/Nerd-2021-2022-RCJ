@@ -56,16 +56,14 @@ void loop() {
       case '{':
        // Serial.println("read {");
         break;
-      case '*':
-        goForwardPID(30);
+      case 'W':
         rampMoveForward('u');
         finishedRamp=0;
         delay(1);
         Serial2.write(';');
         delay(1);
         break;
-      case 'D':
-        goForwardPID(30);
+      case 'M':
         rampMoveForward('d');
         finishedRamp=0;
         delay(1);
