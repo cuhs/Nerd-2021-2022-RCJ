@@ -285,9 +285,9 @@ def searchForVictims():
         if config.recordCams:
             IO.outputL.write(leftFrame)
 
-        if config.victimDebug:
-            cv2.imshow("left", leftFrame)
-            cv2.waitKey(1)
+        #if config.victimDebug:
+            #cv2.imshow("left", leftFrame)
+            #cv2.waitKey(1)
 
         if config.cameraCount == 2:
             #rightRet, rightFrame = IO.cap[1].read()
@@ -300,9 +300,9 @@ def searchForVictims():
             if config.recordCams:
                 IO.outputR.write(rightFrame)
 
-            if config.victimDebug:
-                cv2.imshow("right", rightFrame)
-                cv2.waitKey(1)
+            #if config.victimDebug:
+                #cv2.imshow("right", rightFrame)
+                #cv2.waitKey(1)
 
         # check if searching needed on left camera
         if util.maze[util.floor][util.tile][util.nVictim + util.dirToLeft(util.direction)] == 0:
