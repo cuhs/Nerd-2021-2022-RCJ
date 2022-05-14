@@ -201,3 +201,4 @@ if config.inputMode == 2:
         IO.outputR.release()
         IO.outputL.release()
 cv2.destroyAllWindows()
+ 
