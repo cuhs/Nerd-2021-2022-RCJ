@@ -110,8 +110,7 @@ while nextTile is not None or util.tile != util.startTile:
         # go up ramp if needed
         if util.floor != nextFloorInPath:
             util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
-        else:
-            # set the tile to the tile to be moved to, send message only if next tile is not a ramp
+        elif config.inputMode == 1:
             util.tile = util.goForward(util.tile, not nextTileIsRampStart)
 
         # update checkpoint
@@ -127,20 +126,28 @@ while nextTile is not None or util.tile != util.startTile:
             # find and send victims
             if config.inputMode == 2:
                 if config.doVictim:
-                    BFS.searchForVictims()
+                    victimMsg = None
 
-                    victimMsg = IO.getNextSerialByte()
-                    if victimMsg == 'a':
-                        loadingCheckpoint = True
-                        break
+                    while victimMsg != ';':
+                        BFS.searchForVictims()
+                        victimMsg = IO.getNextSerialByte()
 
-                    if victimMsg in ('x', 'X'):
-                        heatDirection = util.dirToLeft(util.direction) if victimMsg == 'x' else util.dirToRight(util.direction)
-                        if not util.maze[util.floor][util.tile][util.nVictim + heatDirection]:
-                            IO.sendSerial('y')
-                            util.maze[util.floor][util.tile][util.nVictim + heatDirection] = ord(victimMsg)
-                        else:
-                            IO.sendSerial('n')
+                        if victimMsg == 'a':
+                            loadingCheckpoint = True
+                            break
+
+                        if victimMsg == 'm':
+                            print("\t\t\t\tNOW IN NEXT TILE")
+                            util.tile = util.goForward(util.tile, not nextTileIsRampStart)
+
+                        elif victimMsg in ('x', 'X'):
+                            print("\t\t\t\tHEAT VICTIM RECEIVED ON " + "LEFT" if victimMsg == 'x' else "RIGHT")
+                            heatDirection = util.dirToLeft(util.direction) if victimMsg == 'x' else util.dirToRight(util.direction)
+                            if not util.maze[util.floor][util.tile][util.nVictim + heatDirection]:
+                                IO.sendSerial('y')
+                                util.maze[util.floor][util.tile][util.nVictim + heatDirection] = ord(victimMsg)
+                            else:
+                                IO.sendSerial('n')
 
                     if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
