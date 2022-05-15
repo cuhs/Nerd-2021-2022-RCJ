@@ -23,6 +23,8 @@ for filename in os.listdir(directory):
 
     if os.path.isfile(f):
         
+        print(f)
+        
         frame = cv2.imread(f)
         
         cv2.imshow("frame", frame)
@@ -74,7 +76,6 @@ np.savetxt(features,training_features)
 features.close
 labels.close
 
-cap.release()
 cv2.destroyAllWindows()
     
     
