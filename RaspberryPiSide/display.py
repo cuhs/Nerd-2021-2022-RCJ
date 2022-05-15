@@ -95,6 +95,16 @@ def addSpecialTiles(pImg, cFloor, theFloor, target, targetFloor):
                               (xPixel + (config.displaySize // 4) * 3, yPixel + (config.displaySize // 4) * 3),
                               (175, 175, 175), -1)
 
+            # letter stuff
+            if theFloor[tile][util.nVictim]:
+                cv2.putText(newImg, chr(theFloor[tile][util.nVictim]), ((xPixel + config.displaySize // 2) - (config.displaySize // 10), (yPixel + config.displaySize // 2) - config.displaySize // 4), cv2.FONT_HERSHEY_SIMPLEX, config.displaySize / 100, (0, 0, 0), lineWidth)
+            if theFloor[tile][util.eVictim]:
+                cv2.putText(newImg, chr(theFloor[tile][util.eVictim]), ((xPixel + config.displaySize // 2) + config.displaySize // 4, (yPixel + config.displaySize // 2)), cv2.FONT_HERSHEY_SIMPLEX, config.displaySize / 100, (0, 0, 0), lineWidth)
+            if theFloor[tile][util.sVictim]:
+                cv2.putText(newImg, chr(theFloor[tile][util.sVictim]), ((xPixel + config.displaySize // 2) - (config.displaySize // 10), (yPixel + config.displaySize // 2) + config.displaySize // 3), cv2.FONT_HERSHEY_SIMPLEX, config.displaySize / 100, (0, 0, 0), lineWidth)
+            if theFloor[tile][util.wVictim]:
+                cv2.putText(newImg, chr(theFloor[tile][util.wVictim]), ((xPixel + config.displaySize // 2) - int(config.displaySize / 2.3), (yPixel + config.displaySize // 2)), cv2.FONT_HERSHEY_SIMPLEX, config.displaySize / 100, (0, 0, 0), lineWidth)
+
     return newImg
 
 def show(pImg, cMaze, tFloor, target, ms):
