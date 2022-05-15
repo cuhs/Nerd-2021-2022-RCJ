@@ -196,9 +196,10 @@ display.show(display.img if config.showDisplay else display.resetImg(util.maze),
 if config.inputMode == 2:
     for i in range(len(IO.cap)):
         IO.cap[i].release()
-    IO.videoGetter.stop()
     if config.recordCams:
         IO.outputR.release()
         IO.outputL.release()
 cv2.destroyAllWindows()
+IO.videoGetter.stop()
+
  

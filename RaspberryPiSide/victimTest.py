@@ -152,23 +152,25 @@ while cap1.isOpened(): #and cap2.isOpened():
                         
     if ret1 > 0: #and ret2 > 0:
         
-        #print(main.colorDetect(frame1,hsv_lower,hsv_upper))
+        print(main.colorDetect(frame1,hsv_lower,hsv_upper))
         #main.colorDetect(frame2,hsv_lower,hsv_upper)
 
-        #imgOutput1 = main.letterDetect(frame1,"frame1")
+        imgOutput1 = main.letterDetect(frame1,"frame1")
         #imgOutput2 = main.letterDetect(frame2, "frame2")
         
-        #result1 =  main.KNN_finish(imgOutput1,9000000)
+        result1 =  main.KNN_finish(imgOutput1,9000000)
         #result2 = main.KNN_finish(imgOutput2,10000000)
         
         #cv2.imwrite("/home/pi/Documents/VictimImages/" + str(time.time()) + ".png", frame1)
         
         
         if cv2.waitKey(1) == ord(' '):
-            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/" + str(time.time()) + ".png",frame1)
+            print("saved!")
+            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFilesqq/saveVictims/" + str(time.time()) + ".png",frame1)
+            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFilesqq/saveVictims/" + "mask" + str(time.time()) + ".png",imgOutput1)
 
                 
-        #print("Camera1 " + result1)
+        print("Camera1 " + result1)
         #print("Camera2 " + result2)
         
         #print()

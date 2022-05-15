@@ -38,7 +38,7 @@ class VideoGet:
                     #leftRet = IO.frame[0][0]
                     #leftFrame = IO.frame[0][1][:,:150]
                     
-                    if config.victimDebug:
+                    if config.victimDebug and IO.frame[0][1] is not None:
                         cv2.imshow("left", IO.frame[0][1])
                         cv2.waitKey(1)
                         
@@ -59,7 +59,7 @@ class VideoGet:
                     #rightRet = IO.frame[1][0]
                     #rightFrame = IO.frame[1][1][:,:150]
                    
-                    if config.victimDebug:
+                    if config.victimDebug and IO.frame[1][1] is not None:
                         cv2.imshow("right", IO.frame[1][1])
                         cv2.waitKey(1)
                         
