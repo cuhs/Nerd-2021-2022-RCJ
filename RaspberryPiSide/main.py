@@ -62,6 +62,7 @@ while nextTile is not None or util.tile != util.startTile:
 
         # update next tile and floor in path
         (nextTileInPath, nextFloorInPath) = util.path.pop()
+        print("\tCurrent Tile:\t" + str((nextTileInPath, nextFloorInPath)))
         while util.floor == nextFloorInPath and util.tile + util.adjTiles[util.direction] != nextTileInPath and not loadingCheckpoint:
             # calculate next direction and turns required
             if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
@@ -101,17 +102,23 @@ while nextTile is not None or util.tile != util.startTile:
 
             # update length after sending turn
             util.pathLen += 2
+            print("\tCurrent Tile:\t" + str((util.tile, util.floor)))
 
         if loadingCheckpoint:
             break
 
+        print("\tCurrent Tile:\t" + str((util.tile, util.floor)))
+        print("\tCurrent Tile:\t" + str((nextTileInPath, nextFloorInPath)))
         nextTileIsRampStart = util.tileExists(util.goForward(util.tile, False)) and util.maze[util.floor][util.goForward(util.tile, False)][util.tileType] in (3, 4)
 
         # go up ramp if needed
         if util.floor != nextFloorInPath:
-            util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
-        elif config.inputMode == 1:
             util.tile = util.goForward(util.tile, not nextTileIsRampStart)
+            print("\tCurrent Tile:\t" + str((util.tile, util.floor)))
+            print(str(util.rampMap))
+            util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
+        else:
+            util.goForward(util.tile, not nextTileIsRampStart)
 
         # update checkpoint
         if util.isCheckpoint(util.maze[util.floor], util.tile):
@@ -127,6 +134,7 @@ while nextTile is not None or util.tile != util.startTile:
             if config.inputMode == 2:
                 if config.doVictim:
                     victimMsg = None
+                    wentForward = False
 
                     while victimMsg != ';':
                         BFS.searchForVictims()
@@ -137,8 +145,9 @@ while nextTile is not None or util.tile != util.startTile:
                             break
 
                         if victimMsg == 'm':
-                            print("\t\t\t\tNOW IN NEXT TILE")
-                            util.tile = util.goForward(util.tile, not nextTileIsRampStart)
+                            util.tile = util.goForward(util.tile, False)
+                            print("\t\t\t\tNOW IN NEXT TILE:" + str(util.tile))
+                            wentForward = True
 
                         elif victimMsg in ('x', 'X'):
                             print("\t\t\t\tHEAT VICTIM RECEIVED ON " + "LEFT" if victimMsg == 'x' else "RIGHT")
@@ -148,6 +157,9 @@ while nextTile is not None or util.tile != util.startTile:
                                 util.maze[util.floor][util.tile][util.nVictim + heatDirection] = ord(victimMsg)
                             else:
                                 IO.sendSerial('n')
+                                
+                    if not wentForward:
+                        util.tile = util.goForward(util.tile, False)
 
                     if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))

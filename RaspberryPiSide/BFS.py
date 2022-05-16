@@ -179,6 +179,8 @@ def handleSpecialTiles(walls, previousCheckpoint):
     if walls[util.tileType] in (3, 4):
 
         # floor adjustments
+        #util.tile = util.goBackward(util.tile)
+        #util.tile = util.goForward(util.tile, False)
         rampAdjust = 1 if walls[util.tileType] == 3 else -1
         walls[util.tileType] = 0
 

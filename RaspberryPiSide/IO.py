@@ -138,7 +138,7 @@ def setupSerial():
 def getNextSerialByte():
     msg = ser.read().decode("ascii", "ignore")
     
-    while not(msg in ('d', 'u', ';', 'a', 'b', 'x', 'X') or msg.isdigit()):
+    while not(msg in ('d', 'u', ';', 'a', 'b', 'x', 'X', 'm') or msg.isdigit()):
         time.sleep(0.1)
         
         if config.importantDebug or config.serialDebug:
