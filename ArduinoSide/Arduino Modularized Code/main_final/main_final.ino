@@ -78,7 +78,7 @@ void loop() {
         
        // Serial.println("forward!");
         //goForwardTilesPID(1);
-        if(triangulation(getSensorReadings(1), getSensorReadings(0)) && !isHeat){
+        if(triangulation(getSensorReadings(1), getSensorReadings(0))){
         alignFront();
         delay(1);
         Serial2.write(';');
@@ -97,11 +97,13 @@ void loop() {
         
         //Serial.println("left!");
         turnAbs('l');
-
+        if(!isHeat){
         delay(1);
         Serial2.write(';');
         delay(1);
         Serial.println(';');
+        }
+        isHeat=false;
         break;
 
       case 'R':
@@ -112,11 +114,13 @@ void loop() {
         
        // Serial.println("right!");
         turnAbs('r');
-
+        if(!isHeat){
         delay(1);
         Serial2.write(';');
         delay(1);
         Serial.println(';');
+        }
+        isHeat=false;
         break;
         
       case '}':

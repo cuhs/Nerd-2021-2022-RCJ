@@ -226,7 +226,7 @@ bool triangulation(int left, int right) {
   int currAngle;
   bool noBlack = true;
   //no walls
-  if (left > 15 && right > 15 || left + ROBOT_WIDTH + right <25) {
+  if (left > 20 && right > 20 || left + ROBOT_WIDTH + right <25) {
     int di = getDirection(euler.x());
     if(di!=-1)
       turnAbs(di);

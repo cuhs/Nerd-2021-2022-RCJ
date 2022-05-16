@@ -72,7 +72,9 @@ void RGB_color(int red_light_value, int green_light_value, int blue_light_value,
 }
 
 void victim() {
-  doHeatVictim(getHeatSensorReadings('L'), getHeatSensorReadings('R'));
+  if(!isHeat){
+    doHeatVictim(getHeatSensorReadings('L'), getHeatSensorReadings('R'));
+  }
 
   if (Serial2.available()) {
     delay(1);
