@@ -58,6 +58,7 @@ void loop() {
         break;
       case 'W':
         rampMoveForward('u');
+        alignFront();
         finishedRamp=0;
         delay(1);
         Serial2.write(';');
@@ -65,6 +66,7 @@ void loop() {
         break;
       case 'M':
         rampMoveForward('d');
+        alignFront();
         finishedRamp=0;
         delay(1);
         Serial2.write(';');

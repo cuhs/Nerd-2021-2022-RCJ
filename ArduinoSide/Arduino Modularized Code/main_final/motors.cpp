@@ -49,7 +49,7 @@ bool rampMoveForward(char dir) {
   if (dir == 'u') {
     Lspeed = 210;
     Rspeed = 210;// on fresh batteries: KP=2
-    KP = 4;
+    KP = 10;
     finishedRamp = 1;
   } else if (dir == 'd') {
     Lspeed = 120;
@@ -114,8 +114,21 @@ bool rampMoveForward(char dir) {
   }
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
+  plainGoForward(5);
   return true;
 
+}
+
+void plainGoForward(int dist){
+  int motorEncUse = LEFT;
+  ports[motorEncUse].count = 0;
+  double enc = ((360 / (D * PI)) * dist);
+  while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
+    ports[RIGHT].setMotorSpeed(100);
+    ports[LEFT].setMotorSpeed(100);
+  }
+  ports[RIGHT].setMotorSpeed(0);
+  ports[LEFT].setMotorSpeed(0);
 }
 
 bool goForwardPID(int dist) {
