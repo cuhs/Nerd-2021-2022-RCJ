@@ -229,7 +229,7 @@ bool triangulation(int left, int right) {
   if (left > 20 && right > 20 || left + ROBOT_WIDTH + right <25) {
     int di = getDirection(euler.x());
     if(di!=-1)
-      turnAbs(di);
+      turnAbsNoVictim(di);
     if (!goForwardTilesPID(1))
       return false;
     return true;
@@ -257,12 +257,12 @@ bool triangulation(int left, int right) {
     //    Serial.println(currAngle);
     int ang = currAngle - angle;
     if (ang > 360) ang = ang % 360;
-    turnAbs(ang);
+    turnAbsNoVictim(ang);
     //Serial.println("Done turn");
     noBlack = goForwardPID(forwardCm);
     //Serial.println("Done forward");
     if (noBlack) {
-      turnAbs(currAngle);
+      turnAbsNoVictim(currAngle);
     } else {
       turnAbsNoVictim(currAngle);
     }
@@ -290,12 +290,12 @@ bool triangulation(int left, int right) {
     //    Serial.println(currAngle);
     int ang = currAngle + angle;
     if (ang > 360) ang = ang % 360;
-    turnAbs(ang);
+    turnAbsNoVictim(ang);
     //Serial.println("Done turn");
     noBlack = goForwardPID(forwardCm);
     //Serial.println("Done forward");
     if (noBlack) {
-      turnAbs(currAngle);
+      turnAbsNoVictim(currAngle);
     } else {
       turnAbsNoVictim(currAngle);
     }

@@ -48,8 +48,8 @@ bool rampMoveForward(char dir) {
   int Rspeed = 0;
   if (dir == 'u') {
     Lspeed = 210;
-    Rspeed = 210;// on fresh batteries: KP=2
-    KP = 10;
+    Rspeed = 210;// on fresh batteries: KP=2   on not so fresh batteries: 6-10
+    KP = 2;
     finishedRamp = 1;
   } else if (dir == 'd') {
     Lspeed = 120;
@@ -177,7 +177,7 @@ bool goForwardPID(int dist) {
       rampMoveForward('d');
       return true;
     }
-    if (detectBlack()) {
+    if (detectBlack(shouldSendM)) {
       while (ports[motorEncUse].count > 0) {
         ports[RIGHT].setMotorSpeed(-80);
         ports[LEFT].setMotorSpeed(-80);
@@ -189,7 +189,7 @@ bool goForwardPID(int dist) {
       delay(1);
       return false;
     }
-    if(shouldSendM && abs(ports[motorEncUse].count)>=enc/2){
+    if(shouldSendM && abs(ports[motorEncUse].count)>=enc/3){
       Serial.println("Sending m");
       shouldSendM = false;
       delay(1);
