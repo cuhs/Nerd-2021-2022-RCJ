@@ -36,7 +36,7 @@ void getValues() {
   delay(20);
 }
 
-bool detectBlack() {
+bool detectBlack(bool shouldM) {
   tcaselect(3);
   uint16_t r, g, b, c, lux;
   tcs.getRawData(&r, &g, &b, &c);
@@ -44,6 +44,9 @@ bool detectBlack() {
 //  Serial.print("lux: ");
 //  Serial.println(lux);
   if (lux <= 1) { //lux value changed
+    if(shouldM){
+      Serial2.write('m');
+    }
     Serial2.write(';');
     Serial2.write('b');
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
