@@ -16,7 +16,7 @@ int getHeatSensorReadings(char side) {
 }
 
 void doHeatVictim(int leftTemp, int rightTemp) {
-  if (leftTemp > 27) {
+  if (leftTemp > (int)mlx.readAmbientTempF() + 9) {
     ports[LEFT].setMotorSpeed(0);
     ports[RIGHT].setMotorSpeed(0);
     delay(1);
@@ -30,7 +30,7 @@ void doHeatVictim(int leftTemp, int rightTemp) {
     }
       //dropKits('L', 1);
   }
-  if (rightTemp > 27) {
+  if (rightTemp > (int)mlx.readAmbientTempF() + 9) {
     ports[LEFT].setMotorSpeed(0);
     ports[RIGHT].setMotorSpeed(0);
     delay(1);
