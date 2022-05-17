@@ -61,7 +61,7 @@ class detection():
 
         cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        mask = cv2.inRange(frame, (0, 0, 0), (50, 70, 70))
+        mask = cv2.inRange(frame, (0, 0, 0), (40,40 , 40))
         
         cv2.imshow("mask",mask)
 
@@ -127,8 +127,10 @@ main = detection()
 cap1 = cv2.VideoCapture(0)
 #cap2 = cv2.VideoCapture(1)
 
-cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+#cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+#cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+cap1.set(cv2.CAP_PROP_FPS, 60)
+
 #cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 #cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
 
@@ -145,32 +147,47 @@ while cap1.isOpened(): #and cap2.isOpened():
 
     #ret2,frame2 = cap2.read()
     
-    frame1 = frame1[:,:150] #H, W LEFT
+    #frame1 = frame1[:,:150] #H, W LEFT
+    
+    gray =cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
+    
+    #mask = cv2.inRange(frame1, (0, 0, 0), (60,60 , 60))
+    
+    ret, thresh2 = cv2.threshold(gray, 40, 255, cv2.THRESH_BINARY_INV)
+
+
     #frame2 = frame2[:,:152] #RIGHT
     
     #frame1 = cv2.imread(path + "H-Sat Apr 30 16:49:10 2022.png")
                         
     if ret1 > 0: #and ret2 > 0:
         
-        print(main.colorDetect(frame1,hsv_lower,hsv_upper))
+        #print(main.colorDetect(frame1,hsv_lower,hsv_upper))
         #main.colorDetect(frame2,hsv_lower,hsv_upper)
 
         imgOutput1 = main.letterDetect(frame1,"frame1")
         #imgOutput2 = main.letterDetect(frame2, "frame2")
         
-        result1 =  main.KNN_finish(imgOutput1,9000000)
+        #result1 =  main.KNN_finish(imgOutput1,9000000)
         #result2 = main.KNN_finish(imgOutput2,10000000)
         
         #cv2.imwrite("/home/pi/Documents/VictimImages/" + str(time.time()) + ".png", frame1)
         
         
         if cv2.waitKey(1) == ord(' '):
-            print("saved!")
-            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFilesqq/saveVictims/" + str(time.time()) + ".png",frame1)
-            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFilesqq/saveVictims/" + "mask" + str(time.time()) + ".png",imgOutput1)
+            print("Do you like this image?")
+            cv2.imshow("image_mask",imgOutput1)
+            letter = cv2.waitKey(0)
+            cv2.destroyAllWindows()
+            if letter == ord('y'):
+                cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + str(time.time()) + ".png",frame1)
+                #cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + "mask" + str(time.time()) + ".png",imgOutput1)
+                print("saved!")
+            else:
+                print("not saved")
 
                 
-        print("Camera1 " + result1)
+        #print("Camera1 " + result1)
         #print("Camera2 " + result2)
         
         #print()
@@ -178,6 +195,7 @@ while cap1.isOpened(): #and cap2.isOpened():
         if main.Debug:
                 
             cv2.imshow("frame1",frame1)
+            cv2.imshow("mask",thresh2)
             #cv2.imshow("imgOutput1",imgOutput1)
             #cv2.imshow("combine",combine)
             #cv2.imshow("frame2",frame2)

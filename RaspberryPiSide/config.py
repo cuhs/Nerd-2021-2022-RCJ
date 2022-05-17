@@ -11,7 +11,7 @@ silverTilePercentage = 2  # percent of silver tiles when randomly generating a m
 genFromImage = False  # if false, will generate random maze
 redoLastMaze = False  # allows you to rerun last generated maze, for debugging
 
-showDisplay = True  # 0 no display, 1 is display
+showDisplay = False  # 0 no display, 1 is display
 displayRate = 0  # in milliseconds, 0 for until keypress
 displaySize = 750  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
