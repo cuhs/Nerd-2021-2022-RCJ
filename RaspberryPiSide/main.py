@@ -82,7 +82,7 @@ while nextTile is not None or util.tile != util.startTile:
             # find and send victims
             if config.inputMode == 2:
                 if config.doVictim: 
-                    BFS.searchForVictims()
+                    util.maze = BFS.searchForVictims()
 
                     victimMsg = IO.getNextSerialByte()
                     if victimMsg == 'a':
@@ -137,7 +137,7 @@ while nextTile is not None or util.tile != util.startTile:
                     wentForward = False
 
                     while victimMsg != ';':
-                        BFS.searchForVictims()
+                        util.maze = BFS.searchForVictims()
                         victimMsg = IO.getNextSerialByte()
 
                         if victimMsg == 'a':

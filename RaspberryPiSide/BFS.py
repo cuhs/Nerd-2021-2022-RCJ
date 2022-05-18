@@ -267,6 +267,8 @@ def loadCheckpoint(checkpoint):
 
 # searches for letter and color victims, marks and sends them
 def searchForVictims():
+    victimMaze = np.copy(util.maze)
+    
     if config.victimDebug:
         print("\t\t\tSTARTING CAMERA")
 
@@ -274,10 +276,10 @@ def searchForVictims():
         # check if cap is opened and throw error if not
         if not IO.cap[0].isOpened():
             print("\t\t\t\tERROR: CAMERA 1 NOT OPENED")
-            return
+            return victimMaze
         if config.cameraCount == 2 and (not IO.cap[1].isOpened()):
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
-            return
+            return victimMaze
         
         #leftRet, leftFrame = IO.cap[0].read()
         #leftRet, leftFrame = IO.frame[0]
@@ -305,43 +307,35 @@ def searchForVictims():
                 #cv2.imshow("right", rightFrame)
                 #cv2.waitKey(1)
 
-        # check if searching needed on left camera
-        if util.maze[util.floor][util.tile][util.nVictim + util.dirToLeft(util.direction)] == 0:
-            # get letter and color victims
-            #leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(leftRet, leftFrame)
-            leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][:,:150])
+        # get letter and color victims
+        leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][:,:150])
 
-            #leftLetterVictim = IO.victim[0]
-            #leftColorVictim = IO.victim[2]
-
-            # send and record letter victim
-            if leftLetterVictim is not None:
-                leftLetterVictim = leftLetterVictim.lower()
-                print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim)
-                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
+        # send and record letter victim
+        if leftLetterVictim is not None:
+            leftLetterVictim = leftLetterVictim.lower()
+            print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
+            if victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] == False:
+                victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
                 IO.sendData(config.inputMode, leftLetterVictim)
-                #blink()
                 if config.saveVictimDebug:
-                    #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:,:150])
-                
-                break
-
-            # send and record color victim
-            if leftColorVictim is not None:
-                leftColorVictim = leftColorVictim.lower()
-                print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim)
-                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
+            return victimMaze
+        
+        # send and record color victim
+        elif leftColorVictim is not None:
+            leftColorVictim = leftColorVictim.lower()
+            print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
+            if victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] == False:
+                victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
                 IO.sendData(config.inputMode, leftColorVictim)
-                #blink()
+            #blink()
                 if config.saveVictimDebug:
-                    #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
+                #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:,:150])
-               
-                break
+            return victimMaze
 
         # check if searching is needed on right camera
-        if config.cameraCount == 2 and util.maze[util.floor][util.tile][util.nVictim + util.dirToRight(util.direction)] == 0:
+        if config.cameraCount == 2:
             # get letter and color victims
             #rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(rightRet, rightFrame)
             rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][:,:150])
@@ -351,26 +345,25 @@ def searchForVictims():
             # send and record letter victim
             if rightLetterVictim is not None:
                 rightLetterVictim = rightLetterVictim.upper()
-                print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim)
-                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightLetterVictim)
-                IO.sendData(config.inputMode, rightLetterVictim)
+                print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
+                if victimMaze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] == False:
+                    victimMaze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] = ord(rightLetterVictim)
+                    IO.sendData(config.inputMode, rightLetterVictim)
                 #blink()
-                if config.saveVictimDebug:
+                    if config.saveVictimDebug:
                     #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:,:150])
-                
-                break
-
+                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:,:150])
+                return victimMaze
             # send and record color victim
             elif rightColorVictim is not None:
                 rightColorVictim = rightColorVictim.upper()
-                print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim)
-                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(rightColorVictim)
-                IO.sendData(config.inputMode, rightColorVictim)
+                print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
+                if victimMaze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] == False:
+                    victimMaze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] = ord(rightColorVictim)
+                    IO.sendData(config.inputMode, rightColorVictim)
                 #blink()
-                if config.saveVictimDebug:
+                    if config.saveVictimDebug:
                     #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), rightFrame)
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:,:150])
-
-                break
-
+                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:,:150])
+                return victimMaze
+    return victimMaze

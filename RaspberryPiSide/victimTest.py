@@ -51,7 +51,8 @@ class detection():
                     imgOutput = np.rot90(imgOutput)
 
                 if self.Debug:
-                    cv2.imshow("letter_" + name, imgOutput)
+                    #cv2.imshow("letter_" + name, imgOutput)
+                    pass
 
                 # result,dist = self.KNN(imgOutput)
 
@@ -59,11 +60,11 @@ class detection():
 
     def letterDetect(self, frame, name):
 
-        cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         mask = cv2.inRange(frame, (0, 0, 0), (40,40 , 40))
         
-        cv2.imshow("mask",mask)
+        #cv2.imshow("mask",mask)
 
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -127,9 +128,9 @@ main = detection()
 cap1 = cv2.VideoCapture(0)
 #cap2 = cv2.VideoCapture(1)
 
-#cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-#cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
-cap1.set(cv2.CAP_PROP_FPS, 60)
+cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+#cap1.set(cv2.CAP_PROP_FPS, 60)
 
 #cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 #cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
@@ -141,19 +142,25 @@ start = 0
 while cap1.isOpened(): #and cap2.isOpened():
     
     ret1,frame1 = cap1.read()
+    frame1 = frame1[:,:150]
     #frame1 = cv2.imread("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sun May  8 15:52:21 2022/Y-Sun May  8 15:52:34 2022.png")
     #ret1,frame1 = cap1.read()
     #frame1 = cv2.flip(frame1, 0)
 
     #ret2,frame2 = cap2.read()
     
-    #frame1 = frame1[:,:150] #H, W LEFT
+    #frame1 = frame1[:,:150] #H, W LEFTqqqq
     
-    gray =cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
     
-    #mask = cv2.inRange(frame1, (0, 0, 0), (60,60 , 60))
+    #blur = cv2.medianBlur(gray,5)
+    blur = cv2.bilateralFilter(gray, 5, 75,75)
+
     
-    ret, thresh2 = cv2.threshold(gray, 40, 255, cv2.THRESH_BINARY_INV)
+    #thresh2 = cv2.inRange(frame1, (0, 0, 0), (60,60 , 60))
+    thresh2  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3)
+
+    #ret, thresh2 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
 
     #frame2 = frame2[:,:152] #RIGHT
@@ -201,7 +208,7 @@ while cap1.isOpened(): #and cap2.isOpened():
             #cv2.imshow("frame2",frame2)
 
             
-    if cv2.waitKey(1) == ord('q'):
+    if cv2.waitKey(1)  == ord('q'):
         break
 
 cap1.release()
