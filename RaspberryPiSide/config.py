@@ -16,11 +16,11 @@ displayRate = 100  # in milliseconds, 0 for until keypress
 displaySize = 750  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
-importantDebug = False  # important print statements, overrides other settings
-BFSDebug = False  # print statements for maze traversal
-victimDebug = False  # shows camera feeds
+importantDebug = True  # important print statements, overrides other settings
+BFSDebug = True  # print statements for maze traversal
+victimDebug = True  # shows camera feeds
 saveVictimDebug = False  # saves victim images if found
-serialDebug = False  # prints serial IO
+serialDebug = True  # prints serial IO
 
 recordCams = False  # saves camera feeds, only works if cameraCount is 2
 

@@ -314,17 +314,20 @@ def searchForVictims():
         if leftLetterVictim is not None:
             leftLetterVictim = leftLetterVictim.lower()
             print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
+            print(str(victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] == False))
             if victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] == False:
                 victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
                 IO.sendData(config.inputMode, leftLetterVictim)
                 if config.saveVictimDebug:
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:,:150])
+                print(victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim])
             return victimMaze
         
         # send and record color victim
         elif leftColorVictim is not None:
             leftColorVictim = leftColorVictim.lower()
             print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
+            print(str(victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] == False))
             if victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] == False:
                 victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
                 IO.sendData(config.inputMode, leftColorVictim)
@@ -332,6 +335,7 @@ def searchForVictims():
                 if config.saveVictimDebug:
                 #cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), leftFrame)
                     cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:,:150])
+                print(str(victimMaze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim]))
             return victimMaze
 
         # check if searching is needed on right camera
@@ -345,7 +349,7 @@ def searchForVictims():
             # send and record letter victim
             if rightLetterVictim is not None:
                 rightLetterVictim = rightLetterVictim.upper()
-                print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
+                print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToRight(util.direction)))
                 if victimMaze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] == False:
                     victimMaze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] = ord(rightLetterVictim)
                     IO.sendData(config.inputMode, rightLetterVictim)
@@ -357,7 +361,7 @@ def searchForVictims():
             # send and record color victim
             elif rightColorVictim is not None:
                 rightColorVictim = rightColorVictim.upper()
-                print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
+                print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToRight(util.direction)))
                 if victimMaze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] == False:
                     victimMaze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] = ord(rightColorVictim)
                     IO.sendData(config.inputMode, rightColorVictim)
