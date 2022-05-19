@@ -6,6 +6,7 @@ Adafruit_BNO055 bno;
 int finishedRamp = 0;
 
 void initIMU() {
+  tcaselect(7);
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_IMUPLUS))
   {
     /* There was a problem detecting the BNO055 ... check your connections */
@@ -44,6 +45,7 @@ int getDirection(int dir) {
 
 void turnAbs(char t) {
   //get BNO values
+  tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
 
   int pos = euler.x();
@@ -72,6 +74,7 @@ void turnAbs(char t) {
 }
 
 void displayIMU() {
+  tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   while (true) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -79,6 +82,7 @@ void displayIMU() {
   }
 }
 void turnRight(int degree) {
+  tcaslect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int curr = euler.x();
   int target = (curr + degree) % 360;
@@ -102,7 +106,7 @@ void turnAbs(int degree) {
   int prev_count = 0;
   bool stalling = false;
   bool checking = false;
-
+  tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int dir[4] = {0, 90, 180, 270};
   int fix;
@@ -114,6 +118,7 @@ void turnAbs(int degree) {
   while (abs(error) >= 3 && !stalling) {
     Serial.println("In turnAbs degrees");
     victim();
+    tcaselect(7);
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     curDir = euler.x();
     error = targetDir - curDir;
@@ -164,7 +169,7 @@ void turnAbsNoVictim(int degree) {
   int prev_count = 0;
   bool stalling = false;
   bool checking = false;
-
+  tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int dir[4] = {0, 90, 180, 270};
   int fix;
@@ -174,6 +179,7 @@ void turnAbsNoVictim(int degree) {
   int error = targetDir - curDir;
   double pastError = 0;
   while (abs(error) >= 2) {
+    tcaselect(7);
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     curDir = euler.x();
     error = targetDir - curDir;
@@ -219,6 +225,7 @@ void turnAbsNoVictim(int degree) {
 }
 
 bool triangulation(int left, int right) {
+  tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int distFromCenter;
   int angle;
@@ -306,6 +313,7 @@ bool triangulation(int left, int right) {
 }
 
 int isOnRamp() {
+  tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   if (euler.y() < -15) {
     return 1;
@@ -317,6 +325,7 @@ int isOnRamp() {
 }
 
 bool notStable() {
+  tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   if (abs(euler.y()) > 2)
     return true;

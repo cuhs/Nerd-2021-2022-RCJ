@@ -29,7 +29,7 @@ void setup() {
   Serial.println("--------------------STARTING NOW--------------------");
   setupSensors2();
   initIMU();
-  delay(2000);
+  delay(1000);
   Serial.println('a');
   Serial2.write('a');
   sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));

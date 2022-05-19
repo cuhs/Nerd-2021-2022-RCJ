@@ -6,6 +6,7 @@
 #include "motors.h"
 #include "rescueServo.h"
 #include "new_global_vars.h"
+#include "TCA.h"
 
 void initIMU();
 void reset();
