@@ -10,6 +10,7 @@ extern const int R_angle;
 extern const int L_angle;
 extern const int C_angle;
 
+void turnTo(int);
 void wiggle(char angle);
 void dropKits(char dir, int amt);
 void setupServo();

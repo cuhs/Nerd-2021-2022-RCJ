@@ -57,6 +57,7 @@ bool rampMoveForward(char dir) {
     KP=0.5;
     finishedRamp = 2;
   }
+  tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int angle = euler.x();
   angle=getDirection(angle);
@@ -79,14 +80,14 @@ bool rampMoveForward(char dir) {
       ports[LEFT].setMotorSpeed(Lspeed-fix);
       ports[RIGHT].setMotorSpeed(Rspeed+fix);
     }
-    Serial.print("target: ");
-    Serial.print(angle);
-    Serial.print(" error: ");
-    Serial.print(error);
-    Serial.print(" curr ang: ");
-    Serial.print(currAng);
-    Serial.print(" fix: ");
-    Serial.println(fix);
+//    Serial.print("target: ");
+//    Serial.print(angle);
+//    Serial.print(" error: ");
+//    Serial.print(error);
+//    Serial.print(" curr ang: ");
+//    Serial.print(currAng);
+//    Serial.print(" fix: ");
+//    Serial.println(fix);
   }
   while (notStable()) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -103,14 +104,14 @@ bool rampMoveForward(char dir) {
       ports[LEFT].setMotorSpeed(Lspeed-fix);
       ports[RIGHT].setMotorSpeed(Rspeed+fix);
     }
-    Serial.print("target: ");
-    Serial.print(angle);
-    Serial.print(" error: ");
-    Serial.print(error);
-    Serial.print(" curr ang: ");
-    Serial.print(currAng);
-    Serial.print(" fix: ");
-    Serial.println(fix);
+//    Serial.print("target: ");
+//    Serial.print(angle);
+//    Serial.print(" error: ");
+//    Serial.print(error);
+//    Serial.print(" curr ang: ");
+//    Serial.print(currAng);
+//    Serial.print(" fix: ");
+//    Serial.println(fix);
   }
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);

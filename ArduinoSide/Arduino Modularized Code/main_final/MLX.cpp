@@ -20,7 +20,7 @@ void doHeatVictim(int leftTemp, int rightTemp) {
     ports[LEFT].setMotorSpeed(0);
     ports[RIGHT].setMotorSpeed(0);
     delay(1);
-    Serial2.write("x");
+    Serial2.write('x');
     delay(1);
     while(!Serial2.available());
     char c = Serial2.read();
@@ -34,7 +34,7 @@ void doHeatVictim(int leftTemp, int rightTemp) {
     ports[LEFT].setMotorSpeed(0);
     ports[RIGHT].setMotorSpeed(0);
     delay(1);
-    Serial2.write("X");
+    Serial2.write('X');
     delay(1);
    while(!Serial2.available());
     char c = Serial2.read();
