@@ -82,7 +82,7 @@ void displayIMU() {
   }
 }
 void turnRight(int degree) {
-  tcaslect(7);
+  tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int curr = euler.x();
   int target = (curr + degree) % 360;
