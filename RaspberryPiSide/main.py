@@ -62,7 +62,6 @@ while nextTile is not None or util.tile != util.startTile:
 
         # update next tile and floor in path
         (nextTileInPath, nextFloorInPath) = util.path.pop()
-        print("\tCurrent Tile:\t" + str((nextTileInPath, nextFloorInPath)))
         while util.floor == nextFloorInPath and util.tile + util.adjTiles[util.direction] != nextTileInPath and not loadingCheckpoint:
             # calculate next direction and turns required
             if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
@@ -102,23 +101,22 @@ while nextTile is not None or util.tile != util.startTile:
 
             # update length after sending turn
             util.pathLen += 2
-            print("\tCurrent Tile:\t" + str((util.tile, util.floor)))
 
         if loadingCheckpoint:
             break
 
-        print("\tCurrent Tile:\t" + str((util.tile, util.floor)))
-        print("\tCurrent Tile:\t" + str((nextTileInPath, nextFloorInPath)))
         nextTileIsRampStart = util.tileExists(util.goForward(util.tile, False)) and util.maze[util.floor][util.goForward(util.tile, False)][util.tileType] in (3, 4)
 
         # go up ramp if needed
         if util.floor != nextFloorInPath:
-            util.tile = util.goForward(util.tile, not nextTileIsRampStart)
-            print("\tCurrent Tile:\t" + str((util.tile, util.floor)))
-            print(str(util.rampMap))
+            if config.inputMode == 2:
+                util.tile = util.goForward(util.tile, not nextTileIsRampStart)
             util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
         else:
-            util.goForward(util.tile, not nextTileIsRampStart)
+            if config.inputMode == 1:
+                util.tile = util.goForward(util.tile, not nextTileIsRampStart)
+            else:
+                util.goForward(util.tile, not nextTileIsRampStart)
 
         # update checkpoint
         if util.isCheckpoint(util.maze[util.floor], util.tile):
@@ -219,6 +217,7 @@ if config.inputMode == 2:
         IO.outputR.release()
         IO.outputL.release()
 cv2.destroyAllWindows()
-IO.videoGetter.stop()
+if config.inputMode == 2:
+    IO.videoGetter.stop()
 
  

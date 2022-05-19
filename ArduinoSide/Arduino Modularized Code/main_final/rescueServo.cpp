@@ -85,6 +85,8 @@ void victim() {
     ports[RIGHT].setMotorSpeed(0);
     ports[LEFT].setMotorSpeed(0);
 
+    if((incoming_byte-tolower(incoming_byte) && getSensorReadings(0) < 35) || (incoming_byte-toupper(incoming_byte) && getSensorReadings(1) < 35)){ //if letter is uppercase
+  
     switch (incoming_byte) {
       case 'Y': // 1 kit
         Serial.println("red/yellow");
@@ -148,5 +150,6 @@ void victim() {
         Serial.print("#2 hmmm wut is this: ");
         Serial.println(incoming_byte);
     }
+  }
   }
 }
