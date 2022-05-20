@@ -167,13 +167,13 @@ bool goForwardPID(int dist) {
     Serial.println(c);
     if(c=='l'){
       while(obstacleDetect()=='l'){
-        ports[LEFT].setMotorSpeed(100);
+        ports[LEFT].setMotorSpeed(120);
         ports[RIGHT].setMotorSpeed(-140);
       }
     }else if(c=='r'){
       while(obstacleDetect()=='r'){
         ports[LEFT].setMotorSpeed(-140);
-        ports[RIGHT].setMotorSpeed(100);
+        ports[RIGHT].setMotorSpeed(120);
       }
     }
     if (ports[LEFT].count == prev_count && !checking) {
