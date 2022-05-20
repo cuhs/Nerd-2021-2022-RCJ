@@ -54,13 +54,13 @@ startFloor = (config.floorCount - 1) // 2
 hsv_lower = {
     0: (87, 115, 60),
     1: (40, 30, 50),
-    2: (0, 55, 85)
+    2: (0, 130, 75)
 }
 
 hsv_upper = {
      0: (180, 255, 170),
      1: (100, 150, 155),
-     2: (36, 205, 185) #160 for [1]
+     2: (40, 255, 170) #160 for [1]
 }
 
 # adjust which position is facing true north

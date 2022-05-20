@@ -24,12 +24,12 @@ def click_event(event, x, y, flags, params):
                 
         if len(coordList) == 4:
             print((coordList[2]-coordList[0])*(coordList[3]-coordList[1]))
-            '''maxH = 0
+            maxH = 0
             minH = 300
             maxS = 0
             minS = 300
-            maxU = 0
-            minU = 300
+            maxV = 0
+            minV = 300
             
             for j in range(coordList[0],coordList[2]+1):
                 for i in range(coordList[1], coordList[3]+1):
@@ -41,13 +41,13 @@ def click_event(event, x, y, flags, params):
                         maxS = hsv[i][j][1]
                     if minS > hsv[i][j][1]:
                         minS = hsv[i][j][1]
-                    if maxU < hsv[i][j][2]:
-                        maxU = hsv[i][j][2]
-                    if minU > hsv[i][j][2]:
-                        minU = hsv[i][j][2]
+                    if maxV < hsv[i][j][2]:
+                        maxV = hsv[i][j][2]
+                    if minV > hsv[i][j][2]:
+                        minV = hsv[i][j][2]
                         
-            print("Min:", minH, minS, minU)
-            print("Max:", maxH, maxS, maxU)'''
+            print("Min:", minH, minS, minV)
+            print("Max:", maxH, maxS, maxV)
                     
             
  
