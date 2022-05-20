@@ -85,7 +85,7 @@ class Detection:
     def colorDetectHSV(self, frame, hsv_lower, hsv_upper):
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        for i in range(2):
+        for i in range(3):
             mask = cv2.inRange(hsv, hsv_lower[i], hsv_upper[i])
             # cv2.imshow("mask",mask)
 
@@ -123,13 +123,13 @@ class Detection:
     # return letter and color victims from right camera
     def rightDetectFinal(self,ret,frame):
         if ret > 0:
-            return self.KNN_finish(self.letterDetect(frame, "frame1"), 10005000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
+            return self.KNN_finish(self.letterDetect(frame, "frame1"), 10000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
         return None, None
     
     # return letter and color victims from left camera
     def leftDetectFinal(self,ret,frame):
         if ret > 0:
-            return self.KNN_finish(self.letterDetect(frame, "frame2"), 10005000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
+            return self.KNN_finish(self.letterDetect(frame, "frame2"), 10000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
         return None, None
     
 # old main below

@@ -137,7 +137,8 @@ while nextTile is not None or util.tile != util.startTile:
                     while victimMsg != ';':
                         util.maze = BFS.searchForVictims()
                         victimMsg = IO.getNextSerialByte()
-
+                        
+                        
                         if victimMsg == 'a':
                             loadingCheckpoint = True
                             break
@@ -158,18 +159,20 @@ while nextTile is not None or util.tile != util.startTile:
                                 
                     if not wentForward:
                         util.tile = util.goForward(util.tile, False)
+                        
+                    print(str(util.maze[util.floor][167][:]))
 
                     if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
             # update path length after forward/ramp movement
             util.pathLen += 2
-
+        
     # send BFS ending char '}'
     if not loadingCheckpoint:
         IO.sData += config.serialOutMsgs[8]
         IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], True)
         if config.serialDebug:
-            print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
+            print("\t\tSENDINGL: " + IO.sData[util.pathLen:util.pathLen + 1])
         util.pathLen += 1
 
         # reset path string
