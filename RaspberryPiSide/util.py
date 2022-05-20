@@ -114,18 +114,20 @@ def getWalls():
     return retData
 
 # both are 90 degree turns
-def turnLeft(facing):
+def turnLeft(facing, sendMsg=False):
     facing = dirToLeft(facing)
-    IO.sData += (config.serialOutMsgs[1] + config.serialOutMsgs[6])
+    if sendMsg:
+        IO.sData += (config.serialOutMsgs[1] + config.serialOutMsgs[6])
     return facing
 
-def turnRight(facing):
+def turnRight(facing, sendMsg=False):
     facing = dirToRight(facing)
-    IO.sData += (config.serialOutMsgs[2] + config.serialOutMsgs[6])
+    if sendMsg:
+        IO.sData += (config.serialOutMsgs[2] + config.serialOutMsgs[6])
     return facing
 
 # send forward message
-def goForward(cTile, sendMsg):
+def goForward(cTile, sendMsg=False):
     if sendMsg:
         IO.sData += (config.serialOutMsgs[0] + config.serialOutMsgs[6])
     return cTile + adjTiles[direction]

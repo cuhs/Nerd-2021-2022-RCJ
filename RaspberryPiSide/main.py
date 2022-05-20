@@ -66,9 +66,14 @@ while nextTile is not None or util.tile != util.startTile:
             # calculate next direction and turns required
             if config.inputMode == 1:
                 if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
-                    util.direction = util.turnRight(util.direction)
+                    util.direction = util.turnRight(util.direction, True)
                 else:
-                    util.direction = util.turnLeft(util.direction)
+                    util.direction = util.turnLeft(util.direction, True)
+            else:
+                if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
+                    util.turnRight(util.direction, True)
+                else:
+                    util.turnLeft(util.direction, True)
 
             # update checkpoint
             if util.isCheckpoint(util.maze[util.floor], util.tile):
@@ -95,9 +100,9 @@ while nextTile is not None or util.tile != util.startTile:
 
                         if victimMsg == 'm':
                             if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
-                                util.direction = util.turnRight(util.direction)
+                                util.direction = util.turnRight(util.direction, False)
                             else:
-                                util.direction = util.turnLeft(util.direction)
+                                util.direction = util.turnLeft(util.direction, False)
                             if config.importantDebug or config.victimDebug or config.BFSDebug or config.serialDebug:
                                 print("\t\t\t\tNOW FACING:" + str(util.direction))
                             didTurn = True
@@ -114,9 +119,9 @@ while nextTile is not None or util.tile != util.startTile:
 
                     if not didTurn:
                         if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
-                            util.direction = util.turnRight(util.direction)
+                            util.direction = util.turnRight(util.direction, False)
                         else:
-                            util.direction = util.turnLeft(util.direction)
+                            util.direction = util.turnLeft(util.direction, False)
 
                     if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
