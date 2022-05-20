@@ -87,7 +87,7 @@ void loop() {
         delay(1);
         Serial.println(';');
         }
-        isHeat = false;
+        //isHeat = false;
         Serial.println("finished going forward");
         break;
         
@@ -99,13 +99,13 @@ void loop() {
         
         //Serial.println("left!");
         turnAbs('l');
-        if(!isHeat){
+        //if(!isHeat){
         delay(1);
         Serial2.write(';');
         delay(1);
         Serial.println(';');
-        }
-        isHeat=false;
+//        }
+//        isHeat=false;
         break;
 
       case 'R':
@@ -116,13 +116,13 @@ void loop() {
         
        // Serial.println("right!");
         turnAbs('r');
-        if(!isHeat){
+        //if(!isHeat){
         delay(1);
         Serial2.write(';');
         delay(1);
         Serial.println(';');
-        }
-        isHeat=false;
+//        }
+//        isHeat=false;
         break;
         
       case '}':

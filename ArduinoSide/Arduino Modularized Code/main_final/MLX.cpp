@@ -25,7 +25,7 @@ void doHeatVictim(int leftTemp, int rightTemp) {
     while(!Serial2.available());
     char c = Serial2.read();
     if(c=='y'){
-      isHeat = true;
+      //isHeat = true;
       RGB_color(255,165,0,1,'L');
     }
       //dropKits('L', 1);
@@ -39,7 +39,7 @@ void doHeatVictim(int leftTemp, int rightTemp) {
    while(!Serial2.available());
     char c = Serial2.read();
     if(c=='y'){
-      isHeat = true;
+      //isHeat = true;
       RGB_color(255,165,0,1,'R');
     }
       //dropKits('R', 1);

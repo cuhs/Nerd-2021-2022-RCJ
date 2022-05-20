@@ -47,6 +47,8 @@ void dropKits(char dir, int amt) {
       delay(500);
     }
   }
+  myservo.write(C_angle);
+  wiggle(C_angle, 5);
   myservo.detach();
   Serial.println("Done dropKits");
 }

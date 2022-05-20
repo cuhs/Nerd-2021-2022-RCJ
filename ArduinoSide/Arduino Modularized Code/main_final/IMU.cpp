@@ -316,10 +316,10 @@ int isOnRamp() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   if (euler.y() < -15) {
-    return 1;
+    return 2;
   }
   else if (euler.y() > 15) {
-    return 2;
+    return 1;
   }
   return 0;
 }
