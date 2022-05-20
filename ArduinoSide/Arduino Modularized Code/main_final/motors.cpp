@@ -155,7 +155,7 @@ bool goForwardPID(int dist) {
       delay(1);
       return false;
     }
-    if(shouldSendM && abs(ports[motorEncUse].count)>=enc/3){
+    if(shouldSendM && abs(ports[motorEncUse].count)>=(2*enc)/5){
       Serial.println("Sending m");
       shouldSendM = false;
       delay(1);

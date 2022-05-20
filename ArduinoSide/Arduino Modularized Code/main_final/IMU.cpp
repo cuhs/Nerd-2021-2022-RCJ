@@ -115,6 +115,8 @@ void turnAbs(int degree) {
   double integral = 0.0;
   int error = targetDir - curDir;
   double pastError = 0;
+  int startingError = error;
+  bool shouldSendM = true;
   while (abs(error) >= 3 && !stalling) {
     Serial.println("In turnAbs degrees");
     victim();
@@ -126,7 +128,13 @@ void turnAbs(int degree) {
       error -= 360;
     } else if (error < -180)
       error = 360 + error;
-
+    if(shouldSendM && abs(error)<=abs(startingError)/2){
+      Serial.println("Sending m");
+      shouldSendM = false;
+      delay(1);
+      Serial2.write('m');
+      delay(1);
+    }
     if (ports[LEFT].count == prev_count && !checking) {
       Serial.println("set start time");
       startTime = millis();
