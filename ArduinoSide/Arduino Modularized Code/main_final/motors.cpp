@@ -5,41 +5,6 @@ MegaPiPort ports[] = { {PORT1B, 18, 31}, {PORT2B, 19, 38}, {PORT3B, 3, 49}, {POR
 
 bool goForwardTilesPID(int tiles) {
   return goForwardPID(tiles * 30);
-  //  Serial.println("in goForwardTilesPID");
-  //  int tileSize = 30; // Set to 30
-  //  int motorEncUse = LEFT;
-  //
-  //  double pastError = 0;
-  //  double integral = 0;
-  //  int fix = 0;
-  //
-  //  ports[motorEncUse].count = 0;
-  //  double enc = ((360 / (D * PI)) * tileSize * tiles);
-  //  while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
-  //    victim();
-  //
-  //    if (detectBlack()) {
-  //      Serial.println("SAW BLACK");
-  //      while (ports[motorEncUse].count > 0) {
-  //        ports[RIGHT].setMotorSpeed(-80);
-  //        ports[LEFT].setMotorSpeed(-80);
-  //      }
-  //      //Serial2.write('b');
-  //      ports[RIGHT].setMotorSpeed(0);
-  //      ports[LEFT].setMotorSpeed(0);
-  //      return false;
-  //    }
-  //
-  //    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.005, 1));
-  //    //Serial.println(fix);
-  //
-  //    ports[RIGHT].setMotorSpeed(fix + 40);
-  //    ports[LEFT].setMotorSpeed(fix + 40);
-  //
-  //  }
-  //  ports[RIGHT].setMotorSpeed(0);
-  //  ports[LEFT].setMotorSpeed(0);
-  //  return true;
 }
 
 bool rampMoveForward(char dir) {
