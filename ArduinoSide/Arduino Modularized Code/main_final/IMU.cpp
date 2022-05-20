@@ -147,9 +147,9 @@ void turnAbs(int degree) {
 
     fix = (int)(PID(error, pastError, integral, 1.6667, 0.005, 0));
     if (fix > 0)
-      fix += 80;
+      fix += 100;
     else
-      fix -= 80;
+      fix -= 100;
     //    Serial.print(fix);
     //    Serial.print("\tEuler: ");
     //    Serial.print(euler.x());

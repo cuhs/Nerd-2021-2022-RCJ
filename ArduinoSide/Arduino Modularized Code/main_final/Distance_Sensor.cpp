@@ -66,7 +66,7 @@ void alignFront() {
     }
     
     //go forward
-    while (frontDist > 5) {
+    while (frontDist > 6) {
       victim();
       ports[RIGHT].setMotorSpeed(150);
       ports[LEFT].setMotorSpeed(150);

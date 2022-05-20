@@ -203,8 +203,8 @@ bool goForwardPID(int dist) {
     fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.015, 1));
     //Serial.println(fix);
 
-    ports[RIGHT].setMotorSpeed(fix + 40);
-    ports[LEFT].setMotorSpeed(fix + 40);
+    ports[RIGHT].setMotorSpeed(fix + 60);
+    ports[LEFT].setMotorSpeed(fix + 60);
 
   }
   Serial.println("Finished going forward(in motors)");
