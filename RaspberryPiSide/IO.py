@@ -16,10 +16,7 @@ sData = ""
 
 # cameras
 cap = []
-outputR = None
-outputL = None
 frame = []
-#victim = [None,None,None,None] #leftLetter, rightLetter, leftColor, rightColor
 videoGetter = None
 
 # starting time of the program

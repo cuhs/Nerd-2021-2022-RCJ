@@ -64,10 +64,11 @@ while nextTile is not None or util.tile != util.startTile:
         (nextTileInPath, nextFloorInPath) = util.path.pop()
         while util.floor == nextFloorInPath and util.tile + util.adjTiles[util.direction] != nextTileInPath and not loadingCheckpoint:
             # calculate next direction and turns required
-            if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
-                util.direction = util.turnRight(util.direction)
-            else:
-                util.direction = util.turnLeft(util.direction)
+            if config.inputMode == 1:
+                if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
+                    util.direction = util.turnRight(util.direction)
+                else:
+                    util.direction = util.turnLeft(util.direction)
 
             # update checkpoint
             if util.isCheckpoint(util.maze[util.floor], util.tile):
@@ -80,21 +81,42 @@ while nextTile is not None or util.tile != util.startTile:
 
             # find and send victims
             if config.inputMode == 2:
-                if config.doVictim: 
-                    util.maze = BFS.searchForVictims()
+                if config.doVictim:
+                    victimMsg = None
+                    didTurn = False
 
-                    victimMsg = IO.getNextSerialByte()
-                    if victimMsg == 'a':
-                        loadingCheckpoint = True
-                        break
+                    while victimMsg != ';':
+                        BFS.searchForVictims()
+                        victimMsg = IO.getNextSerialByte()
 
-                    if victimMsg in ('x', 'X'):
-                        heatDirection = util.dirToLeft(util.direction) if victimMsg == 'x' else util.dirToRight(util.direction)
-                        if not util.maze[util.floor][util.tile][util.nVictim + heatDirection]:
-                            IO.sendSerial('y')
-                            util.maze[util.floor][util.tile][util.nVictim + heatDirection] = ord(victimMsg)
+                        if victimMsg == 'a':
+                            loadingCheckpoint = True
+                            break
+
+                        if victimMsg == 'm':
+                            if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
+                                util.direction = util.turnRight(util.direction)
+                            else:
+                                util.direction = util.turnLeft(util.direction)
+                            if config.importantDebug or config.victimDebug or config.BFSDebug or config.serialDebug:
+                                print("\t\t\t\tNOW FACING:" + str(util.direction))
+                            didTurn = True
+
+                        elif victimMsg in ('x', 'X'):
+                            if config.importantDebug or config.victimDebug or config.serialDebug:
+                                print("\t\t\t\tHEAT VICTIM RECEIVED ON " + "LEFT" if victimMsg == 'x' else "RIGHT")
+                            heatDirection = util.dirToLeft(util.direction) if victimMsg == 'x' else util.dirToRight(util.direction)
+                            if not util.maze[util.floor][util.tile][util.nVictim + heatDirection]:
+                                IO.sendSerial('y')
+                                util.maze[util.floor][util.tile][util.nVictim + heatDirection] = ord(victimMsg)
+                            else:
+                                IO.sendSerial('n')
+
+                    if not didTurn:
+                        if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
+                            util.direction = util.turnRight(util.direction)
                         else:
-                            IO.sendSerial('n')
+                            util.direction = util.turnLeft(util.direction)
 
                     if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
@@ -135,21 +157,22 @@ while nextTile is not None or util.tile != util.startTile:
                     wentForward = False
 
                     while victimMsg != ';':
-                        util.maze = BFS.searchForVictims()
+                        BFS.searchForVictims()
                         victimMsg = IO.getNextSerialByte()
-                        
-                        
+
                         if victimMsg == 'a':
                             loadingCheckpoint = True
                             break
 
                         if victimMsg == 'm':
                             util.tile = util.goForward(util.tile, False)
-                            print("\t\t\t\tNOW IN NEXT TILE:" + str(util.tile))
+                            if config.importantDebug or config.victimDebug or config.BFSDebug or config.serialDebug:
+                                print("\t\t\t\tNOW IN NEXT TILE:" + str(util.tile))
                             wentForward = True
 
                         elif victimMsg in ('x', 'X'):
-                            print("\t\t\t\tHEAT VICTIM RECEIVED ON " + "LEFT" if victimMsg == 'x' else "RIGHT")
+                            if config.importantDebug or config.victimDebug or config.serialDebug:
+                                print("\t\t\t\tHEAT VICTIM RECEIVED ON " + "LEFT" if victimMsg == 'x' else "RIGHT")
                             heatDirection = util.dirToLeft(util.direction) if victimMsg == 'x' else util.dirToRight(util.direction)
                             if not util.maze[util.floor][util.tile][util.nVictim + heatDirection]:
                                 IO.sendSerial('y')
@@ -159,8 +182,6 @@ while nextTile is not None or util.tile != util.startTile:
                                 
                     if not wentForward:
                         util.tile = util.goForward(util.tile, False)
-                        
-                    print(str(util.maze[util.floor][167][:]))
 
                     if config.serialDebug:
                         print("\t\t\tCAMERA OVER, GOT: " + str(victimMsg))
@@ -172,7 +193,7 @@ while nextTile is not None or util.tile != util.startTile:
         IO.sData += config.serialOutMsgs[8]
         IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 1], True)
         if config.serialDebug:
-            print("\t\tSENDINGL: " + IO.sData[util.pathLen:util.pathLen + 1])
+            print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 1])
         util.pathLen += 1
 
         # reset path string
@@ -216,9 +237,6 @@ display.show(display.img if config.showDisplay else display.resetImg(util.maze),
 if config.inputMode == 2:
     for i in range(len(IO.cap)):
         IO.cap[i].release()
-    if config.recordCams:
-        IO.outputR.release()
-        IO.outputL.release()
 cv2.destroyAllWindows()
 if config.inputMode == 2:
     IO.videoGetter.stop()
