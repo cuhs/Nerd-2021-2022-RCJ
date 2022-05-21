@@ -128,7 +128,7 @@ void turnAbs(int degree) {
       error -= 360;
     } else if (error < -180)
       error = 360 + error;
-    if(shouldSendM && abs(error)<=abs(startingError)/2){
+    if(shouldSendM && abs(error)<=(7*abs(startingError))/10){
       Serial.println("Sending m");
       shouldSendM = false;
       delay(1);
