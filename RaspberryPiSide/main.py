@@ -196,21 +196,24 @@ while nextTile is not None or util.tile != util.startTile:
                                 IO.sendSerial('n')
 
                         elif victimMsg == 's':
-                            stairTiles = IO.getNextSerialByte()
+                            stairTiles = int(IO.getNextSerialByte())
+                            stairTiles = 2 if stairTiles < 2 else stairTiles
                             if config.importantDebug or config.serialDebug or config.BFSDebug:
                                 print("\t\t\t\tGOT STAIRS, GOING FORWARD: " + str(stairTiles))
                             if wentForward:
-                                stairTiles -= 1
-                                util.maze[util.floor][util.tile][util.dirToLeft(util.direction)] = True
-                                util.maze[util.floor][util.tile][util.dirToRight(util.direction)] = True
-                                if config.importantDebug or config.serialDebug or config.BFSDebug:
-                                    print("\t\t\t\t\tALREADY WENT FORWARD, DECREMENTING STAIRS: " + str(stairTiles))
-                            else:
-                                wentForward = True
+                                util.tile = util.goBackward(util.tile)
+                            wentForward = False
                             for i in range(stairTiles):
                                 util.tile = util.goForward(util.tile, False)
+                                
                                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction)] = True
+                                if util.tileExists(util.tile + util.adjTiles[util.dirToLeft(util.direction)]):
+                                    util.maze[util.floor][util.tile + util.adjTiles[util.dirToLeft(util.direction)]][util.oppositeDir(util.dirToLeft(util.direction))] = True
                                 util.maze[util.floor][util.tile][util.dirToRight(util.direction)] = True
+                                if util.tileExists(util.tile + util.adjTiles[util.dirToRight(util.direction)]):
+                                    util.maze[util.floor][util.tile + util.adjTiles[util.dirToRight(util.direction)]][util.oppositeDir(util.dirToRight(util.direction))] = True
+                                
+                                display.img = display.createWallsForTile(display.img, util.floor, util.maze[util.floor], util.tile)
                                 if config.importantDebug or config.serialDebug or config.BFSDebug:
                                     print("\t\t\t\t\tNOW IN NEXT TILE:" + str(util.tile))
 
