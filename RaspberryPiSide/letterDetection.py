@@ -93,7 +93,7 @@ class Detection:
             if len(contours) > 0:
                 contours = max(contours, key=cv2.contourArea)
 
-                if cv2.contourArea(contours) > 200:
+                if cv2.contourArea(contours) > 140:
                     if i == 0:
                         print("red")
                     if i == 2:
