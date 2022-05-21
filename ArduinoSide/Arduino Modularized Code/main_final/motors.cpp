@@ -107,6 +107,7 @@ bool goForwardPID(int dist) {
   bool stalling = false;
   bool checking = false;
   bool shouldSendM = true;
+  int curEnc = 0;
 
   int tileSize = 30; // Set to 30
   int motorEncUse = LEFT;
@@ -168,15 +169,19 @@ bool goForwardPID(int dist) {
     Serial.print("obstacleDetect: ");
     Serial.println(c);
     if(c=='l'){
+      curEnc = ports[motorEncUse].count;
       while(obstacleDetect()=='l'){
         ports[LEFT].setMotorSpeed(120);
         ports[RIGHT].setMotorSpeed(-140);
       }
+      ports[motorEncUse].count = curEnc;
     }else if(c=='r'){
+      curEnc = ports[motorEncUse].count;
       while(obstacleDetect()=='r'){
         ports[LEFT].setMotorSpeed(-140);
         ports[RIGHT].setMotorSpeed(120);
       }
+      ports[motorEncUse].count = curEnc;
     }
     if (ports[LEFT].count == prev_count && !checking) {
       Serial.println("set start time");
