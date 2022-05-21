@@ -7,14 +7,16 @@ bool goForwardTilesPID(int tiles) {
   return goForwardPID(tiles * 30);
 }
 
-bool rampMoveForward(char dir) {
+int rampMoveForward(char dir) {
   int Lspeed = 0;
   int KP = 2;
   int Rspeed = 0;
+  int theAng = 0;
+  int motorEncUse = LEFT;
   if (dir == 'u') {
     Lspeed = 210;
     Rspeed = 210;// on fresh batteries: KP=2   on not so fresh batteries: 6-10
-    KP = 7;
+    KP = 10;
     finishedRamp = 1;
   } else if (dir == 'd') {
     Lspeed = 120;
@@ -30,6 +32,7 @@ bool rampMoveForward(char dir) {
   double pastError=0;
   double integral=0;
   int currAng;
+  int startingEnc = ports[motorEncUse].count;
   while (!notStable()) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     currAng=euler.x();
@@ -37,13 +40,25 @@ bool rampMoveForward(char dir) {
       currAng=currAng-360;
     error = angle - currAng;
     int fix = PID(error, pastError, integral, KP, 0, 0);
+    int obsFix = 0;
+    char c = obstacleDetect();
+    //if(c=='r' || c == 'l') obsFix = 50;
     if(fix>0){
+      
       ports[RIGHT].setMotorSpeed(Rspeed-fix);
-      ports[LEFT].setMotorSpeed(Lspeed+fix);
+      if(c=='r')
+        ports[LEFT].setMotorSpeed(-50);
+      else{
+        ports[LEFT].setMotorSpeed(Lspeed+fix);
+      }
     }
     else{
       ports[LEFT].setMotorSpeed(Lspeed-fix);
-      ports[RIGHT].setMotorSpeed(Rspeed+fix);
+      if(c=='l')
+        ports[RIGHT].setMotorSpeed(-50);
+      else{
+        ports[RIGHT].setMotorSpeed(Rspeed+fix);
+      }
     }
     if(Serial2.available()) Serial2.read();
 //    Serial.print("target: ");
@@ -55,6 +70,7 @@ bool rampMoveForward(char dir) {
 //    Serial.print(" fix: ");
 //    Serial.println(fix);
   }
+  
   while (notStable()) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     currAng=euler.x();
@@ -70,6 +86,8 @@ bool rampMoveForward(char dir) {
       ports[LEFT].setMotorSpeed(Lspeed-fix);
       ports[RIGHT].setMotorSpeed(Rspeed+fix);
     }
+    int ca = euler.y();
+    if(abs(ca)>abs(theAng)) theAng = ca;
     if(Serial2.available()) Serial2.read();
 //    Serial.print("target: ");
 //    Serial.print(angle);
@@ -80,11 +98,16 @@ bool rampMoveForward(char dir) {
 //    Serial.print(" fix: ");
 //    Serial.println(fix);
   }
+  int amountTravelled = ((ports[motorEncUse].count-startingEnc)*D*PI)/360;
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
   plainGoForward(5);
-  return true;
-
+  Serial.print("Angle: ");
+  Serial.print(theAng);
+  Serial.print(" amttravelled: ");
+  Serial.println(amountTravelled*cos((abs(theAng)*PI)/180));
+  
+  return amountTravelled*cos((abs(theAng)*PI)/180);
 }
 
 void plainGoForward(int dist){
@@ -132,7 +155,28 @@ bool goForwardPID(int dist) {
       //      ports[RIGHT].setMotorSpeed(0);
       //      ports[LEFT].setMotorSpeed(0);
       //      finishedRamp=1;
-      rampMoveForward('u');
+      int amtOfRamp = rampMoveForward('u');
+      int beforeEnc = (ports[motorEncUse].count*D*PI)/360;
+      Serial.print("AmtOfRamp pre down: ");
+      Serial.println(amtOfRamp);
+      if(amtOfRamp<30){
+        amtOfRamp += rampMoveForward('d');
+        if(amtOfRamp%30>=15)
+          amtOfRamp+=30;
+        amtOfRamp += beforeEnc;
+        delay(1);
+        Serial2.write('s');
+        Serial.print(" (amtOfRamp/30)+'0': ");
+        Serial.print((amtOfRamp/30)+'0');
+        Serial.print(" (char)(amtOfRamp/30)+'0': ");
+        Serial.print((char)(amtOfRamp/30)+'0');
+        Serial.print(" amtOfRamp: ");
+        Serial.println(amtOfRamp);
+        Serial2.write((char)(amtOfRamp/30)+'0');
+        plainGoForward(5);
+        alignFront();
+        finishedRamp = 0;
+      }
       return true;
     } else if (onRamp == 2) {
       //Serial2.write('d');
@@ -143,7 +187,24 @@ bool goForwardPID(int dist) {
       //       ports[RIGHT].setMotorSpeed(0);
       //       ports[LEFT].setMotorSpeed(0);
       //       finishedRamp=2;
-      rampMoveForward('d');
+      int beforeEnc = (D*PI*ports[motorEncUse].count)/360;
+      int amtOfRamp = (D*PI*rampMoveForward('u'))/360;
+      if(amtOfRamp<30){
+        delay(1);
+        Serial2.write('s');
+        if(amtOfRamp%30>=15)
+          amtOfRamp+=30;
+        amtOfRamp += beforeEnc;
+        Serial.print(" (amtOfRamp/30)+'0': ");
+        Serial.print((amtOfRamp/30)+'0');
+        Serial.print(" (char)(amtOfRamp/30)+'0': ");
+        Serial.println((char)(amtOfRamp/30)+'0');
+        Serial2.write((char)(amtOfRamp/30)+'0');
+        plainGoForward(5);
+        alignFront();
+        
+        finishedRamp = 0;
+      }
       return true;
     }
     if (detectBlack(shouldSendM)) {
