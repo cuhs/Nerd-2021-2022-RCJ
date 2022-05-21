@@ -80,9 +80,10 @@ while nextTile is not None or util.tile != util.startTile:
                 checkpoint = BFS.saveCheckpoint()
 
             # send turns
+            print(str(IO.sData))
             IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
             if config.serialDebug:
-                print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
+                print("\t\tSENDINGD: " + IO.sData[util.pathLen:util.pathLen + 2])
 
             # find and send victims
             if config.inputMode == 2:
@@ -139,6 +140,14 @@ while nextTile is not None or util.tile != util.startTile:
             if config.inputMode == 2:
                 util.tile = util.goForward(util.tile, not nextTileIsRampStart)
             util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
+            IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
+            util.pathLen += 2
+            
+            victimMsg = IO.getNextSerialByte()
+            if victimMsg == 'a':
+                loadingCheckpoint = True
+                break
+            print("RAMP OVER GOT:" + str(victimMsg))
         else:
             if config.inputMode == 1:
                 util.tile = util.goForward(util.tile, not nextTileIsRampStart)
@@ -153,7 +162,7 @@ while nextTile is not None or util.tile != util.startTile:
         if not nextTileIsRampStart:
             IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
             if config.serialDebug:
-                print("\t\tSENDING: " + IO.sData[util.pathLen:util.pathLen + 2])
+                print("\t\tSENDINGM: " + IO.sData[util.pathLen:util.pathLen + 2])
 
             # find and send victims
             if config.inputMode == 2:

@@ -27,6 +27,7 @@ def reset():
     # stack (just a list) for path to tile
     util.path = []
     util.pathLen = 0
+    IO.sData = ""
 
     # set starting tile as visited
     util.maze[util.floor][util.tile][util.visited] = True
