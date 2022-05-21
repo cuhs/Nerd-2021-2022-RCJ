@@ -14,12 +14,12 @@ bool rampMoveForward(char dir) {
   if (dir == 'u') {
     Lspeed = 210;
     Rspeed = 210;// on fresh batteries: KP=2   on not so fresh batteries: 6-10
-    KP = 10;
+    KP = 7;
     finishedRamp = 1;
   } else if (dir == 'd') {
     Lspeed = 120;
     Rspeed = 120;
-    KP=0.5;
+    KP=1;
     finishedRamp = 2;
   }
   tcaselect(7);
@@ -45,6 +45,7 @@ bool rampMoveForward(char dir) {
       ports[LEFT].setMotorSpeed(Lspeed-fix);
       ports[RIGHT].setMotorSpeed(Rspeed+fix);
     }
+    if(Serial2.available()) Serial2.read();
 //    Serial.print("target: ");
 //    Serial.print(angle);
 //    Serial.print(" error: ");
@@ -69,6 +70,7 @@ bool rampMoveForward(char dir) {
       ports[LEFT].setMotorSpeed(Lspeed-fix);
       ports[RIGHT].setMotorSpeed(Rspeed+fix);
     }
+    if(Serial2.available()) Serial2.read();
 //    Serial.print("target: ");
 //    Serial.print(angle);
 //    Serial.print(" error: ");

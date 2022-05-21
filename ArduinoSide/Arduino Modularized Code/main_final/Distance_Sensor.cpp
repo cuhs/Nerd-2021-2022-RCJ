@@ -2,11 +2,12 @@
 
 VL53L0X lox;//Right: 0 Left: 1 Front: 2
 VL53L0X sensor[numSensors];
+int frontTof = 0;
 
 void sendWallValues(int frontDist, int rightDist, int leftDist) {
   char walls[3] = {'0', '0', '0'};
   int minimumDist = 20; // Minimum distance to determine if there is a wall on the side
-
+  frontTof = frontDist;
   if (leftDist < minimumDist)
     walls[2] = '1';
   if (rightDist < minimumDist)

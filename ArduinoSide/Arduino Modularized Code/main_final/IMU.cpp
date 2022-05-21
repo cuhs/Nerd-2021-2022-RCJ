@@ -323,6 +323,7 @@ bool triangulation(int left, int right) {
 int isOnRamp() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  if(frontTof>50) return 0;
   if (euler.y() < -15) {
     return 2;
   }
