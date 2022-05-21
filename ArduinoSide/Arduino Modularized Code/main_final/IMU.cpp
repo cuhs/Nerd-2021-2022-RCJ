@@ -32,13 +32,13 @@ void reset() {
 }
 
 int getDirection(int dir) {
-  if (dir <= 15 || dir >= 345)
+  if (dir <= 20 || dir >= 340)
     return 0;
-  if (dir <= 105 && dir >= 75)
+  if (dir <= 115 && dir >= 70)
     return 90;
-  if (dir <= 195 && dir >= 165)
+  if (dir <= 200 && dir >= 160)
     return 180;
-  if (dir <= 285 && dir >= 255)
+  if (dir <= 290 && dir >= 250)
     return 270;
   return -1;
 }
@@ -153,11 +153,11 @@ void turnAbs(int degree) {
     }
     prev_count = ports[LEFT].count;
 
-    fix = (int)(PID(error, pastError, integral, 1.6667, 0.005, 0));
+    fix = (int)(PID(error, pastError, integral, 2, 0.005, 0));
     if (fix > 0)
-      fix += 100;
+      fix += 130;
     else
-      fix -= 100;
+      fix -= 130;
     //    Serial.print(fix);
     //    Serial.print("\tEuler: ");
     //    Serial.print(euler.x());
@@ -323,7 +323,7 @@ bool triangulation(int left, int right) {
 int isOnRamp() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  if(frontTof>50) return 0;
+  //if(frontTof>50) return 0;
   if (euler.y() < -15) {
     return 2;
   }

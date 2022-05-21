@@ -7,7 +7,7 @@ int frontTof = 0;
 void sendWallValues(int frontDist, int rightDist, int leftDist) {
   char walls[3] = {'0', '0', '0'};
   int minimumDist = 20; // Minimum distance to determine if there is a wall on the side
-  frontTof = frontDist;
+  //frontTof = frontDist;
   if (leftDist < minimumDist)
     walls[2] = '1';
   if (rightDist < minimumDist)
