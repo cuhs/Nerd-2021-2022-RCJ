@@ -142,12 +142,13 @@ while nextTile is not None or util.tile != util.startTile:
             util.maze, util.tile, util.floor = util.goOnRamp(util.maze, util.tile, util.floor, nextFloorInPath > util.floor)
             IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
             util.pathLen += 2
-            
-            victimMsg = IO.getNextSerialByte()
-            if victimMsg == 'a':
-                loadingCheckpoint = True
-                break
-            print("RAMP OVER GOT:" + str(victimMsg))
+
+            if config.inputMode == 2:
+                victimMsg = IO.getNextSerialByte()
+                if victimMsg == 'a':
+                    loadingCheckpoint = True
+                    break
+                print("RAMP OVER GOT:" + str(victimMsg))
         else:
             if config.inputMode == 1:
                 util.tile = util.goForward(util.tile, not nextTileIsRampStart)
@@ -193,7 +194,26 @@ while nextTile is not None or util.tile != util.startTile:
                                 util.maze[util.floor][util.tile][util.nVictim + heatDirection] = ord(victimMsg)
                             else:
                                 IO.sendSerial('n')
-                                
+
+                        elif victimMsg == 's':
+                            stairTiles = IO.getNextSerialByte()
+                            if config.importantDebug or config.serialDebug or config.BFSDebug:
+                                print("\t\t\t\tGOT STAIRS, GOING FORWARD: " + str(stairTiles))
+                            if wentForward:
+                                stairTiles -= 1
+                                util.maze[util.floor][util.tile][util.dirToLeft(util.direction)] = True
+                                util.maze[util.floor][util.tile][util.dirToRight(util.direction)] = True
+                                if config.importantDebug or config.serialDebug or config.BFSDebug:
+                                    print("\t\t\t\t\tALREADY WENT FORWARD, DECREMENTING STAIRS: " + str(stairTiles))
+                            else:
+                                wentForward = True
+                            for i in range(stairTiles):
+                                util.tile = util.goForward(util.tile, False)
+                                util.maze[util.floor][util.tile][util.dirToLeft(util.direction)] = True
+                                util.maze[util.floor][util.tile][util.dirToRight(util.direction)] = True
+                                if config.importantDebug or config.serialDebug or config.BFSDebug:
+                                    print("\t\t\t\t\tNOW IN NEXT TILE:" + str(util.tile))
+
                     if not wentForward:
                         util.tile = util.goForward(util.tile, False)
 
