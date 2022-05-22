@@ -164,7 +164,7 @@ bool goForwardPID(int dist) {
       int beforeEnc = (ports[motorEncUse].count*D*PI)/360;
       Serial.print("AmtOfRamp pre down: ");
       Serial.println(amtOfRamp);
-      if(amtOfRamp<35){
+      if(amtOfRamp<40){
         amtOfRamp += rampMoveForward('d');
         if(amtOfRamp%30>=15)
           amtOfRamp+=30;
@@ -193,8 +193,8 @@ bool goForwardPID(int dist) {
       //       ports[LEFT].setMotorSpeed(0);
       //       finishedRamp=2;
       int beforeEnc = (D*PI*ports[motorEncUse].count)/360;
-      int amtOfRamp = (D*PI*rampMoveForward('u'))/360;
-      if(amtOfRamp<35){
+      int amtOfRamp = rampMoveForward('u'));
+      if(amtOfRamp<40){
         delay(1);
         Serial2.write('s');
         if(amtOfRamp%30>=15)
@@ -236,6 +236,7 @@ bool goForwardPID(int dist) {
     Serial.println(c);
     if(c=='l'){
       curEnc = ports[motorEncUse].count;
+      tcaselect(7);
       imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
       int dir = getDirection(euler.x());
       while(obstacleDetect()=='l'){
@@ -246,6 +247,7 @@ bool goForwardPID(int dist) {
       ports[motorEncUse].count = curEnc;
     }else if(c=='r'){
       curEnc = ports[motorEncUse].count;
+      tcaselect(7);
       imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
       int dir = getDirection(euler.x());
       while(obstacleDetect()=='r'){
