@@ -14,9 +14,9 @@ int rampMoveForward(char dir) {
   int theAng = 0;
   int motorEncUse = LEFT;
   if (dir == 'u') {
-    Lspeed = 210;
-    Rspeed = 210;// on fresh batteries: KP=2   on not so fresh batteries: 6-10
-    KP = 10;
+    Lspeed = 150;
+    Rspeed = 150;// on fresh batteries: KP=2   on not so fresh batteries: 6-10
+    KP = 5;
     finishedRamp = 1;
   } else if (dir == 'd') {
     Lspeed = 120;
@@ -45,19 +45,19 @@ int rampMoveForward(char dir) {
     //if(c=='r' || c == 'l') obsFix = 50;
     if(fix>0){
       
-      ports[RIGHT].setMotorSpeed(Rspeed-fix);
-      if(c=='r')
-        ports[LEFT].setMotorSpeed(-50);
+      ports[LEFT].setMotorSpeed(Lspeed+fix);
+      if(c=='l')
+        ports[RIGHT].setMotorSpeed(-120);
       else{
-        ports[LEFT].setMotorSpeed(Lspeed+fix);
+        ports[RIGHT].setMotorSpeed(Rspeed-fix);
       }
     }
     else{
-      ports[LEFT].setMotorSpeed(Lspeed-fix);
-      if(c=='l')
-        ports[RIGHT].setMotorSpeed(-50);
+      ports[RIGHT].setMotorSpeed(Rspeed+fix);
+      if(c=='r')
+        ports[LEFT].setMotorSpeed(-120);
       else{
-        ports[RIGHT].setMotorSpeed(Rspeed+fix);
+        ports[LEFT].setMotorSpeed(Lspeed-fix);
       }
     }
     if(Serial2.available()) Serial2.read();
