@@ -14,7 +14,8 @@ void setup() {
   Serial.begin(9600);
   Serial2.begin(9600);
   Wire.begin();
-
+  ports[LEFT].setMotorSpeed(0);
+  ports[RIGHT].setMotorSpeed(0);
   setupServo();
   setupTCSSensors();
   setupSwitches();

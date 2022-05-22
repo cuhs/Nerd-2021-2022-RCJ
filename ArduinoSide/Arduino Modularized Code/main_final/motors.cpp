@@ -48,6 +48,8 @@ int rampMoveForward(char dir) {
       ports[LEFT].setMotorSpeed(Lspeed+fix);
       if(c=='l')
         ports[RIGHT].setMotorSpeed(-120);
+      else if(c=='r')
+        ports[LEFT].setMotorSpeed(-120);
       else{
         ports[RIGHT].setMotorSpeed(Rspeed-fix);
       }
@@ -56,6 +58,8 @@ int rampMoveForward(char dir) {
       ports[RIGHT].setMotorSpeed(Rspeed+fix);
       if(c=='r')
         ports[LEFT].setMotorSpeed(-120);
+      else if(c=='l')
+        ports[RIGHT].setMotorSpeed(-120);
       else{
         ports[LEFT].setMotorSpeed(Lspeed-fix);
       }
@@ -101,7 +105,7 @@ int rampMoveForward(char dir) {
   int amountTravelled = ((ports[motorEncUse].count-startingEnc)*D*PI)/360;
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
-  plainGoForward(5);
+  //plainGoForward(5);
   Serial.print("Angle: ");
   Serial.print(theAng);
   Serial.print(" amttravelled: ");
@@ -159,7 +163,7 @@ bool goForwardPID(int dist) {
       int beforeEnc = (ports[motorEncUse].count*D*PI)/360;
       Serial.print("AmtOfRamp pre down: ");
       Serial.println(amtOfRamp);
-      if(amtOfRamp<30){
+      if(amtOfRamp<35){
         amtOfRamp += rampMoveForward('d');
         if(amtOfRamp%30>=15)
           amtOfRamp+=30;
@@ -189,7 +193,7 @@ bool goForwardPID(int dist) {
       //       finishedRamp=2;
       int beforeEnc = (D*PI*ports[motorEncUse].count)/360;
       int amtOfRamp = (D*PI*rampMoveForward('u'))/360;
-      if(amtOfRamp<30){
+      if(amtOfRamp<35){
         delay(1);
         Serial2.write('s');
         if(amtOfRamp%30>=15)
@@ -271,8 +275,8 @@ bool goForwardPID(int dist) {
     fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.015, 1));
     //Serial.println(fix);
 
-    ports[RIGHT].setMotorSpeed(fix + 60);
-    ports[LEFT].setMotorSpeed(fix + 60);
+    ports[RIGHT].setMotorSpeed(fix + 50);
+    ports[LEFT].setMotorSpeed(fix + 50);
 
   }
   Serial.println("Finished going forward(in motors)");
