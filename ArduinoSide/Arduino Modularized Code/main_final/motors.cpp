@@ -236,17 +236,23 @@ bool goForwardPID(int dist) {
     Serial.println(c);
     if(c=='l'){
       curEnc = ports[motorEncUse].count;
+      imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+      int dir = getDirection(euler.x());
       while(obstacleDetect()=='l'){
         ports[LEFT].setMotorSpeed(120);
         ports[RIGHT].setMotorSpeed(-140);
       }
+      if(dir!=-1) turnAbsNoVictim(dir);
       ports[motorEncUse].count = curEnc;
     }else if(c=='r'){
       curEnc = ports[motorEncUse].count;
+      imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+      int dir = getDirection(euler.x());
       while(obstacleDetect()=='r'){
         ports[LEFT].setMotorSpeed(-140);
         ports[RIGHT].setMotorSpeed(120);
       }
+      if(dir!=-1) turnAbsNoVictim(dir);
       ports[motorEncUse].count = curEnc;
     }
     if (ports[LEFT].count == prev_count && !checking) {
