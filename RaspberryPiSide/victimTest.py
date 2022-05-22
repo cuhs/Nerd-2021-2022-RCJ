@@ -175,7 +175,7 @@ while cap1.isOpened(): #and cap2.isOpened():
         imgOutput1 = main.letterDetect(frame1,"frame1")
         #imgOutput2 = main.letterDetect(frame2, "frame2")
         
-        #result1 =  main.KNN_finish(imgOutput1,9000000)
+        result1 =  main.KNN_finish(imgOutput1,9000000)
         #result2 = main.KNN_finish(imgOutput2,10000000)
         
         #cv2.imwrite("/home/pi/Documents/VictimImages/" + str(time.time()) + ".png", frame1)
@@ -194,7 +194,7 @@ while cap1.isOpened(): #and cap2.isOpened():
                 print("not saved")
 
                 
-        #print("Camera1 " + result1)
+        print("Camera1 " + result1)
         #print("Camera2 " + result2)
         
         #print()

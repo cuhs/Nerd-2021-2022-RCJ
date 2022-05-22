@@ -52,15 +52,15 @@ startFloor = (config.floorCount - 1) // 2
 
 # hsv ranges for color victims
 hsv_lower = {
-    0: (87, 115, 60),
-    1: (40, 30, 50),
-    2: (0, 130, 75)
+    0: (140, 140, 105),
+    1: (55, 80, 50),
+    2: (0, 105, 120)
 }
 
 hsv_upper = {
-     0: (180, 255, 170),
-     1: (100, 150, 155),
-     2: (40, 255, 170) #160 for [1]
+     0: (180, 205, 165),
+     1: (80, 160, 135),
+     2: (90, 220, 180) #160 for [1]
 }
 
 # adjust which position is facing true north

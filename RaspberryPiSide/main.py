@@ -199,9 +199,8 @@ def run():
 
                             elif victimMsg == 's':
                                 stairTiles = int(IO.getNextSerialByte())
-                                if stairTiles is 0:
+                                if stairTiles < 2:
                                     continue;
-                                stairTiles = 2 if stairTiles == 2 else stairTiles
                                 
                                 if config.importantDebug or config.serialDebug or config.BFSDebug:
                                     print("\t\t\t\tGOT STAIRS, GOING FORWARD: " + str(stairTiles))
@@ -274,20 +273,22 @@ def run():
     # print out entire path the robot took traversing the maze and how long the algorithm took
     if config.importantDebug:
         print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((time.time() - IO.startTime) * 1000, '.2f') + "ms ")
-    display.show(display.img if config.showDisplay else display.resetImg(util.maze), util.maze, None, None, 0)
+    if config.showDisplay:
+        display.show(display.img if config.showDisplay else display.resetImg(util.maze), util.maze, None, None, 0)
 
     # stop all cameras/windows
-    if config.inputMode == 2:
-        for i in range(len(IO.cap)):
-            IO.cap[i].release()
-    cv2.destroyAllWindows()
-    if config.inputMode == 2:
-        IO.videoGetter.stop()
+    #if config.inputMode == 2:
+    #    for i in range(len(IO.cap)):
+    #        IO.cap[i].release()
+    #cv2.destroyAllWindows()
+    #if config.inputMode == 2:
+    #    IO.videoGetter.stop()
 
 # running code
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(config.LEDPin, GPIO.OUT)
+BFS.setupCams()
 while True:
     try:
         run()

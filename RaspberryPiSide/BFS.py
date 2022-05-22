@@ -13,6 +13,30 @@ from vidThread import VideoGet
 import ast
 import os
 
+def setupCams():
+        # camera setup
+    if config.inputMode == 2:
+        if config.cameraCount == 1 or config.cameraCount == 2:
+            if config.cameraCount == 1:
+                IO.cap.append(cv2.VideoCapture(-1))
+            else:
+                IO.cap.append(cv2.VideoCapture(0))
+            IO.cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
+            IO.cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
+        if config.cameraCount == 2:
+            IO.cap.append(cv2.VideoCapture(1))
+            IO.cap[1].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
+            IO.cap[1].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
+
+        if 2 < config.cameraCount < 0:
+            raise ValueError("Invalid cameraCount (check config!)")
+
+        # start video threading
+        IO.videoGetter = VideoGet().start()
+        
+    if config.saveVictimDebug:
+        os.mkdir(config.fpVIC + (time.ctime(IO.startTime)))
+
 def reset():
     util.maze = np.zeros((config.floorCount, config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
     util.tile = util.startTile  # creates start tile in the middle of size x size area
@@ -70,29 +94,6 @@ def init():
 
             if config.redoLastMaze:
                 display.show(display.resetImg(dMaze), dMaze, None, None, 0)
-
-    # camera setup
-    if config.inputMode == 2:
-        if config.cameraCount == 1 or config.cameraCount == 2:
-            if config.cameraCount == 1:
-                IO.cap.append(cv2.VideoCapture(-1))
-            else:
-                IO.cap.append(cv2.VideoCapture(0))
-            IO.cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
-            IO.cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
-        if config.cameraCount == 2:
-            IO.cap.append(cv2.VideoCapture(1))
-            IO.cap[1].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
-            IO.cap[1].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
-
-        if 2 < config.cameraCount < 0:
-            raise ValueError("Invalid cameraCount (check config!)")
-
-        # start video threading
-        IO.videoGetter = VideoGet().start()
-        
-    if config.saveVictimDebug:
-        os.mkdir(config.fpVIC + (time.ctime(IO.startTime)))
 
 # return next tile to visit using BFS
 def nextTile(cTile, cFloor):
@@ -266,7 +267,7 @@ def searchForVictims():
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
 
         # get letter and color victims
-        leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][:,:150])
+        leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][:115,:150])
 
         # send and record letter victim
         if leftLetterVictim is not None:
@@ -293,7 +294,7 @@ def searchForVictims():
         # check if searching is needed on right camera
         if config.cameraCount == 2:
             # get letter and color victims
-            rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][:,:150])
+            rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][:115,:150])
 
             # send and record letter victim
             if rightLetterVictim is not None:
