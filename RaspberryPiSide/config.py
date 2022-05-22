@@ -2,7 +2,7 @@
 
 mazeSideLen = 16  # must be even
 floorCount = 3  # starts at middle floor
-inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
+inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) * floorCount  # buffer added on setup
 
 wallPercentage = 25  # percentage of tiles that should be walls for random generation of maze
@@ -24,6 +24,7 @@ serialDebug = True  # prints serial IO
 
 port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0)
 rate = 9600  # serial port rate
+LEDPin = 17  # GPIO pin for LED
 
 doVictim = True  # check for color and letter victims
 cameraCount = 2  # number of cameras, cam0 is left, cam1 is right. if only one camera, left

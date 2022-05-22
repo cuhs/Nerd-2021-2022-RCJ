@@ -12,8 +12,6 @@ import inspect
 from vidThread import VideoGet
 import ast
 import os
-if config.inputMode == 2:
-    import RPi.GPIO as GPIO
 
 def reset():
     util.maze = np.zeros((config.floorCount, config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
