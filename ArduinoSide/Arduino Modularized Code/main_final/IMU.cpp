@@ -1,7 +1,7 @@
 #include "IMU.h"
 
 int resetPinIMU = A6;
-const int ROBOT_WIDTH = 17.5;
+const int ROBOT_WIDTH = 18;
 Adafruit_BNO055 bno;
 int finishedRamp = 0;
 
@@ -216,9 +216,9 @@ void turnAbsNoVictim(int degree) {
 
     fix = (int)(PID(error, pastError, integral, 1.6667, 0, 0));
     if (fix > 0)
-      fix += 60;
+      fix += 40;
     else
-      fix -= 60;
+      fix -= 40;
     //    Serial.print(fix);
     //    Serial.print("\tEuler: ");
     //    Serial.print(euler.x());

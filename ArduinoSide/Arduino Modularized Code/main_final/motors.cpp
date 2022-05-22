@@ -19,8 +19,8 @@ int rampMoveForward(char dir) {
     KP = 5;
     finishedRamp = 1;
   } else if (dir == 'd') {
-    Lspeed = 120;
-    Rspeed = 120;
+    Lspeed = 90;
+    Rspeed = 90;
     KP=1;
     finishedRamp = 2;
   }
