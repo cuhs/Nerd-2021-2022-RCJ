@@ -40,29 +40,29 @@ int rampMoveForward(char dir) {
       currAng=currAng-360;
     error = angle - currAng;
     int fix = PID(error, pastError, integral, KP, 0, 0);
-    int obsFix = 0;
-    char c = obstacleDetect();
+//    int obsFix = 0;
+//    char c = obstacleDetect();
     //if(c=='r' || c == 'l') obsFix = 50;
     if(fix>0){
       
       ports[LEFT].setMotorSpeed(Lspeed+fix);
-      if(c=='l')
-        ports[RIGHT].setMotorSpeed(-120);
-      else if(c=='r')
-        ports[LEFT].setMotorSpeed(-120);
-      else{
+//      if(c=='l')
+//        ports[RIGHT].setMotorSpeed(-120);
+//      else if(c=='r')
+//        ports[LEFT].setMotorSpeed(-120);
+    //  else{
         ports[RIGHT].setMotorSpeed(Rspeed-fix);
-      }
+      //}
     }
     else{
       ports[RIGHT].setMotorSpeed(Rspeed+fix);
-      if(c=='r')
-        ports[LEFT].setMotorSpeed(-120);
-      else if(c=='l')
-        ports[RIGHT].setMotorSpeed(-120);
-      else{
+//      if(c=='r')
+//        ports[LEFT].setMotorSpeed(-120);
+//      else if(c=='l')
+//        ports[RIGHT].setMotorSpeed(-120);
+     // else{
         ports[LEFT].setMotorSpeed(Lspeed-fix);
-      }
+      //}
     }
     if(Serial2.available()) Serial2.read();
 //    Serial.print("target: ");
@@ -110,6 +110,7 @@ int rampMoveForward(char dir) {
   Serial.print(theAng);
   Serial.print(" amttravelled: ");
   Serial.println(amountTravelled*cos((abs(theAng)*PI)/180));
+  alignFront();
   
   return amountTravelled*cos((abs(theAng)*PI)/180);
 }
