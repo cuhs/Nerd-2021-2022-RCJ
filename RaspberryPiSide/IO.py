@@ -3,6 +3,8 @@ import config
 import serial
 import time
 import util
+if config.inputMode == 2:
+    import RPi.GPIO as GPIO
 
 if config.inputMode == 2:
     ser = serial.Serial(config.port, config.rate)
@@ -117,6 +119,7 @@ def readMaze(file):
 
 # sets up serial communication
 def setupSerial():
+    GPIO.output(config.LEDPin, GPIO.HIGH)
     print("SETTING UP SERIAL")
     print("\tSerial setup on port: " + ser.name + "\n")
     print("waiting")
@@ -125,6 +128,8 @@ def setupSerial():
     while msg != 'a':  # setup acknowledgement
         print("INVALID SETUP ACKNOWLEDGEMENT: " + msg)
         msg = getNextSerialByte()
+        
+    GPIO.output(config.LEDPin, GPIO.LOW)
 
 # gets one byte of data from serial
 def getNextSerialByte():

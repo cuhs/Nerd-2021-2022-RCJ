@@ -6,7 +6,7 @@ from BFS import util
 from util import IO
 from util import config
 if config.inputMode == 2:
-    from BFS import GPIO
+    from IO import GPIO
 
 def run():
     # time calculation
@@ -17,9 +17,6 @@ def run():
 
     # initialize, (calls reset)
     BFS.init()
-
-    # turn off LED
-    GPIO.output(config.LEDPin, GPIO.LOW)
 
     if config.importantDebug:
         print("Setup Finished, Running...")
@@ -86,7 +83,6 @@ def run():
                     checkpoint = BFS.saveCheckpoint()
 
                 # send turns
-                print(str(IO.sData))
                 IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
                 if config.serialDebug:
                     print("\t\tSENDINGD: " + IO.sData[util.pathLen:util.pathLen + 2])
@@ -203,12 +199,16 @@ def run():
 
                             elif victimMsg == 's':
                                 stairTiles = int(IO.getNextSerialByte())
-                                stairTiles = 2 if stairTiles < 2 else stairTiles
+                                if stairTiles is 0:
+                                    continue;
+                                stairTiles = 2 if stairTiles == 2 else stairTiles
+                                
                                 if config.importantDebug or config.serialDebug or config.BFSDebug:
                                     print("\t\t\t\tGOT STAIRS, GOING FORWARD: " + str(stairTiles))
                                 if wentForward:
                                     util.tile = util.goBackward(util.tile)
                                 wentForward = False
+                                
                                 for i in range(stairTiles):
                                     util.tile = util.goForward(util.tile, False)
 
@@ -288,7 +288,6 @@ def run():
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(config.LEDPin, GPIO.OUT)
-GPIO.output(config.LEDPin, GPIO.HIGH)
 while True:
     try:
         run()

@@ -2,7 +2,7 @@ import cv2
 import letterDetection
 
 cap1 = cv2.VideoCapture(-1)
-#cap2 = cv2.VideoCapture(1)
+cap2 = cv2.VideoCapture(1)
 
 #cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 #cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
@@ -32,7 +32,7 @@ print(cap1.get(4))
 while cap1.isOpened(): #and cap2.isOpened():
      
     ret1,frame1 = cap1.read()
-    #ret2,frame2 = cap2.read()
+    ret2,frame2 = cap2.read()
     
     
     
@@ -54,7 +54,7 @@ while cap1.isOpened(): #and cap2.isOpened():
 
 
         cv2.imshow("frame1", frame1)
-        #cv2.imshow("frame2", frame2)
+        cv2.imshow("frame2", frame2)
 
     
     if cv2.waitKey(1) == ord('q'):
