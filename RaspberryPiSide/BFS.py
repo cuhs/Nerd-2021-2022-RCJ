@@ -11,6 +11,7 @@ import letterDetection
 import inspect
 from vidThread import VideoGet
 import ast
+import os
 if config.inputMode == 2:
     import RPi.GPIO as GPIO
 
@@ -34,6 +35,9 @@ def reset():
 
     # reset display
     display.img = display.setupImg()
+    
+    # setup input from file or serial
+    IO.setupInput(config.inputMode)
 
 def init():
     if config.mazeSideLen % 2 != 0 or not(4 <= config.mazeSideLen <= 100):
@@ -69,9 +73,6 @@ def init():
             if config.redoLastMaze:
                 display.show(display.resetImg(dMaze), dMaze, None, None, 0)
 
-    # setup input from file or serial
-    IO.setupInput(config.inputMode)
-
     # camera setup
     if config.inputMode == 2:
         if config.cameraCount == 1 or config.cameraCount == 2:
@@ -91,6 +92,9 @@ def init():
 
         # start video threading
         IO.videoGetter = VideoGet().start()
+        
+    if config.saveVictimDebug:
+        os.mkdir(config.fpVIC + (time.ctime(IO.startTime)))
 
 # return next tile to visit using BFS
 def nextTile(cTile, cFloor):

@@ -278,4 +278,4 @@ cv2.destroyAllWindows()
 if config.inputMode == 2:
     IO.videoGetter.stop()
 
- 
+  

@@ -3,7 +3,6 @@ import config
 import serial
 import time
 import util
-import os
 
 if config.inputMode == 2:
     ser = serial.Serial(config.port, config.rate)
@@ -126,10 +125,6 @@ def setupSerial():
     while msg != 'a':  # setup acknowledgement
         print("INVALID SETUP ACKNOWLEDGEMENT: " + msg)
         msg = getNextSerialByte()
-
-    if config.saveVictimDebug:
-        os.mkdir(config.fpVIC + (time.ctime(startTime)))
-    return config.port
 
 # gets one byte of data from serial
 def getNextSerialByte():
