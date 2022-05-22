@@ -155,9 +155,9 @@ void turnAbs(int degree) {
 
     fix = (int)(PID(error, pastError, integral, 2, 0.005, 0));
     if (fix > 0)
-      fix += 130;
+      fix += 110;
     else
-      fix -= 130;
+      fix -= 110;
     //    Serial.print(fix);
     //    Serial.print("\tEuler: ");
     //    Serial.print(euler.x());
@@ -186,7 +186,7 @@ void turnAbsNoVictim(int degree) {
   double integral = 0.0;
   int error = targetDir - curDir;
   double pastError = 0;
-  while (abs(error) >= 2) {
+  while (abs(error) >= 2 && !stalling) {
     tcaselect(7);
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     curDir = euler.x();
@@ -214,11 +214,11 @@ void turnAbsNoVictim(int degree) {
     }
     prev_count = ports[LEFT].count;
 
-    fix = (int)(PID(error, pastError, integral, 1.6667, 0.005, 0));
+    fix = (int)(PID(error, pastError, integral, 1.6667, 0, 0));
     if (fix > 0)
-      fix += 80;
+      fix += 60;
     else
-      fix -= 80;
+      fix -= 60;
     //    Serial.print(fix);
     //    Serial.print("\tEuler: ");
     //    Serial.print(euler.x());
@@ -324,10 +324,10 @@ int isOnRamp() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   //if(frontTof>50) return 0;
-  if (euler.y() < -15) {
+  if (euler.y() < -10) {
     return 2;
   }
-  else if (euler.y() > 15) {
+  else if (euler.y() > 10) {
     return 1;
   }
   return 0;

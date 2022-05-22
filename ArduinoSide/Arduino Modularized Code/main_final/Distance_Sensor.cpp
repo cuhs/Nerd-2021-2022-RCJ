@@ -52,7 +52,7 @@ void setupSensors2() {
 
 void alignFront() {
   int frontDist = getSensorReadings(2);
-  int minimumDist = 20;
+  int minimumDist = 25;
 
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
@@ -61,16 +61,16 @@ void alignFront() {
     //go back
     while (frontDist < 5) {
       victim();
-      ports[RIGHT].setMotorSpeed(-150);
-      ports[LEFT].setMotorSpeed(-150);
+      ports[RIGHT].setMotorSpeed(-100);
+      ports[LEFT].setMotorSpeed(-100);
       frontDist = getSensorReadings(2);
     }
     
     //go forward
     while (frontDist > 5) {
       victim();
-      ports[RIGHT].setMotorSpeed(150);
-      ports[LEFT].setMotorSpeed(150);
+      ports[RIGHT].setMotorSpeed(100);
+      ports[LEFT].setMotorSpeed(100);
       frontDist = getSensorReadings(2);
     }
   }
@@ -81,9 +81,11 @@ void alignFront() {
 
 int getSensorReadings(int num) {
   tcaselect(num);
-  if(num==0 || num==2)
-    return lox.readRangeContinuousMillimeters() /10 - 1;
+  if(num==0)
+    return lox.readRangeContinuousMillimeters() /10 - 3;
   if(num==1)
+    return lox.readRangeContinuousMillimeters() / 10;
+  if(num==2)
     return lox.readRangeContinuousMillimeters() / 10 - 2;
   return lox.readRangeContinuousMillimeters() / 10;
 }
