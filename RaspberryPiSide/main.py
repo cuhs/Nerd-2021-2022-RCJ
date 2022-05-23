@@ -285,10 +285,11 @@ def run():
     #    IO.videoGetter.stop()
 
 # running code
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(config.LEDPin, GPIO.OUT)
-BFS.setupCams()
+if config.inputMode == 2:
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(config.LEDPin, GPIO.OUT)
+    BFS.setupCams()
 while True:
     try:
         run()

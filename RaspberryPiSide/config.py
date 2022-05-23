@@ -1,7 +1,7 @@
 # config file for settings that may differ when debugging, on different systems, etc.
 
-mazeSideLen = 50  # must be even
-floorCount = 5  # starts at middle floor
+mazeSideLen = 16  # must be even
+floorCount = 3  # starts at middle floor
 inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) * floorCount  # buffer added on setup
 
@@ -12,7 +12,7 @@ genFromImage = False  # if false, will generate random maze
 redoLastMaze = False  # allows you to rerun last generated maze, for debugging
 
 showDisplay = False  # 0 no display, 1 is display
-displayRate = 1000  # in milliseconds, 0 for until keypress
+displayRate = 1  # in milliseconds, 0 for until keypress
 displaySize = 500  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
 
@@ -33,10 +33,9 @@ cameraHeight = 128  # height of camera feed for both cameras 128
 
 manualCheckpointLoading = False  # load back to last checkpoint when 'c' is pressed
 
-# serial messages in order for:
-# forward, left, right, back, EOI, (end of single instruction), SOD (start of dir.), EOD (end of directions)
-# example: if ["a", "b", "c", "d", ".", "$", "%"], directions for forward, left, left, forward would be:
-# $a.b.b.a.% and will be sent as "$", "a.", "b." etc.      ALL MESSAGES MUST BE ONE CHAR
+# list of serial messages sent by the Pi to the robot:
+# F -> forward, L -> left, R -> right, B -> back, W -> up ramp, M -> down ramp
+# ; -> end of single instruction, { -> start of instruction list, } -> end of instruction list
 serialOutMsgs = ["F", "L", "R", "B", "W", "M", ";", "{", "}"]
 
 # fp -> file path

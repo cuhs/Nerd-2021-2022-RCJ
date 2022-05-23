@@ -14,25 +14,24 @@ import ast
 import os
 
 def setupCams():
-        # camera setup
-    if config.inputMode == 2:
-        if config.cameraCount == 1 or config.cameraCount == 2:
-            if config.cameraCount == 1:
-                IO.cap.append(cv2.VideoCapture(-1))
-            else:
-                IO.cap.append(cv2.VideoCapture(0))
-            IO.cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
-            IO.cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
-        if config.cameraCount == 2:
-            IO.cap.append(cv2.VideoCapture(1))
-            IO.cap[1].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
-            IO.cap[1].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
+    # camera setup
+    if config.cameraCount == 1 or config.cameraCount == 2:
+        if config.cameraCount == 1:
+            IO.cap.append(cv2.VideoCapture(-1))
+        else:
+            IO.cap.append(cv2.VideoCapture(0))
+        IO.cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
+        IO.cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
+    if config.cameraCount == 2:
+        IO.cap.append(cv2.VideoCapture(1))
+        IO.cap[1].set(cv2.CAP_PROP_FRAME_WIDTH, config.cameraWidth)
+        IO.cap[1].set(cv2.CAP_PROP_FRAME_HEIGHT, config.cameraHeight)
 
-        if 2 < config.cameraCount < 0:
-            raise ValueError("Invalid cameraCount (check config!)")
+    if 2 < config.cameraCount < 0:
+        raise ValueError("Invalid cameraCount (check config!)")
 
-        # start video threading
-        IO.videoGetter = VideoGet().start()
+    # start video threading
+    IO.videoGetter = VideoGet().start()
         
     if config.saveVictimDebug:
         os.mkdir(config.fpVIC + (time.ctime(IO.startTime)))
