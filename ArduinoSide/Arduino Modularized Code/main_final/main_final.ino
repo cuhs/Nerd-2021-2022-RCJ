@@ -16,7 +16,6 @@ void setup() {
   Wire.begin();
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
-  setupServo();
   setupTCSSensors();
   setupSwitches();
 

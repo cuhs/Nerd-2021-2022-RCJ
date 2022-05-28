@@ -5,10 +5,6 @@ const int R_angle = 165;
 const int L_angle = 5;
 const int C_angle = 82;
 
-void setupServo() {
-  //  myservo.attach(A7, 550, 2600); // attaches the servo on pin A7 to the servo object
-}
-
 void turnTo(int dir) {
   myservo.attach(A7, 550, 2600);
   myservo.write(dir);
