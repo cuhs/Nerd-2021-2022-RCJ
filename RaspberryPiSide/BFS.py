@@ -301,9 +301,9 @@ def searchForVictims():
 
         # send and record color victim
         elif leftColorVictim is not None:
+            leftColorVictim = leftColorVictim.lower()
             if config.runMode:
-                leftColorVictim = leftColorVictim.lower()
-            display.updateLabels(LVictim=leftColorVictim)
+                display.updateLabels(LVictim=leftColorVictim)
             if config.victimDebug or config.importantDebug:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
             if not util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim]:

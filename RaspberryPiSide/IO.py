@@ -210,5 +210,6 @@ def sendSerial(msg):
     if config.serialDebug:
         print("Sending: " + msg)  # send msg over serial
     ser.write(bytes(msg.encode("ascii", "ignore")))
-    display.updateLabels(sendData=msg)
+    if config.runMode:
+        display.updateLabels(sendData=msg)
     time.sleep(0.1)

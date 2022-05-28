@@ -7,10 +7,11 @@ from util import IO
 from util import config
 if config.inputMode == 2:
     from IO import GPIO
-from PyQt5.QtCore import QThread
+if config.runMode:
+    from PyQt5.QtCore import QThread
 import traceback
 
-class AThread(QThread):
+class AThread():
     def run(self):
         # time calculation
         IO.startTime = time.time()
