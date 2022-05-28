@@ -1,10 +1,7 @@
 from threading import Thread
-#import letterDetection
 import config
 import IO
 import cv2
-#import time
-#import BFS
 
 class VideoGet:
     

@@ -20,16 +20,11 @@ class detection():
 
             contour = max(contour, key=cv2.contourArea)
 
-            if cv2.contourArea(contour) > 50:
+            if cv2.contourArea(contour) > 15:
 
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
                 box = np.float32(box)
-
-                '''if num == 1:
-                    cv2.drawContours(self.frame1,[np.int0(box)],0,(0,255,0),2)
-                elif num == 2:
-                    cv2.drawContours(self.frame2,[np.int0(box)],0,(0,255,0),2)'''
 
                 s = np.sum(box, axis=1)
                 d = np.diff(box, axis=1)
@@ -59,37 +54,27 @@ class detection():
                 return imgOutput  # , invert
 
     def letterDetect(self, frame, name):
-
-        #cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        mask = cv2.inRange(frame, (0, 0, 0), (40,40 , 40))
-        
-        #cv2.imshow("mask",mask)
-
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        blur = cv2.bilateralFilter(gray, 5, 75,75)
+        mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3)
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
         imgOutput = self.getLetter(contours, mask, name)
-
         return imgOutput
 
     def KNN_finish(self, imgOutput, distLimit):
-
         if imgOutput is not None:
-            result, dist = self.KNN.classify(imgOutput)
-        else:
-            result = "None"
-            dist = 0
-
-        if dist > distLimit:
-            result = "None"
-
-        return result
+            for x in range(4):
+                result, dist = self.KNN.classify(imgOutput)
+                if dist <= distLimit and result is not None:
+                    return result
+                imgOutput = np.rot90(imgOutput)
+        return None
 
     def colorDetect(self, frame, hsv_lower, hsv_upper):
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        for i in range(2):
+        for i in range(3):
             mask = cv2.inRange(hsv, hsv_lower[i], hsv_upper[i])
             #cv2.imshow("mask",mask)
 
@@ -99,7 +84,7 @@ class detection():
 
                 contours = max(contours, key=cv2.contourArea)
 
-                if cv2.contourArea(contours) > 150:
+                if cv2.contourArea(contours) > 210:
 
                     if i == 0 or i == 2:
                         print("Red/Yellow")
@@ -143,6 +128,9 @@ while cap1.isOpened(): #and cap2.isOpened():
     
     ret1,frame1 = cap1.read()
     frame1 = frame1[:,:150]
+    
+    startTime = time.time()
+    
     #frame1 = cv2.imread("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sun May  8 15:52:21 2022/Y-Sun May  8 15:52:34 2022.png")
     #ret1,frame1 = cap1.read()
     #frame1 = cv2.flip(frame1, 0)
@@ -181,7 +169,7 @@ while cap1.isOpened(): #and cap2.isOpened():
         #cv2.imwrite("/home/pi/Documents/VictimImages/" + str(time.time()) + ".png", frame1)
         
         
-        if cv2.waitKey(1) == ord(' '):
+        '''if cv2.waitKey(1) == ord(' '):
             print("Do you like this image?")
             cv2.imshow("image_mask",imgOutput1)
             letter = cv2.waitKey(0)
@@ -191,10 +179,11 @@ while cap1.isOpened(): #and cap2.isOpened():
                 #cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + "mask" + str(time.time()) + ".png",imgOutput1)
                 print("saved!")
             else:
-                print("not saved")
+                print("not saved")'''
 
-                
-        print("Camera1 " + result1)
+        
+        print("Camera1 " + str(result1))
+        print("Time taken: " + str((time.time()-startTime)))
         #print("Camera2 " + result2)
         
         #print()

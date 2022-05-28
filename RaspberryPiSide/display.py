@@ -1,11 +1,98 @@
+import time
+
 import util
 import cv2
+import sys
 import numpy as np
-from util import config
+import config
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QToolButton
 
+# general display stuff
 imageSize = config.mazeSideLen * config.displaySize
-lineWidth = 1 if config.mazeSideLen > 50 else 2
+lineWidth = (1 if config.mazeSideLen > 50 else 2) + config.runMode
+fontSize = 50
 img = []
+
+# QT display stuff
+app = None
+win = None
+button = None
+GUIThread = None
+QtMazeImg = None
+statusLabel = None
+cPosLabel = None
+tPosLabel = None
+victimLabel = None
+serialSendLabel = None
+serialReceiveLabel = None
+
+# setup QT stuff
+if config.runMode:
+    app = QApplication(sys.argv)
+
+    win = QMainWindow()
+    win.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
+    win.setGeometry(0, 0, *config.monitorDimensions)
+    win.setStyleSheet("background-color: black;")
+
+    # start/stop button
+    button = QToolButton(win)
+    button.setCheckable(True)
+    button.setGeometry(10, 10, 100, 100)
+    button.clicked.connect(lambda: sys.exit(0))
+    button.setText("ST\nOP")
+    button.setFont(QtGui.QFont("Monaco", fontSize//2))
+    button.setStyleSheet("background-color: red;")
+
+    # setup maze image
+    QtMazeImg = QLabel(win)
+    QtMazeImg.setGeometry(config.monitorDimensions[0] - config.monitorDimensions[1], 0, config.monitorDimensions[1], config.monitorDimensions[1])
+
+    # setup all labels
+    statusLabel = QLabel(win)
+    statusLabel.setText("inWaiting")
+    statusLabel.setFont(QtGui.QFont("Rockwell", fontSize//1.5))
+    statusLabel.setGeometry(button.x() + button.width() + 30, button.y() + 5, 250, 100)
+    statusLabel.setStyleSheet("color: yellow;")
+    cPosLabel = QLabel(win)
+    cPosLabel.setText("C: None, None, N")
+    cPosLabel.setFont(QtGui.QFont("Rockwell", fontSize//1.5))
+    cPosLabel.setGeometry(button.x(), button.y() + button.height() + 20, 400, 50)
+    cPosLabel.setStyleSheet("color: white;")
+    tPosLabel = QLabel(win)
+    tPosLabel.setText("T: None, None")
+    tPosLabel.setFont(QtGui.QFont("Rockwell", fontSize//1.5))
+    tPosLabel.setGeometry(button.x() + 10, cPosLabel.y() + 70, 400, 50)
+    tPosLabel.setStyleSheet("color: white;")
+    victimLabel = QLabel(win)
+    victimLabel.setText("V: None, None")
+    victimLabel.setFont(QtGui.QFont("Rockwell", fontSize//1.5))
+    victimLabel.setGeometry(button.x() + 5, tPosLabel.y() + 70, 400, 50)
+    victimLabel.setStyleSheet("color: white;")
+    serialSendLabel = QLabel(win)
+    serialSendLabel.setText("S: None")
+    serialSendLabel.setFont(QtGui.QFont("Rockwell", fontSize//1.5))
+    serialSendLabel.setGeometry(button.x() + 5, victimLabel.y() + 70, 400, 50)
+    serialSendLabel.setStyleSheet("color: white;")
+    serialReceiveLabel = QLabel(win)
+    serialReceiveLabel.setText("R: None")
+    serialReceiveLabel.setFont(QtGui.QFont("Rockwell", fontSize//1.5))
+    serialReceiveLabel.setGeometry(button.x() + 5, serialSendLabel.y() + 70, 400, 50)
+    serialReceiveLabel.setStyleSheet("color: white;")
+
+    # show labels
+    statusLabel.show()
+    cPosLabel.show()
+    tPosLabel.show()
+    victimLabel.show()
+    serialSendLabel.show()
+    serialReceiveLabel.show()
+    QtMazeImg.show()
+    button.show()
+    win.show()
 
 def setupImg():
     newImg = []
@@ -107,11 +194,53 @@ def addSpecialTiles(pImg, cFloor, theFloor, target, targetFloor):
 
     return newImg
 
-def show(pImg, cMaze, tFloor, target, ms):
+def CVtoQT(pImg):
+    RGB = cv2.cvtColor(pImg, cv2.COLOR_BGR2RGB)
+    height, width = RGB.shape[:2]
+    QtFormat = QtGui.QImage(RGB.data, width, height, width * 3, QtGui.QImage.Format_RGB888)
+    QtScaled = QtFormat.scaled(config.monitorDimensions[1], config.monitorDimensions[1], QtCore.Qt.KeepAspectRatio)
+    return QPixmap.fromImage(QtScaled)
+
+def showMaze(pImg, cMaze, tFloor, cFloor, target, ms):
+    # add walls for newly visited tiles
     createWallsForTile(pImg, util.floor, util.maze[util.floor], util.tile)
 
+    # create maze images with special tiles
+    newImg = []
     for i in range(config.floorCount):
-        newImg = addSpecialTiles(pImg, i, cMaze[i], target, tFloor)
-        cv2.imshow("Floor " + str(i), newImg)
+        newImg.append(addSpecialTiles(pImg, i, cMaze[i], target, tFloor))
 
-    cv2.waitKey(ms)
+    # display each floor
+    if not config.runMode:
+        for i in range(config.floorCount):
+            cv2.imshow("Floor " + str(i), newImg[i])
+    if not config.runMode:
+        cv2.waitKey(ms)
+    else:
+        QtMazeImg.setPixmap(CVtoQT(newImg[cFloor if cFloor else 0]))
+
+def updateLabels(status=None, cFloor=None, cTile=None, cDir=None, tFloor=None, tTile=None, LVictim=None, RVictim=None, sendData=None, receiveData=None):
+    if status is not None:
+        statusLabel.setText(str(status))
+    if cFloor is not None:
+        cPosLabel.setText("C: " + str(cFloor) + ", " + str(cPosLabel.text()[cPosLabel.text().find(",") + 2:]))
+    if cTile is not None:
+        cPosLabel.setText(cPosLabel.text()[:cPosLabel.text().find(",") + 2] + str(cTile) + ", " + cPosLabel.text()[cPosLabel.text().find(",", cPosLabel.text().find(",") + 1) + 2:])
+    if cDir is not None:
+        cPosLabel.setText(cPosLabel.text()[:cPosLabel.text().find(",", cPosLabel.text().find(",") + 1)] + ", " + str('N' if cDir == 0 else 'E' if cDir == 1 else 'S' if cDir == 2 else 'W'))
+    if tFloor is not None:
+        tPosLabel.setText("T: " + str(tFloor) + ", " + str(tPosLabel.text()[tPosLabel.text().find(",") + 1:]))
+    if tTile is not None:
+        tPosLabel.setText(tPosLabel.text()[:tPosLabel.text().find(",")] + ", " + str(tTile))
+    if LVictim is not None:
+        victimLabel.setText("V: " + str(LVictim) + ", " + str(victimLabel.text()[victimLabel.text().find(",") + 2:]))
+    if RVictim is not None:
+        victimLabel.setText(victimLabel.text()[:victimLabel.text().find(",")] + ", " + str(RVictim))
+    if sendData is not None:
+        if len(serialSendLabel.text()) > 10:
+            serialSendLabel.setText("")
+        serialSendLabel.setText(serialSendLabel.text() + str(sendData))
+    if receiveData is not None:
+        if receiveData == 'm':
+            serialReceiveLabel.setText("")
+        serialReceiveLabel.setText(serialReceiveLabel.text() + str(sendData))

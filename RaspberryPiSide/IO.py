@@ -2,6 +2,8 @@ import numpy as np
 import config
 import serial
 import time
+
+import display
 import util
 if config.inputMode == 2:
     import RPi.GPIO as GPIO
@@ -133,6 +135,8 @@ def setupSerial():
 
 # gets one byte of data from serial
 def getNextSerialByte():
+    if config.runMode:
+        display.updateLabels(status="inWaiting")
     msg = ser.read().decode("ascii", "ignore")
     
     while not(msg in ('d', 'u', ';', 'a', 'b', 'x', 'X', 'm', 's') or msg.isdigit()):
@@ -142,7 +146,9 @@ def getNextSerialByte():
             print("MESSAGE RECEIVED & IGNORED: " + msg)
             
         msg = ser.read().decode("ascii", "ignore")
-        
+
+    if config.runMode:
+        display.updateLabels(receiveData=msg)
     if config.importantDebug or config.serialDebug:
         print("MESSAGE RECEIVED: " + msg)
     
@@ -204,4 +210,5 @@ def sendSerial(msg):
     if config.serialDebug:
         print("Sending: " + msg)  # send msg over serial
     ser.write(bytes(msg.encode("ascii", "ignore")))
+    display.updateLabels(sendData=msg)
     time.sleep(0.1)

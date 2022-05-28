@@ -1,3 +1,5 @@
+import threading
+
 import util
 import sys
 import time
@@ -12,6 +14,7 @@ import inspect
 from vidThread import VideoGet
 import ast
 import os
+from threading import Thread
 
 def setupCams():
     # camera setup
@@ -37,6 +40,9 @@ def setupCams():
         os.mkdir(config.fpVIC + (time.ctime(IO.startTime)))
 
 def reset():
+    if config.runMode:
+        display.updateLabels(status="Resetting")
+
     util.maze = np.zeros((config.floorCount, config.mazeSideLen ** 2, util.tileLen), dtype=np.int8)  # maze[tile][attributes], read util
     util.tile = util.startTile  # creates start tile in the middle of size x size area
     util.floor = util.startFloor  # floor level
@@ -56,7 +62,7 @@ def reset():
 
     # reset display
     display.img = display.setupImg()
-    
+
     # setup input from file or serial
     IO.setupInput(config.inputMode)
 
@@ -68,6 +74,8 @@ def init():
 
     # reset maze
     reset()
+    if config.runMode:
+        display.updateLabels(status="Start")
 
     # increase recursion limit for large mazes
     sys.setrecursionlimit(config.recursionLimit + len(inspect.stack()) + 10)
@@ -92,10 +100,12 @@ def init():
             util.rampMap = ast.literal_eval(r.readline())
 
             if config.redoLastMaze:
-                display.show(display.resetImg(dMaze), dMaze, None, None, 0)
+                display.showMaze(display.resetImg(dMaze), dMaze, None, None, None, 0)
 
 # return next tile to visit using BFS
 def nextTile(cTile, cFloor):
+    if config.runMode:
+        display.updateLabels(status="BFS")
     rampq = []
     q = [(cTile, cFloor)]
 
@@ -147,6 +157,8 @@ def pathToTile(cTile, cFloor, tTile, tFloor):
 
 # save checkpoint
 def saveCheckpoint():
+    if config.runMode:
+        display.updateLabels(status="Silver")
     if config.importantDebug or config.BFSDebug:
         print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
 
@@ -166,8 +178,8 @@ def handleSpecialTiles(walls, previousCheckpoint):
     if walls[util.tileType] in (3, 4):
 
         # floor adjustments
-        #util.tile = util.goBackward(util.tile)
-        #util.tile = util.goForward(util.tile, False)
+        if config.runMode:
+            display.updateLabels(status="Ramp")
         rampAdjust = 1 if walls[util.tileType] == 3 else -1
         walls[util.tileType] = 0
 
@@ -206,6 +218,9 @@ def handleSpecialTiles(walls, previousCheckpoint):
 
     # check if tile is a black tile
     if util.isBlackTile(util.maze[util.floor], util.tile):
+        if config.runMode:
+            display.updateLabels(status="Black")
+
         # set borders for black tiles
         util.maze[util.floor] = util.setBlackTile(util.maze[util.floor], util.tile)
 
@@ -251,10 +266,13 @@ def loadCheckpoint(checkpoint):
         util.maze[util.floor][util.tile] = util.getWalls()
 
     if config.showDisplay:
-        display.show(display.img, util.maze, None, None, config.displayRate)
+        display.showMaze(display.img, util.maze, None, util.floor, None, config.displayRate)
 
 # searches for letter and color victims, marks and sends them
 def searchForVictims():
+    if config.runMode:
+        display.updateLabels(status="Victim")
+
     if config.victimDebug:
         print("\t\t\tSTARTING CAMERA")
 
@@ -271,6 +289,8 @@ def searchForVictims():
         # send and record letter victim
         if leftLetterVictim is not None:
             leftLetterVictim = leftLetterVictim.lower()
+            if config.runMode:
+                display.updateLabels(LVictim=leftLetterVictim)
             if config.victimDebug or config.importantDebug:
                 print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
             if not util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim]:
@@ -281,7 +301,9 @@ def searchForVictims():
 
         # send and record color victim
         elif leftColorVictim is not None:
-            leftColorVictim = leftColorVictim.lower()
+            if config.runMode:
+                leftColorVictim = leftColorVictim.lower()
+            display.updateLabels(LVictim=leftColorVictim)
             if config.victimDebug or config.importantDebug:
                 print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
             if not util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim]:
@@ -298,6 +320,8 @@ def searchForVictims():
             # send and record letter victim
             if rightLetterVictim is not None:
                 rightLetterVictim = rightLetterVictim.upper()
+                if config.runMode:
+                    display.updateLabels(RVictim=rightLetterVictim)
                 if config.victimDebug or config.importantDebug:
                     print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToRight(util.direction)))
                 if not util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim]:
@@ -309,6 +333,8 @@ def searchForVictims():
             # send and record color victim
             elif rightColorVictim is not None:
                 rightColorVictim = rightColorVictim.upper()
+                if config.runMode:
+                    display.updateLabels(RVictim=rightColorVictim)
                 if config.victimDebug or config.importantDebug:
                     print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToRight(util.direction)))
                 if not util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim]:
