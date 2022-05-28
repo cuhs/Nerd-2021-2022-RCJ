@@ -70,17 +70,17 @@ void RGB_color(int rVal, int gVal, int bVal, int rescueKits, char dir) {
   if (rescueKits == 0) {
     for (int i = 0; i < 5; i++) {
       turnOnLED(true,rVal,gVal,bVal);
-      delay(500);
+      delay(550);
       turnOnLED(false,rVal,gVal,bVal);
-      delay(500);
+      delay(550);
     }   
   }
   else if(rescueKits == 1){
     dropKits(dir,rescueKits,rVal, gVal, bVal);
+    delay(525);
      turnOnLED(true,rVal,gVal,bVal);
-      delay(500);
+      delay(525);
       turnOnLED(false,rVal,gVal,bVal);
-      delay(500);
   }
   else {
     dropKits(dir, rescueKits, rVal, gVal, bVal);
