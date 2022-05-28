@@ -27,11 +27,6 @@ class Detection:
                 box = cv2.boxPoints(rect)
                 box = np.float32(box)
 
-                '''if num == 1:
-                    cv2.drawContours(self.frame1,[np.int0(box)],0,(0,255,0),2)
-                elif num == 2:
-                    cv2.drawContours(self.frame2,[np.int0(box)],0,(0,255,0),2)'''
-
                 s = np.sum(box, axis=1)
                 d = np.diff(box, axis=1)
 
@@ -63,7 +58,6 @@ class Detection:
     def letterDetect(self, frame, name):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blur = cv2.bilateralFilter(gray, 5, 75,75)
-        #mask = cv2.inRange(frame, (0, 0, 0), (25,25, 25))
         mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3)
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         imgOutput = self.getLetter(contours, mask, name)
@@ -72,14 +66,12 @@ class Detection:
     # check for letters with KNN
     def KNN_finish(self, imgOutput, distLimit):
         if imgOutput is not None:
-            result, dist = self.KNN.classify(imgOutput)
-        else:
-            result = None
-            dist = 0
-
-        if dist > distLimit:
-            result = None
-        return result
+            for x in range(4):
+                result, dist = self.KNN.classify(imgOutput)
+                if dist <= distLimit and result is not None:
+                    return result
+                imgOutput = np.rot90(imgOutput)
+        return None
 
     # use HSV to find color victims
     def colorDetectHSV(self, frame, hsv_lower, hsv_upper):
