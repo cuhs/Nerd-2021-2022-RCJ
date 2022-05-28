@@ -11,8 +11,8 @@ extern const int L_angle;
 extern const int C_angle;
 
 void turnTo(int);
-void wiggle(char angle);
-void dropKits(char dir, int amt);
+void wiggle(char angle, int, int, int);
+void dropKits(char dir, int amt, int, int, int);
 void setupServo();
 void victim();
 void RGB_color(int red_light_value, int green_light_value, int blue_light_value, int, char);

@@ -14,9 +14,13 @@ void turnTo(int dir) {
   myservo.write(dir);
 }
 
-void wiggle(int angle, int wiggleAmt) { //1400 ms
+void wiggle(int angle, int wiggleAmt, int rVal, int gVal, int bVal) { //1200 ms
   Serial.println("In wiggle");
+  bool isOn = false;
   for (int i = 1; i < wiggleAmt; i++) {
+    if(i%2==1){
+      turnOnLED(isOn = !isOn, rVal, gVal, bVal);
+    }
     myservo.write(angle - i);
     delay(100);
     myservo.write(angle + i);
@@ -38,49 +42,55 @@ void turnOnLED(bool lightUp, int rVal, int gVal, int bVal){
   }  
 }
 
-void dropKits(char dir, int amt) {
+void dropKits(char dir, int amt, int rVal, int gVal, int bVal) {
   Serial.println("In dropKits");
   myservo.attach(A7, 550, 2600); // attaches the servo on pin A7 to the servo object
   if (dir == 'L') {
     for (int i = 0; i < amt; i++) {
-      wiggle(C_angle, 7);
-      myservo.write(C_angle); //1400 ms
+      wiggle(C_angle, 7, rVal, gVal, bVal); //1200ms
+      myservo.write(C_angle); 
       delay(100);
-      myservo.write(L_angle); //1400 ms
-      wiggle(L_angle, 7);
+      myservo.write(L_angle); 
+      wiggle(L_angle, 7, rVal, gVal, bVal); //1200ms
       delay(500);
     }
   } else if (dir == 'R') {
     for (int i = 0; i < amt; i++) {
-      wiggle(C_angle, 7);
+      wiggle(C_angle, 7, rVal, gVal, bVal); //1200ms
       myservo.write(C_angle);
       delay(100);
       myservo.write(R_angle);
-      wiggle(R_angle, 7);
+      wiggle(R_angle, 7, rVal, gVal, bVal); //1200ms
       delay(500);
     }
   }
   myservo.write(C_angle);
-  wiggle(C_angle, 5);
+  wiggle(C_angle, 5, rVal, gVal, bVal); //1200ms
   myservo.detach();
   Serial.println("Done dropKits");
 }
 
 void RGB_color(int rVal, int gVal, int bVal, int rescueKits, char dir) {
-  turnOnLED(true,rVal,gVal,bVal);
   if (rescueKits == 0) {
-    delay(500);
-  } else {
-    dropKits(dir, rescueKits);
+    for (int i = 0; i < 5; i++) {
+      turnOnLED(true,rVal,gVal,bVal);
+      delay(500);
+      turnOnLED(false,rVal,gVal,bVal);
+      delay(500);
+    }   
   }
+  else if(rescueKits == 1){
+    dropKits(dir,rescueKits,rVal, gVal, bVal);
+     turnOnLED(true,rVal,gVal,bVal);
+      delay(500);
+      turnOnLED(false,rVal,gVal,bVal);
+      delay(500);
+  }
+  else {
+    dropKits(dir, rescueKits, rVal, gVal, bVal);
+  }
+  
   turnOnLED(false,rVal,gVal,bVal);
-  for (int i = 0; i < 4; i++) {
-    turnOnLED(true,rVal,gVal,bVal);
-    delay(500);
-    turnOnLED(false,rVal,gVal,bVal);
-    delay(500);
-  }
-
 }
 
 void victim() {
