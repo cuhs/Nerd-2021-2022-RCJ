@@ -216,9 +216,9 @@ void turnAbsNoVictim(int degree) {
 
     fix = (int)(PID(error, pastError, integral, 1.6667, 0, 0));
     if (fix > 0)
-      fix += 40;
+      fix += 60;
     else
-      fix -= 40;
+      fix -= 60;
     //    Serial.print(fix);
     //    Serial.print("\tEuler: ");
     //    Serial.print(euler.x());
@@ -324,10 +324,16 @@ int isOnRamp() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   //if(frontTof>50) return 0;
-  if (euler.y() < -10) {
+  if (euler.y() < -15) {
+    int ang = euler.x();
+    if(getDirection(ang)!=-1)
+      turnAbs(getDirection(ang));
     return 2;
   }
-  else if (euler.y() > 10) {
+  else if (euler.y() > 15) {
+    int ang = euler.x();
+    if(getDirection(ang)!=-1)
+      turnAbs(getDirection(ang));
     return 1;
   }
   return 0;

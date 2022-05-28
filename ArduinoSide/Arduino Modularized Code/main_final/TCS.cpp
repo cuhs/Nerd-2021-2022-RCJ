@@ -43,7 +43,7 @@ bool detectBlack(bool shouldM) {
   lux = tcs.calculateLux(r, g, b);
 //  Serial.print("lux: ");
 //  Serial.println(lux);
-  if (lux <= 0) { //lux value changed
+  if (lux <= 1 && c <5) { //lux value changed
     if(shouldM){
       Serial2.write('m');
     }

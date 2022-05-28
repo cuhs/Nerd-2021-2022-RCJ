@@ -14,9 +14,9 @@ int rampMoveForward(char dir) {
   int theAng = 0;
   int motorEncUse = LEFT;
   if (dir == 'u') {
-    Lspeed = 150;
-    Rspeed = 150;// on fresh batteries: KP=2   on not so fresh batteries: 6-10
-    KP = 5;
+    Lspeed = 120;
+    Rspeed = 120;// on fresh batteries: KP=2   on not so fresh batteries: 6-10
+    KP = 3;
     finishedRamp = 1;
   } else if (dir == 'd') {
     Lspeed = 90;
@@ -43,27 +43,29 @@ int rampMoveForward(char dir) {
 //    int obsFix = 0;
 //    char c = obstacleDetect();
     //if(c=='r' || c == 'l') obsFix = 50;
-    if(fix>0){
-      
-      ports[LEFT].setMotorSpeed(Lspeed+fix);
-//      if(c=='l')
-//        ports[RIGHT].setMotorSpeed(-120);
-//      else if(c=='r')
-//        ports[LEFT].setMotorSpeed(-120);
-    //  else{
-        ports[RIGHT].setMotorSpeed(Rspeed-fix);
-      //}
-    }
-    else{
-      ports[RIGHT].setMotorSpeed(Rspeed+fix);
-//      if(c=='r')
-//        ports[LEFT].setMotorSpeed(-120);
-//      else if(c=='l')
-//        ports[RIGHT].setMotorSpeed(-120);
-     // else{
-        ports[LEFT].setMotorSpeed(Lspeed-fix);
-      //}
-    }
+//    if(fix>0){
+//      
+//      ports[LEFT].setMotorSpeed(Lspeed+fix);
+////      if(c=='l')
+////        ports[RIGHT].setMotorSpeed(-120);
+////      else if(c=='r')
+////        ports[LEFT].setMotorSpeed(-120);
+//    //  else{
+//        ports[RIGHT].setMotorSpeed(Rspeed-fix);
+//      //}
+//    }
+//    else{
+//      ports[RIGHT].setMotorSpeed(Rspeed+fix);
+////      if(c=='r')
+////        ports[LEFT].setMotorSpeed(-120);
+////      else if(c=='l')
+////        ports[RIGHT].setMotorSpeed(-120);
+//     // else{
+//        ports[LEFT].setMotorSpeed(Lspeed-fix);
+//      //}
+//    }
+      ports[LEFT].setMotorSpeed(Lspeed);
+      ports[RIGHT].setMotorSpeed(Rspeed);
     if(Serial2.available()) Serial2.read();
 //    Serial.print("target: ");
 //    Serial.print(angle);
@@ -82,14 +84,16 @@ int rampMoveForward(char dir) {
       currAng=currAng-360;
     error = angle - currAng;
     int fix = PID(error, pastError, integral, KP, 0, 0);
-    if(fix>0){
-      ports[RIGHT].setMotorSpeed(Rspeed-fix);
-      ports[LEFT].setMotorSpeed(Lspeed+fix);
-    }
-    else{
-      ports[LEFT].setMotorSpeed(Lspeed-fix);
-      ports[RIGHT].setMotorSpeed(Rspeed+fix);
-    }
+//    if(fix>0){
+//      ports[RIGHT].setMotorSpeed(Rspeed-fix);
+//      ports[LEFT].setMotorSpeed(Lspeed+fix);
+//    }
+//    else{
+//      ports[LEFT].setMotorSpeed(Lspeed-fix);
+//      ports[RIGHT].setMotorSpeed(Rspeed+fix);
+//    }
+    ports[LEFT].setMotorSpeed(Lspeed);
+    ports[RIGHT].setMotorSpeed(Rspeed);
     int ca = euler.y();
     if(abs(ca)>abs(theAng)) theAng = ca;
     if(Serial2.available()) Serial2.read();
@@ -193,7 +197,7 @@ bool goForwardPID(int dist) {
       //       ports[LEFT].setMotorSpeed(0);
       //       finishedRamp=2;
       int beforeEnc = (D*PI*ports[motorEncUse].count)/360;
-      int amtOfRamp = rampMoveForward('u'));
+      int amtOfRamp = rampMoveForward('u');
       if(amtOfRamp<40){
         delay(1);
         Serial2.write('s');
@@ -236,25 +240,25 @@ bool goForwardPID(int dist) {
     Serial.println(c);
     if(c=='l'){
       curEnc = ports[motorEncUse].count;
-      tcaselect(7);
-      imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-      int dir = getDirection(euler.x());
+//      tcaselect(7);
+//      imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+//      int dir = getDirection(euler.x());
       while(obstacleDetect()=='l'){
         ports[LEFT].setMotorSpeed(120);
         ports[RIGHT].setMotorSpeed(-140);
       }
-      if(dir!=-1) turnAbsNoVictim(dir);
+//      if(dir!=-1) turnAbsNoVictim(dir);
       ports[motorEncUse].count = curEnc;
     }else if(c=='r'){
       curEnc = ports[motorEncUse].count;
-      tcaselect(7);
-      imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-      int dir = getDirection(euler.x());
+//      tcaselect(7);
+//      imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+//      int dir = getDirection(euler.x());
       while(obstacleDetect()=='r'){
         ports[LEFT].setMotorSpeed(-140);
         ports[RIGHT].setMotorSpeed(120);
       }
-      if(dir!=-1) turnAbsNoVictim(dir);
+//      if(dir!=-1) turnAbsNoVictim(dir);
       ports[motorEncUse].count = curEnc;
     }
     if (ports[LEFT].count == prev_count && !checking) {
