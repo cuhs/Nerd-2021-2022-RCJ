@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 import IO
 import config
@@ -60,7 +62,7 @@ hsv_lower = {
 hsv_upper = {
      0: (180, 205, 165),
      1: (80, 160, 135),
-     2: (90, 220, 180) #160 for [1]
+     2: (90, 220, 180)  #160 for [1]
 }
 
 # adjust which position is facing true north
@@ -196,6 +198,9 @@ def isDownRamp(cMaze, cTile):
     return cMaze[cTile][tileType] == 4
 
 def goOnRamp(cMaze, cTile, cFloor, upRamp, sendMsg=True):
+    if config.runMode:
+        display.updateLabels(status="Ramp")
+
     if sendMsg:
         IO.sData += (config.serialOutMsgs[4] if upRamp else config.serialOutMsgs[5]) + config.serialOutMsgs[6]
         if path:
