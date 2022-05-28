@@ -14,7 +14,7 @@ void turnTo(int dir) {
   myservo.write(dir);
 }
 
-void wiggle(int angle, int wiggleAmt) {
+void wiggle(int angle, int wiggleAmt) { //1400 ms
   Serial.println("In wiggle");
   for (int i = 1; i < wiggleAmt; i++) {
     myservo.write(angle - i);
@@ -25,15 +25,28 @@ void wiggle(int angle, int wiggleAmt) {
   Serial.println("Done wiggle");
 }
 
+void turnOnLED(bool lightUp, int rVal, int gVal, int bVal){
+  if(lightUp){
+    analogWrite(47, rVal);
+  analogWrite(43, gVal);
+  analogWrite(42, bVal);
+  }
+  else{
+    analogWrite(47, 0);
+    analogWrite(43, 0);
+    analogWrite(42, 0);
+  }  
+}
+
 void dropKits(char dir, int amt) {
   Serial.println("In dropKits");
   myservo.attach(A7, 550, 2600); // attaches the servo on pin A7 to the servo object
   if (dir == 'L') {
     for (int i = 0; i < amt; i++) {
       wiggle(C_angle, 7);
-      myservo.write(C_angle);
+      myservo.write(C_angle); //1400 ms
       delay(100);
-      myservo.write(L_angle);
+      myservo.write(L_angle); //1400 ms
       wiggle(L_angle, 7);
       delay(500);
     }
@@ -53,26 +66,18 @@ void dropKits(char dir, int amt) {
   Serial.println("Done dropKits");
 }
 
-void RGB_color(int red_light_value, int green_light_value, int blue_light_value, int rescueKits, char dir) {
-  analogWrite(47, red_light_value);
-  analogWrite(43, green_light_value);
-  analogWrite(42, blue_light_value);
+void RGB_color(int rVal, int gVal, int bVal, int rescueKits, char dir) {
+  turnOnLED(true,rVal,gVal,bVal);
   if (rescueKits == 0) {
     delay(500);
   } else {
     dropKits(dir, rescueKits);
   }
-  analogWrite(47, 0);
-  analogWrite(43, 0);
-  analogWrite(42, 0);
+  turnOnLED(false,rVal,gVal,bVal);
   for (int i = 0; i < 4; i++) {
-    analogWrite(47, red_light_value);
-    analogWrite(43, green_light_value);
-    analogWrite(42, blue_light_value);
+    turnOnLED(true,rVal,gVal,bVal);
     delay(500);
-    analogWrite(47, 0);
-    analogWrite(43, 0);
-    analogWrite(42, 0);
+    turnOnLED(false,rVal,gVal,bVal);
     delay(500);
   }
 
