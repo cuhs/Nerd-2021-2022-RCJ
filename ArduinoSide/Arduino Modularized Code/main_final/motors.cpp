@@ -11,7 +11,7 @@ int rampMoveForward(char dir) {
   int Lspeed = 0;
   int KP = 2;
   int Rspeed = 0;
-  int theAng = 0;
+  //int theAng = 0;
   int motorEncUse = LEFT;
   if (dir == 'u') {
     Lspeed = 120;
@@ -33,6 +33,8 @@ int rampMoveForward(char dir) {
   double integral=0;
   int currAng;
   int startingEnc = ports[motorEncUse].count;
+  int avgAng = 0;
+  int itCt = 0;
   while (!notStable()) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     currAng=euler.x();
@@ -95,7 +97,10 @@ int rampMoveForward(char dir) {
     ports[LEFT].setMotorSpeed(Lspeed);
     ports[RIGHT].setMotorSpeed(Rspeed);
     int ca = euler.y();
-    if(abs(ca)>abs(theAng)) theAng = ca;
+    if(abs(ca)>15){
+      avgAng += ca;
+      ++itCt;
+    }
     if(Serial2.available()) Serial2.read();
 //    Serial.print("target: ");
 //    Serial.print(angle);
@@ -109,14 +114,15 @@ int rampMoveForward(char dir) {
   int amountTravelled = ((ports[motorEncUse].count-startingEnc)*D*PI)/360;
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
+  avgAng = avgAng/itCt;
   //plainGoForward(5);
   Serial.print("Angle: ");
-  Serial.print(theAng);
+  Serial.print(avgAng);
   Serial.print(" amttravelled: ");
-  Serial.println(amountTravelled*cos((abs(theAng)*PI)/180));
+  Serial.println(amountTravelled*cos((abs(avgAng)*PI)/180));
   alignFront();
   
-  return amountTravelled*cos((abs(theAng)*PI)/180);
+  return amountTravelled*cos((abs(avgAng)*PI)/180);
 }
 
 void plainGoForward(int dist){

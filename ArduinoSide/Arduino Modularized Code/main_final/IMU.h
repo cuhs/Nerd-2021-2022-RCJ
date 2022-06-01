@@ -7,6 +7,7 @@
 #include "rescueServo.h"
 #include "new_global_vars.h"
 #include "TCA.h"
+#include "limitswitch.h"
 
 void initIMU();
 void reset();

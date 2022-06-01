@@ -152,7 +152,15 @@ void turnAbs(int degree) {
       }
     }
     prev_count = ports[LEFT].count;
-
+    char c = obstacleDetect();
+    if(c != '0'){
+      int motorEncUse = LEFT;
+      ports[motorEncUse].count=0;      
+      while(ports[motorEncUse].count>((-360 / (D * PI)) * 3)){
+        ports[RIGHT].setMotorSpeed(-80);
+        ports[LEFT].setMotorSpeed(-80);
+      }
+    }
     fix = (int)(PID(error, pastError, integral, 2, 0.005, 0));
     if (fix > 0)
       fix += 110;
