@@ -42,12 +42,12 @@ class detection():
 
                 imgOutput = np.flip(np.rot90(imgOutput), 0)
 
-                if self.dist(tL, tR) > self.dist(tL, bL):
-                    imgOutput = np.rot90(imgOutput)
+                #if self.dist(tL, tR) > self.dist(tL, bL):
+                    #imgOutput = np.rot90(imgOutput)
 
-                if self.Debug:
+                #if self.Debug:
                     #cv2.imshow("letter_" + name, imgOutput)
-                    pass
+                    #pass
 
                 # result,dist = self.KNN(imgOutput)
 
@@ -56,7 +56,7 @@ class detection():
     def letterDetect(self, frame, name):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blur = cv2.bilateralFilter(gray, 5, 75,75)
-        mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3)
+        mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15,5)
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         imgOutput = self.getLetter(contours, mask, name)
         return imgOutput
@@ -106,11 +106,11 @@ hsv_upper = {
      2: (36, 205, 185)
 }
 
-path = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sat Apr 30 16:48:05 2022/"
+#path = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sat Apr 30 16:48:05 2022/"
 
 main = detection()
 
-cap1 = cv2.VideoCapture(0)
+cap1 = cv2.VideoCapture(-1)
 #cap2 = cv2.VideoCapture(1)
 
 cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
@@ -120,9 +120,9 @@ cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
 #cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 #cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
 
-total = 0
-correct = 0
-start = 0
+#total = 0
+#correct = 0
+#start = 0
 
 while cap1.isOpened(): #and cap2.isOpened():
     
@@ -137,33 +137,32 @@ while cap1.isOpened(): #and cap2.isOpened():
 
     #ret2,frame2 = cap2.read()
     
-    #frame1 = frame1[:,:150] #H, W LEFTqqqq
+    #frame1 = frame1[:,:150] #H, W LEFT
     
-    gray = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
+    #gray = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
     
-    #blur = cv2.medianBlur(gray,5)
-    blur = cv2.bilateralFilter(gray, 5, 75,75)
+    #blur = cv2.bilateralFilter(gray, 5, 75,75)
 
-    
-    #thresh2 = cv2.inRange(frame1, (0, 0, 0), (60,60 , 60))
-    thresh2  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3)
-
-    #ret, thresh2 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+    #thresh2  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15,5)
 
 
     #frame2 = frame2[:,:152] #RIGHT
-    
-    #frame1 = cv2.imread(path + "H-Sat Apr 30 16:49:10 2022.png")
-                        
+                            
     if ret1 > 0: #and ret2 > 0:
         
-        #print(main.colorDetect(frame1,hsv_lower,hsv_upper))
-        #main.colorDetect(frame2,hsv_lower,hsv_upper)
+        print(main.colorDetect(frame1,hsv_lower,hsv_upper))
+        print(main.colorDetect(frame1,hsv_lower,hsv_upper))
+
+        #/main.colorDetect(frame2,hsv_lower,hsv_upper)
 
         imgOutput1 = main.letterDetect(frame1,"frame1")
+        imgOutput1 = main.letterDetect(frame1,"frame1")
+
         #imgOutput2 = main.letterDetect(frame2, "frame2")
         
         result1 =  main.KNN_finish(imgOutput1,9000000)
+        result1 =  main.KNN_finish(imgOutput1,9000000)
+
         #result2 = main.KNN_finish(imgOutput2,10000000)
         
         #cv2.imwrite("/home/pi/Documents/VictimImages/" + str(time.time()) + ".png", frame1)
@@ -189,9 +188,9 @@ while cap1.isOpened(): #and cap2.isOpened():
         #print()
             
         if main.Debug:
-                
-            cv2.imshow("frame1",frame1)
-            cv2.imshow("mask",thresh2)
+            pass 
+            #cv2.imshow("frame1",frame1)
+            #cv2.imshow("mask",thresh2)
             #cv2.imshow("imgOutput1",imgOutput1)
             #cv2.imshow("combine",combine)
             #cv2.imshow("frame2",frame2)
