@@ -2,12 +2,12 @@ import cv2
 import letterDetection
 
 cap1 = cv2.VideoCapture(-1)
-#cap2 = cv2.VideoCapture(1)
+cap2 = cv2.VideoCapture(1)
 
-#cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-#cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
-#cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-#cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 
 hsv_lower = {
     0: (150,230,70),
@@ -21,8 +21,8 @@ hsv_upper = {
      2: (50,175,195)
      }
 
-cap1.set(3,cap1.get(3)//4)
-cap1.set(4,cap1.get(4)//4+8)
+#cap1.set(3,cap1.get(3)//4)
+#cap1.set(4,cap1.get(4)//4+8)
 
 print(cap1.get(3))
 print(cap1.get(4))
@@ -32,12 +32,16 @@ print(cap1.get(4))
 while cap1.isOpened(): #and cap2.isOpened():
      
     ret1,frame1 = cap1.read()
-    #ret2,frame2 = cap2.read()
+    ret2,frame2 = cap2.read()
+    
+    frame1 = frame1[:225,:300]
+    frame2 = frame2[:230,20:]
     
     
     
     if ret1 > 0: #and ret2 > 0:
         
+        '''
         gray = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
         blur = cv2.bilateralFilter(gray, 5, 75,75)
         mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15,5)
@@ -49,10 +53,9 @@ while cap1.isOpened(): #and cap2.isOpened():
             cv2.rectangle(frame1, (x,y), (x+w, y+h), (0,255,255),1)
             print(str(w/h))
             print(str(h/w))
-            #0.88, 0.65
+            #0.88, 0.65'''
 
         
-        print
         
         #imgOutput1 = letterDetection.Detection.letterDetect(frame1,"frame1")
         #imgOutput2 = letterDetection.Detection.letterDetect(frame2, "frame2")
@@ -70,7 +73,7 @@ while cap1.isOpened(): #and cap2.isOpened():
 
 
         cv2.imshow("frame1", frame1)
-        cv2.imshow("mask", mask)
+        cv2.imshow("frame2", frame2)
 
     
     if cv2.waitKey(1) == ord('q'):
