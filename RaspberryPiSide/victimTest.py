@@ -17,10 +17,17 @@ class detection():
     def getLetter(self, contour, mask, name):
 
         if len(contour) > 0:
-
+            
             contour = max(contour, key=cv2.contourArea)
+            #print("length" + str(len(contour)))
+            #contour = sorted(contour, key = cv2.contourArea)
+            
+            #for c in contour:
+                #if()
+                
 
-            if cv2.contourArea(contour) > 15:
+
+            if cv2.contourArea(contour) > 0:
 
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
@@ -113,8 +120,8 @@ main = detection()
 cap1 = cv2.VideoCapture(-1)
 #cap2 = cv2.VideoCapture(1)
 
-cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 #cap1.set(cv2.CAP_PROP_FPS, 60)
 
 #cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
@@ -127,7 +134,7 @@ cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
 while cap1.isOpened(): #and cap2.isOpened():
     
     ret1,frame1 = cap1.read()
-    frame1 = frame1[:,:150]
+    #frame1 = frame1[:,:150]
     
     startTime = time.time()
     
@@ -168,8 +175,10 @@ while cap1.isOpened(): #and cap2.isOpened():
         #cv2.imwrite("/home/pi/Documents/VictimImages/" + str(time.time()) + ".png", frame1)
         
         
-        '''if cv2.waitKey(1) == ord(' '):
+        
+        if cv2.waitKey(1) == ord(' '):
             print("Do you like this image?")
+            #cv2.destroyAllWindows()
             cv2.imshow("image_mask",imgOutput1)
             letter = cv2.waitKey(0)
             cv2.destroyAllWindows()
@@ -178,7 +187,7 @@ while cap1.isOpened(): #and cap2.isOpened():
                 #cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + "mask" + str(time.time()) + ".png",imgOutput1)
                 print("saved!")
             else:
-                print("not saved")'''
+                print("not saved")
 
         
         print("Camera1 " + str(result1))
@@ -188,10 +197,11 @@ while cap1.isOpened(): #and cap2.isOpened():
         #print()
             
         if main.Debug:
-            pass 
-            #cv2.imshow("frame1",frame1)
+            #pass 
+            cv2.imshow("frame1",frame1)
             #cv2.imshow("mask",thresh2)
-            #cv2.imshow("imgOutput1",imgOutput1)
+            if imgOutput1 is not None:
+                cv2.imshow("imgOutput1",imgOutput1)
             #cv2.imshow("combine",combine)
             #cv2.imshow("frame2",frame2)
 
