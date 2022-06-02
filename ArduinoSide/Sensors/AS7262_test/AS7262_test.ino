@@ -32,8 +32,9 @@ void setup() {
   while(!Serial);
   
   // initialize digital pin LED_BUILTIN as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
-
+  //pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(7, OUTPUT);
+  digitalWrite(7,HIGH);
   //begin and make sure we can talk to the sensor
   if(!ams.begin()){
     Serial.println("could not connect to sensor! Please check your wiring.");
@@ -45,35 +46,44 @@ void loop() {
 
   //read the device temperature
   uint8_t temp = ams.readTemperature();
+ 
   
   //ams.drvOn(); //uncomment this if you want to use the driver LED for readings
   ams.startMeasurement(); //begin a measurement
   
   //wait till data is available
   bool rdy = false;
-  int time = millis();
+  //int time = millis();
   while(!rdy){
     delay(5);
     rdy = ams.dataReady();
   }
-  time = millis()-time;
-  Serial.print("Time for dataReady: "); Serial.print(time);
+//  time = millis()-time;
+//  Serial.print("Time for dataReady: "); Serial.print(time);
   //ams.drvOff(); //uncomment this if you want to use the driver LED for readings
 
   //read the values!
-  time = millis();
+ // time = millis();
   ams.readRawValues(sensorValues);
-  time = millis() - time;
-  Serial.print(" Time for readRawValues: "); Serial.print(time);
+//  time = millis() - time;
+//  Serial.print(" Time for readRawValues: "); Serial.print(time);
   //ams.readCalibratedValues(calibratedValues);
 
-  Serial.print(" Temp: "); Serial.print(temp);
-  Serial.print(" Violet: "); Serial.print(sensorValues[AS726x_VIOLET]);
-  Serial.print(" Blue: "); Serial.print(sensorValues[AS726x_BLUE]);
-  Serial.print(" Green: "); Serial.print(sensorValues[AS726x_GREEN]);
-  Serial.print(" Yellow: "); Serial.print(sensorValues[AS726x_YELLOW]);
-  Serial.print(" Orange: "); Serial.print(sensorValues[AS726x_ORANGE]);
-  Serial.print(" Red: "); Serial.print(sensorValues[AS726x_RED]);
+  //Serial.print(" Temp: "); Serial.print(temp);
+  uint8_t v=sensorValues[AS726x_VIOLET];
+  uint8_t b=sensorValues[AS726x_BLUE];
+  uint8_t g=sensorValues[AS726x_GREEN];
+  uint8_t y=sensorValues[AS726x_YELLOW];
+  uint8_t o=sensorValues[AS726x_ORANGE];
+  uint8_t r=sensorValues[AS726x_RED];
+  
+  Serial.print(" Violet: "); Serial.print(v);
+  Serial.print(" Blue: "); Serial.print(b);
+  Serial.print(" Green: "); Serial.print(g);
+  Serial.print(" Yellow: "); Serial.print(y);
+  Serial.print(" Orange: "); Serial.print(o);
+  Serial.print(" Red: "); Serial.print(r);
+  Serial.print(" Avg: "); Serial.print((v+b+g+y+o+r)/5);
   Serial.println();
   Serial.println();
 }
