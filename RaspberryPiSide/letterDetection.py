@@ -43,13 +43,13 @@ class Detection:
 
                 imgOutput = np.flip(np.rot90(imgOutput), 0)
 
-                if self.dist(tL, tR) > self.dist(tL, bL):
-                    imgOutput = np.rot90(imgOutput)
+                #if self.dist(tL, tR) > self.dist(tL, bL):
+                    #imgOutput = np.rot90(imgOutput)
 
-                if self.Debug:
+                #if self.Debug:
                     #cv2.imwrite("../RaspberryPiSide/IOFiles/victimImages/" + (time.ctime(IO.startTime) + "/" +  "-" + str(time.time()) + "cut.png"), imgOutput) #edit
                     #cv2.imshow("letter_" + name, imgOutput)
-                    pass
+                    #pass
 
                 # result,dist = self.KNN(imgOutput)
                 return imgOutput  # , invert
