@@ -11,7 +11,7 @@ if config.runMode:
     from PyQt5.QtCore import QThread
 import traceback
 
-class AThread(QThread):
+class AThread():
     def run(self):
         # time calculation
         IO.startTime = time.time()
