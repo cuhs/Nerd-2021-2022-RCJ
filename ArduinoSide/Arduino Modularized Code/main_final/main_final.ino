@@ -2,7 +2,7 @@
 #include "Distance_Sensor.h"
 #include "IMU.h"
 #include "TCA.h"
-#include "TCS.h"
+#include "AS7262.h"
 #include "motors.h"
 #include "rescueServo.h"
 #include "limitswitch.h"
@@ -16,7 +16,7 @@ void setup() {
   Wire.begin();
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
-  setupTCSSensors();
+  setupLightSensors();
   setupSwitches();
 
   // macros

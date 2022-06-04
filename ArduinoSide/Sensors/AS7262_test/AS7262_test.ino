@@ -17,6 +17,11 @@
 
 #include <Wire.h>
 #include "Adafruit_AS726x.h"
+#define TCAADDR 0x70
+
+extern "C" {
+#include "utility/twi.h"  // from Wire library, so we can do bus scanning
+}
 
 //create the object
 Adafruit_AS726x ams;
@@ -26,16 +31,21 @@ uint16_t sensorValues[AS726x_NUM_CHANNELS];
 
 //buffer to hold calibrated values (not used by default in this example)
 //float calibratedValues[AS726x_NUM_CHANNELS];
+void tcaselect(uint8_t i) {
+  if (i > 7) return;
+
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(1 << i);
+  Wire.endTransmission();
+}
 
 void setup() {
   Serial.begin(9600);
   while(!Serial);
   
   // initialize digital pin LED_BUILTIN as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(8, OUTPUT);
-  digitalWrite(8,HIGH);
   //begin and make sure we can talk to the sensor
+  tcaselect(3);
   if(!ams.begin()){
     Serial.println("could not connect to sensor! Please check your wiring.");
     while(1);

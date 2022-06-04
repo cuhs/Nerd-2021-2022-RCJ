@@ -284,11 +284,7 @@ bool triangulation(int left, int right) {
     //Serial.println("Done turn");
     noBlack = goForwardPID(forwardCm);
     //Serial.println("Done forward");
-    if (noBlack) {
-      turnAbsNoVictim(currAngle);
-    } else {
-      turnAbsNoVictim(currAngle);
-    }
+    turnAbsNoVictim(currAngle);
     //Serial.println("Done adjust");
 
     //closer to left wall
@@ -317,14 +313,12 @@ bool triangulation(int left, int right) {
     //Serial.println("Done turn");
     noBlack = goForwardPID(forwardCm);
     //Serial.println("Done forward");
-    if (noBlack) {
-      turnAbsNoVictim(currAngle);
-    } else {
-      turnAbsNoVictim(currAngle);
-    }
+    turnAbsNoVictim(currAngle);
     // Serial.println("Done adjust");
 
   }
+  Serial.print("noBlack: ");
+  Serial.println((int)noBlack);
   return noBlack;
 }
 

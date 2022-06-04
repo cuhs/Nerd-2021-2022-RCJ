@@ -153,6 +153,8 @@ bool goForwardPID(int dist) {
   double pastError = 0;
   double integral = 0;
   int fix = 0;
+  bool whatToReturn = true;
+  int whatTile = 0;
 
   ports[motorEncUse].count = 0;
 
@@ -222,7 +224,9 @@ bool goForwardPID(int dist) {
       }
       return true;
     }
-    if (detectBlack(shouldSendM)) {
+    if(whatToReturn)
+      whatTile = detectTiles(shouldSendM);
+    if (whatTile == 1) {
       while (ports[motorEncUse].count > 0) {
         ports[RIGHT].setMotorSpeed(-80);
         ports[LEFT].setMotorSpeed(-80);
@@ -233,7 +237,16 @@ bool goForwardPID(int dist) {
       Serial2.read();
       delay(1);
       return false;
+    }else if(whatTile==2 && whatToReturn && abs(ports[motorEncUse].count)>=(7*enc)/10){
+      Serial.print("in whatTile==2 ");
+      Serial.println((int)whatToReturn);
+      Serial2.print(';');
+      Serial2.print('t');
+      whatToReturn = false;
+      shouldSendM=false;
     }
+    Serial.print("whatToReturn: ");
+    Serial.println((int)whatToReturn);
     if(shouldSendM && abs(ports[motorEncUse].count)>=(2*enc)/4){
       Serial.println("Sending m");
       shouldSendM = false;
@@ -302,7 +315,7 @@ bool goForwardPID(int dist) {
   delay(10);
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
-  return true;
+  return whatToReturn;
 }
 
 void motorinterruptleft() {

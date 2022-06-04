@@ -164,6 +164,16 @@ void victim() {
           Serial.println("U");
           RGB_color(255, 0, 255, 0, 'R'); // Magenta
           break;
+        case '}':
+          Serial.println("}");
+          if(finishedRamp==1)
+            Serial2.write('u');
+          else if(finishedRamp==2)
+            Serial2.write('d');
+          finishedRamp=0;
+          delay(15);
+          sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
+          break;
         default:
           Serial.print("#2 hmmm wut is this: ");
           Serial.println(incoming_byte);
