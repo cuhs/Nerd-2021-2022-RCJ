@@ -52,6 +52,7 @@ class Detection:
                     #pass
 
                 # result,dist = self.KNN(imgOutput)
+                
                 return imgOutput  # , invert
 
     # process frame and return letter from getLetter

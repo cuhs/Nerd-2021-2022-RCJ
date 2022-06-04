@@ -19,13 +19,6 @@ class detection():
         if len(contour) > 0:
             
             contour = max(contour, key=cv2.contourArea)
-            #print("length" + str(len(contour)))
-            #contour = sorted(contour, key = cv2.contourArea)
-            
-            #for c in contour:
-                #if()
-                
-
 
             if cv2.contourArea(contour) > 0:
 
@@ -97,7 +90,7 @@ class detection():
                         print("Red/Yellow")
                         packages = 1
 
-                    if i == 1:
+                    elif i == 1:
                         print("Green")
                         packages = 0
                         
@@ -136,21 +129,19 @@ while cap1.isOpened(): #and cap2.isOpened():
     ret1,frame1 = cap1.read()
     #frame1 = frame1[:,:150]
     
-    startTime = time.time()
+    #startTime = time.time()
     
-    #frame1 = cv2.imread("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sun May  8 15:52:21 2022/Y-Sun May  8 15:52:34 2022.png")
-    #ret1,frame1 = cap1.read()
     #frame1 = cv2.flip(frame1, 0)
 
     #ret2,frame2 = cap2.read()
     
     #frame1 = frame1[:,:150] #H, W LEFT
     
-    #gray = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
     
-    #blur = cv2.bilateralFilter(gray, 5, 75,75)
+    blur = cv2.bilateralFilter(gray, 5, 75,75)
 
-    #thresh2  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15,5)
+    thresh2  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 21,5)
 
 
     #frame2 = frame2[:,:152] #RIGHT
@@ -158,17 +149,23 @@ while cap1.isOpened(): #and cap2.isOpened():
     if ret1 > 0: #and ret2 > 0:
         
         print(main.colorDetect(frame1,hsv_lower,hsv_upper))
-        print(main.colorDetect(frame1,hsv_lower,hsv_upper))
-
-        #/main.colorDetect(frame2,hsv_lower,hsv_upper)
+        #print(main.colorDetect(frame1,hsv_lower,hsv_upper))
 
         imgOutput1 = main.letterDetect(frame1,"frame1")
-        imgOutput1 = main.letterDetect(frame1,"frame1")
+        #imgOutput1 = main.letterDetect(frame1,"frame1")
 
         #imgOutput2 = main.letterDetect(frame2, "frame2")
         
         result1 =  main.KNN_finish(imgOutput1,9000000)
-        result1 =  main.KNN_finish(imgOutput1,9000000)
+        #result1 =  main.KNN_finish(imgOutput1,9000000)
+        
+        if result1 is not None:
+            print("victim")
+            cv2.imshow("thvictim", thresh2)
+            cv2.imshow("victim", frame1)
+            cv2.waitKey(1000)
+            cv2.destroyAllWindows()
+
 
         #result2 = main.KNN_finish(imgOutput2,10000000)
         
@@ -176,7 +173,7 @@ while cap1.isOpened(): #and cap2.isOpened():
         
         
         
-        if cv2.waitKey(1) == ord(' '):
+        '''if cv2.waitKey(1) == ord(' '):
             print("Do you like this image?")
             #cv2.destroyAllWindows()
             cv2.imshow("image_mask",imgOutput1)
@@ -187,11 +184,11 @@ while cap1.isOpened(): #and cap2.isOpened():
                 #cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + "mask" + str(time.time()) + ".png",imgOutput1)
                 print("saved!")
             else:
-                print("not saved")
+                print("not saved")'''
 
         
-        print("Camera1 " + str(result1))
-        print("Time taken: " + str((time.time()-startTime)))
+        #print("Camera1 " + str(result1))
+        #print("Time taken: " + str((time.time()-startTime)))
         #print("Camera2 " + result2)
         
         #print()
@@ -199,9 +196,10 @@ while cap1.isOpened(): #and cap2.isOpened():
         if main.Debug:
             #pass 
             cv2.imshow("frame1",frame1)
+            cv2.imshow("thresh",thresh2)
             #cv2.imshow("mask",thresh2)
-            if imgOutput1 is not None:
-                cv2.imshow("imgOutput1",imgOutput1)
+            #if imgOutput1 is not None:
+                #cv2.imshow("imgOutput1",imgOutput1)
             #cv2.imshow("combine",combine)
             #cv2.imshow("frame2",frame2)
 
