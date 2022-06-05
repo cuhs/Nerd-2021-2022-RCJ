@@ -139,7 +139,7 @@ def getNextSerialByte():
         display.updateLabels(status="inWaiting")
     msg = ser.read().decode("ascii", "ignore")
     
-    while not(msg in ('d', 'u', ';', 'a', 'b', 'x', 'X', 'm', 's') or msg.isdigit()):
+    while not(msg in ('d', 'u', ';', 'a', 'b', 'x', 'X', 'm', 's', 't') or msg.isdigit()):
         time.sleep(0.1)
         
         if config.importantDebug or config.serialDebug:
@@ -177,7 +177,7 @@ def getSerialData():
             walls[util.tileType] = 4
             msg = getNextSerialByte()
         # checkpoint tile
-        else:
+        elif msg == 't':
             walls[util.tileType] = 2
             msg = getNextSerialByte()                
             if msg == 'a':
