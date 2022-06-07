@@ -163,9 +163,9 @@ void turnAbs(int degree) {
     }
     fix = (int)(PID(error, pastError, integral, 2, 0.005, 0));
     if (fix > 0)
-      fix += 110;
+      fix += 80;
     else
-      fix -= 110;
+      fix -= 80;
     //    Serial.print(fix);
     //    Serial.print("\tEuler: ");
     //    Serial.print(euler.x());
@@ -345,6 +345,14 @@ bool notStable() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   if (abs(euler.y()) > 2)
+    return true;
+  return false;
+}
+
+bool isOnSpeedBump() {
+  tcaselect(7);
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  if (euler.y() > 2)
     return true;
   return false;
 }

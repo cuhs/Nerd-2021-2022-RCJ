@@ -15,5 +15,7 @@ void setupLightSensors();
 int detectTiles(bool);
 int maxSix(int,int,int,int,int,int);
 int minSix(int,int,int,int,int,int);
+int findRange(int,int,int,int,int,int);
+int getRange();
 
 #endif

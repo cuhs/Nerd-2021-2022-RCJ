@@ -8,7 +8,6 @@
 #include "limitswitch.h"
 
 //N E S W --> South always 0
-
 void setup() {
   delay(100);
   Serial.begin(9600);

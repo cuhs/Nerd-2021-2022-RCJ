@@ -17,22 +17,20 @@ int getHeatSensorReadings(char side) {
 
 void doHeatVictim(int leftTemp, int rightTemp) {
   if (leftTemp > (int)mlx.readAmbientTempC() + 4) {
-    ports[LEFT].setMotorSpeed(0);
-    ports[RIGHT].setMotorSpeed(0);
     delay(1);
     Serial2.write('x');
     delay(1);
     while(!Serial2.available());
     char c = Serial2.read();
     if(c=='y'){
+      ports[LEFT].setMotorSpeed(0);
+      ports[RIGHT].setMotorSpeed(0);
       //isHeat = true;
       RGB_color(255,165,0,1,'L');
     }
       //dropKits('L', 1);
   }
   if (rightTemp > (int)mlx.readAmbientTempC() + 4) {
-    ports[LEFT].setMotorSpeed(0);
-    ports[RIGHT].setMotorSpeed(0);
     delay(1);
     Serial2.write('X');
     delay(1);
@@ -40,6 +38,8 @@ void doHeatVictim(int leftTemp, int rightTemp) {
     char c = Serial2.read();
     if(c=='y'){
       //isHeat = true;
+      ports[LEFT].setMotorSpeed(0);
+      ports[RIGHT].setMotorSpeed(0);
       RGB_color(255,165,0,1,'R');
     }
       //dropKits('R', 1);

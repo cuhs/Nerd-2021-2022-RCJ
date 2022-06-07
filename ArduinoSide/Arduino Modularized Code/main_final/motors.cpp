@@ -303,12 +303,15 @@ bool goForwardPID(int dist) {
     Serial.print(' ');
     Serial.println(abs(ports[motorEncUse].count));
 
-
-    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.362, 0.015, 1));
+    
+    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.25, 0.005, 0));
+    int angIncrease = 0;
+    if(isOnSpeedBump())
+      angIncrease = 30;
     //Serial.println(fix);
 
-    ports[RIGHT].setMotorSpeed(fix + 50);
-    ports[LEFT].setMotorSpeed(fix + 50);
+    ports[RIGHT].setMotorSpeed(fix + 50 + angIncrease);
+    ports[LEFT].setMotorSpeed(fix + 50 + angIncrease);
 
   }
   Serial.println("Finished going forward(in motors)");

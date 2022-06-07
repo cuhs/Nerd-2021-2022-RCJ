@@ -40,14 +40,14 @@ void tcaselect(uint8_t i) {
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial3.begin(9600);
   while(!Serial);
   
   // initialize digital pin LED_BUILTIN as an output.
   //begin and make sure we can talk to the sensor
   tcaselect(3);
   if(!ams.begin()){
-    Serial.println("could not connect to sensor! Please check your wiring.");
+    Serial3.println("could not connect to sensor! Please check your wiring.");
     while(1);
   }
     ams.drvOn();
@@ -70,13 +70,13 @@ void loop() {
     rdy = ams.dataReady();
   }
 //  time = millis()-time;
-//  Serial.print("Time for dataReady: "); Serial.print(time);
+//  Serial3.print("Time for dataReady: "); Serial3.print(time);
   //ams.drvOff(); //uncomment this if you want to use the driver LED for readings
 
   //read the values!
   ams.readRawValues(sensorValues);
 
-  //Serial.print(" Temp: "); Serial.print(temp);
+  //Serial3.print(" Temp: "); Serial3.print(temp);
 //  uint8_t v=sensorValues[AS726x_VIOLET];
 //  uint8_t b=sensorValues[AS726x_BLUE];
 //  uint8_t g=sensorValues[AS726x_GREEN];
@@ -84,13 +84,13 @@ void loop() {
 //  uint8_t o=sensorValues[AS726x_ORANGE];
 //  uint8_t r=sensorValues[AS726x_RED];
 //  
-//  Serial.print(" Violet:"); Serial.print(v); Serial.print(" ");
-//  Serial.print(" Blue:"); Serial.print(b); Serial.print(" ");
-//  Serial.print(" Green:"); Serial.print(g); Serial.print(" ");
-//  Serial.print(" Yellow:"); Serial.print(y);Serial.print(" ");
-//  Serial.print(" Orange:"); Serial.print(o); Serial.print(" ");
-//  Serial.print(" Red:"); Serial.print(r); Serial.print(" ");
-//  Serial.print(" Avg:"); Serial.println((v+b+g+y+o+r)/5);
+//  Serial3.print(" Violet:"); Serial3.print(v); Serial3.print(" ");
+//  Serial3.print(" Blue:"); Serial3.print(b); Serial3.print(" ");
+//  Serial3.print(" Green:"); Serial3.print(g); Serial3.print(" ");
+//  Serial3.print(" Yellow:"); Serial3.print(y);Serial3.print(" ");
+//  Serial3.print(" Orange:"); Serial3.print(o); Serial3.print(" ");
+//  Serial3.print(" Red:"); Serial3.print(r); Serial3.print(" ");
+//  Serial3.print(" Avg:"); Serial3.println((v+b+g+y+o+r)/5);
 detectTiles();
 }
 
@@ -111,9 +111,9 @@ void detectTiles(){
   int avg = (v+b+g+y+o+r)/5;
   int range = maxSix(v,b,g,y,o,r)-minSix(v,b,g,y,o,r);
   if(range<=40 && avg <=15)
-    Serial.println("Black detected");
+    Serial3.println("Black detected");
   else if(range >= 150)
-    Serial.println("Silver detected");
+    Serial3.println("Silver detected");
 }
 
 int maxSix(int a, int b, int c, int d, int e, int f){

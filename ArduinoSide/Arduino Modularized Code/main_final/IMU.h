@@ -20,6 +20,7 @@ int isOnRamp();
 bool notStable();
 void displayIMU();
 void turnRight(int);
+bool isOnSpeedBump();
 
 extern int resetPinIMU;
 extern Adafruit_BNO055 bno;
