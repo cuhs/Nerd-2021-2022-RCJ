@@ -21,7 +21,7 @@ class detection():
             contour = max(contour, key=cv2.contourArea)
 
             if cv2.contourArea(contour) > 0:
-
+                
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
                 box = np.float32(box)
@@ -56,7 +56,7 @@ class detection():
     def letterDetect(self, frame, name):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blur = cv2.bilateralFilter(gray, 5, 75,75)
-        mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15,5)
+        mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3)
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         imgOutput = self.getLetter(contours, mask, name)
         return imgOutput
@@ -113,9 +113,8 @@ main = detection()
 cap1 = cv2.VideoCapture(-1)
 #cap2 = cv2.VideoCapture(1)
 
-cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
-#cap1.set(cv2.CAP_PROP_FPS, 60)
+cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
 
 #cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 #cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
@@ -127,6 +126,7 @@ cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 while cap1.isOpened(): #and cap2.isOpened():
     
     ret1,frame1 = cap1.read()
+    #frame1 = frame1[:225,:300]
     #frame1 = frame1[:,:150]
     
     #startTime = time.time()
@@ -141,7 +141,7 @@ while cap1.isOpened(): #and cap2.isOpened():
     
     blur = cv2.bilateralFilter(gray, 5, 75,75)
 
-    thresh2  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 21,5)
+    thresh2  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3) #21, 5
 
 
     #frame2 = frame2[:,:152] #RIGHT
@@ -156,13 +156,15 @@ while cap1.isOpened(): #and cap2.isOpened():
 
         #imgOutput2 = main.letterDetect(frame2, "frame2")
         
-        result1 =  main.KNN_finish(imgOutput1,9000000)
+        result1 =  main.KNN_finish(imgOutput1,10000000)
+        
+        print(str(result1))
         #result1 =  main.KNN_finish(imgOutput1,9000000)
         
         if result1 is not None:
             print("victim")
             cv2.imshow("thvictim", thresh2)
-            cv2.imshow("victim", frame1)
+            #cv2.imshow("victim", frame1)
             cv2.waitKey(1000)
             cv2.destroyAllWindows()
 
@@ -194,9 +196,10 @@ while cap1.isOpened(): #and cap2.isOpened():
         #print()
             
         if main.Debug:
-            #pass 
+            #pass
+            #cv2.waitKey(1000)
             cv2.imshow("frame1",frame1)
-            cv2.imshow("thresh",thresh2)
+            #cv2.imshow("thresh",thresh2)
             #cv2.imshow("mask",thresh2)
             #if imgOutput1 is not None:
                 #cv2.imshow("imgOutput1",imgOutput1)
