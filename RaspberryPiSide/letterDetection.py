@@ -103,18 +103,6 @@ class Detection:
                     else:
                         return None
 
-    def colorDetectRatio(self, frame):
-        b = 0
-        g = 0
-        r = 0
-        
-        for i in frame:
-            # print(i)
-            b += i[0]
-            g += i[1]
-            r += i[2]
-        print(b, g, r)
-
     # return letter and color victims from right camera
     def rightDetectFinal(self,ret,frame):
         if ret > 0:
