@@ -28,6 +28,8 @@ int detectTiles(bool shouldM){
   uint8_t r=sensorValues[AS726x_RED];
   int avg = (v+b+g+y+o+r)/5;
   int range = findRange(v,b,g,y,o,r);
+  if(range>500)
+    return 0;
   if(range<=40 && avg <=15){
     if(shouldM){
       Serial2.write('m');

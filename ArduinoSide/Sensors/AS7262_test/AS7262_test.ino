@@ -40,8 +40,10 @@ void tcaselect(uint8_t i) {
 }
 
 void setup() {
+  
   Serial3.begin(9600);
-  while(!Serial);
+  //while(!Serial3);
+  Wire.begin();
   
   // initialize digital pin LED_BUILTIN as an output.
   //begin and make sure we can talk to the sensor
@@ -51,6 +53,9 @@ void setup() {
     while(1);
   }
     ams.drvOn();
+  for(int i = 0; i < 10; i++){
+    Serial3.println("Im about to start");
+  }
 }
 
 void loop() {
@@ -77,21 +82,22 @@ void loop() {
   ams.readRawValues(sensorValues);
 
   //Serial3.print(" Temp: "); Serial3.print(temp);
-//  uint8_t v=sensorValues[AS726x_VIOLET];
-//  uint8_t b=sensorValues[AS726x_BLUE];
-//  uint8_t g=sensorValues[AS726x_GREEN];
-//  uint8_t y=sensorValues[AS726x_YELLOW];
-//  uint8_t o=sensorValues[AS726x_ORANGE];
-//  uint8_t r=sensorValues[AS726x_RED];
-//  
-//  Serial3.print(" Violet:"); Serial3.print(v); Serial3.print(" ");
-//  Serial3.print(" Blue:"); Serial3.print(b); Serial3.print(" ");
-//  Serial3.print(" Green:"); Serial3.print(g); Serial3.print(" ");
-//  Serial3.print(" Yellow:"); Serial3.print(y);Serial3.print(" ");
-//  Serial3.print(" Orange:"); Serial3.print(o); Serial3.print(" ");
-//  Serial3.print(" Red:"); Serial3.print(r); Serial3.print(" ");
-//  Serial3.print(" Avg:"); Serial3.println((v+b+g+y+o+r)/5);
-detectTiles();
+  uint8_t v=sensorValues[AS726x_VIOLET];
+  uint8_t b=sensorValues[AS726x_BLUE];
+  uint8_t g=sensorValues[AS726x_GREEN];
+  uint8_t y=sensorValues[AS726x_YELLOW];
+  uint8_t o=sensorValues[AS726x_ORANGE];
+  uint8_t r=sensorValues[AS726x_RED];
+  if(maxSix(v,b,g,y,o,r)<500){
+  Serial3.print(" Violet:"); Serial3.print(v); Serial3.print(" ");
+  Serial3.print(" Blue:"); Serial3.print(b); Serial3.print(" ");
+  Serial3.print(" Green:"); Serial3.print(g); Serial3.print(" ");
+  Serial3.print(" Yellow:"); Serial3.print(y);Serial3.print(" ");
+  Serial3.print(" Orange:"); Serial3.print(o); Serial3.print(" ");
+  Serial3.print(" Red:"); Serial3.print(r); Serial3.print(" ");
+  Serial3.print(" Avg:"); Serial3.println((v+b+g+y+o+r)/5);
+  }
+//detectTiles();
 }
 
 void detectTiles(){
