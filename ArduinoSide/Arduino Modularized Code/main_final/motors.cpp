@@ -237,7 +237,7 @@ bool goForwardPID(int dist) {
       Serial2.read();
       delay(1);
       return false;
-    }else if(whatTile==2 && whatToReturn && abs(ports[motorEncUse].count)>=(7*enc)/10){
+    }else if(whatTile==2 && whatToReturn && abs(ports[motorEncUse].count)>=(6*enc)/10){
       Serial.print("in whatTile==2 ");
       Serial.println((int)whatToReturn);
       Serial2.print(';');

@@ -40,7 +40,7 @@ int detectTiles(bool shouldM){
     //Serial2.write(';');
     Serial.println("Saw Black");
     return 1;
-  }else if(range >= 150){
+  }else if(range >= 140){
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
     Serial.println("Saw Silver");
