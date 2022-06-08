@@ -222,5 +222,4 @@ def goOnRamp(cMaze, cTile, cFloor, upRamp, sendMsg=True):
 def victimInPreviousTile(cmFromWall, victimPosition, cmMoved):
     imageCmTotal = math.tan(math.radians(80)) * cmFromWall
     cmFromCamera = ((victimPosition - (config.cameraWidth // 2)) / config.cameraWidth) * imageCmTotal
-    # TODO: adjust range (tile start/stop with bot centered relative to camera position)
     return -15 < cmFromCamera + cmMoved < 15

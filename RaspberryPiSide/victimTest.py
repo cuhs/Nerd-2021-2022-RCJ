@@ -25,6 +25,10 @@ class detection():
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
                 box = np.float32(box)
+                
+                center = rect[0]
+                
+                #print(center)
 
                 s = np.sum(box, axis=1)
                 d = np.diff(box, axis=1)
@@ -51,15 +55,15 @@ class detection():
 
                 # result,dist = self.KNN(imgOutput)
 
-                return imgOutput  # , invert
+                return imgOutput, center  # , invert
 
     def letterDetect(self, frame, name):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blur = cv2.bilateralFilter(gray, 5, 75,75)
         mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3)
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        imgOutput = self.getLetter(contours, mask, name)
-        return imgOutput
+        imgOutput, center = self.getLetter(contours, mask, name)
+        return imgOutput, center
 
     def KNN_finish(self, imgOutput, distLimit):
         if imgOutput is not None:
@@ -151,7 +155,17 @@ while cap1.isOpened(): #and cap2.isOpened():
         print(main.colorDetect(frame1,hsv_lower,hsv_upper))
         #print(main.colorDetect(frame1,hsv_lower,hsv_upper))
 
-        imgOutput1 = main.letterDetect(frame1,"frame1")
+        imgOutput1, center = main.letterDetect(frame1,"frame1")
+        
+        
+        center = np.int32(center)
+        
+        print(center)
+
+
+        cv2.imshow("imgOutput", thresh2)
+        
+        cv2.circle(frame1, center, 2, (255,255,0), -1)
         #imgOutput1 = main.letterDetect(frame1,"frame1")
 
         #imgOutput2 = main.letterDetect(frame2, "frame2")

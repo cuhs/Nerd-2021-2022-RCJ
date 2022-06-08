@@ -26,6 +26,8 @@ class Detection:
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
                 box = np.float32(box)
+                
+                center = rect[0]
 
                 s = np.sum(box, axis=1)
                 d = np.diff(box, axis=1)
@@ -53,7 +55,7 @@ class Detection:
 
                 # result,dist = self.KNN(imgOutput)
                 
-                return imgOutput  # , invert
+                return imgOutput, center  # , invert
 
     # process frame and return letter from getLetter
     def letterDetect(self, frame, name):
@@ -61,18 +63,18 @@ class Detection:
         blur = cv2.bilateralFilter(gray, 5, 75,75)
         mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3)
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        imgOutput = self.getLetter(contours, mask, name)
-        return imgOutput
+        imgOutput, center = self.getLetter(contours, mask, name)
+        return imgOutput, center
 
     # check for letters with KNN
-    def KNN_finish(self, imgOutput, distLimit):
+    def KNN_finish(self, imgOutput, distLimit, center):
         if imgOutput is not None:
             for x in range(4):
                 result, dist = self.KNN.classify(imgOutput)
                 if dist <= distLimit and result is not None:
-                    return result
+                    return result, center
                 imgOutput = np.rot90(imgOutput)
-        return None
+        return None, None
 
     # use HSV to find color victims
     def colorDetectHSV(self, frame, hsv_lower, hsv_upper):
@@ -87,6 +89,8 @@ class Detection:
                 contours = max(contours, key=cv2.contourArea)
 
                 if cv2.contourArea(contours) > 210:
+                    rect = cv2.minAreaRect(contour)
+                    center = rect[0]
                     if i == 0:
                         #print("red")
                         pass
@@ -94,16 +98,17 @@ class Detection:
                         #print("yellow")
                         pass
                     if i == 0 or i == 2:
-                        return "Y"
+                        return "Y", center
                         # packages = 1
 
                     elif i == 1:
-                        return "G"
+                        return "G", center
                         # packages = 0
                     else:
-                        return None
+                        return None, None
 
     # return letter and color victims from right camera
+    #letter center color center 
     def rightDetectFinal(self,ret,frame):
         if ret > 0:
             return self.KNN_finish(self.letterDetect(frame, "frame1"), 1000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
