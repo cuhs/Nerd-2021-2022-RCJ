@@ -14,6 +14,7 @@ void turnTo(int);
 void wiggle(char angle, int, int, int);
 void dropKits(char dir, int amt, int, int, int);
 void victim();
+void victimForward(int);
 void RGB_color(int red_light_value, int green_light_value, int blue_light_value, int, char);
 void turnOnLED(bool,int,int,int);
 

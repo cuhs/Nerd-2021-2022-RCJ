@@ -67,6 +67,8 @@ void dropKits(char dir, int amt, int rVal, int gVal, int bVal) {
 }
 
 void RGB_color(int rVal, int gVal, int bVal, int rescueKits, char dir) {
+  ports[RIGHT].setMotorSpeed(0);
+  ports[LEFT].setMotorSpeed(0);
   if (rescueKits == 0) {
     for (int i = 0; i < 5; i++) {
       turnOnLED(true,rVal,gVal,bVal);
@@ -88,7 +90,6 @@ void RGB_color(int rVal, int gVal, int bVal, int rescueKits, char dir) {
   
   turnOnLED(false,rVal,gVal,bVal);
 }
-
 void victim() {
   if (!isHeat) {
     doHeatVictim(getHeatSensorReadings('L'), getHeatSensorReadings('R'));
@@ -100,9 +101,6 @@ void victim() {
     delay(1);
     Serial.print("Victim Message Received: ");
     Serial.println(incoming_byte);
-    ports[RIGHT].setMotorSpeed(0);
-    ports[LEFT].setMotorSpeed(0);
-
     if (isalpha(incoming_byte)==0 || ((incoming_byte - tolower(incoming_byte))==0 && getSensorReadings(0) < 35) || ((incoming_byte - toupper(incoming_byte))==0 && getSensorReadings(1) < 35)) { //if letter is uppercase
 
       switch (incoming_byte) {
@@ -162,6 +160,129 @@ void victim() {
         //turn right
         case 'u': // 0 kits
           Serial.println("U");
+          RGB_color(255, 0, 255, 0, 'R'); // Magenta
+          break;
+        case '}':
+          Serial.println("}");
+          if(finishedRamp==1)
+            Serial2.write('u');
+          else if(finishedRamp==2)
+            Serial2.write('d');
+          finishedRamp=0;
+          delay(15);
+          sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
+          break;
+        default:
+          Serial.print("#2 hmmm wut is this: ");
+          Serial.println(incoming_byte);
+      }
+    }
+  }
+}
+
+void victimForward(int percentage) {
+  if (!isHeat) {
+    doHeatVictim(getHeatSensorReadings('L'), getHeatSensorReadings('R'));
+  }
+
+  if (Serial2.available()) {
+    delay(1);
+    char incoming_byte = Serial2.read();
+    delay(1);
+    Serial.print("Victim Message Received: ");
+    Serial.println(incoming_byte);
+    if(strchr("YGHSU", incoming_byte) != NULL){
+      int distRight = getSensorReadings(0); 
+      Serial2.write(distRight/10 + '0');
+      Serial2.write(distRight%10 + '0');
+      Serial2.write(percentage/10 + '0');
+      Serial2.write(percentage%10 + '0');
+    }else if(strchr("yghsu", incoming_byte) != NULL){
+      int distLeft = getSensorReadings(1);
+      Serial2.write(distLeft/10 + '0');
+      Serial2.write(distLeft%10 + '0');
+      Serial2.write(percentage/10 + '0');
+      Serial2.write(percentage%10 + '0');
+    }
+    if (isalpha(incoming_byte)==0 || ((incoming_byte - tolower(incoming_byte))==0 && getSensorReadings(0) < 35) || ((incoming_byte - toupper(incoming_byte))==0 && getSensorReadings(1) < 35)) { //if letter is uppercase
+
+      switch (incoming_byte) {
+        case 'Y': // 1 kit
+          Serial.println("red/yellow");
+          while(!Serial2.available());
+          if(Serial2.read()=='y')
+            RGB_color(255, 0, 0, 1, 'R'); // Red
+          //dropKits('R', 1);
+          break;
+
+        case 'G': // 0 kits
+          Serial.println("green");
+          while(!Serial2.available());
+          if(Serial2.read()=='y')
+          RGB_color(0, 255, 0, 0, 'R'); // Green
+          break;
+
+        case 'H': // 3 kits
+          Serial.println("H");
+          while(!Serial2.available());
+          if(Serial2.read()=='y')
+          RGB_color(0, 0, 255, 3, 'R'); // Blue
+          //dropKits('R', 3);
+          break;
+
+        //turn left
+        case 'S': // 2 kits
+          Serial.println("S");
+          while(!Serial2.available());
+          if(Serial2.read()=='y')
+          RGB_color(0, 255, 255, 2, 'R'); // Cyan
+          //dropKits('R', 2);
+          break;
+
+        //turn right
+        case 'U': // 0 kits
+          Serial.println("U");
+          while(!Serial2.available());
+          if(Serial2.read()=='y')
+          RGB_color(255, 0, 255, 0, 'R'); // Magenta
+          break;
+        case 'y': // 1 kit
+          Serial.println("red/yellow");
+          while(!Serial2.available());
+          if(Serial2.read()=='y')
+          RGB_color(255, 0, 0, 1, 'L'); // Red
+          //dropKits('L', 1);
+          break;
+
+        case 'g': // 0 kits
+          Serial.println("green");
+          while(!Serial2.available());
+          if(Serial2.read()=='y')
+          RGB_color(0, 255, 0, 0, 'L'); // Green
+          break;
+
+        case 'h': // 3 kits
+          Serial.println("H");
+          while(!Serial2.available());
+          if(Serial2.read()=='y')
+          RGB_color(0, 0, 255, 3, 'L'); // Blue
+          //dropKits('L', 3);
+          break;
+
+        //turn left
+        case 's': // 2 kits
+          Serial.println("S");
+          while(!Serial2.available());
+          if(Serial2.read()=='y')
+          RGB_color(0, 255, 255, 2, 'L'); // Cyan
+          //dropKits('L', 2);
+          break;
+
+        //turn right
+        case 'u': // 0 kits
+          Serial.println("U");
+          while(!Serial2.available());
+          if(Serial2.read()=='y')
           RGB_color(255, 0, 255, 0, 'R'); // Magenta
           break;
         case '}':

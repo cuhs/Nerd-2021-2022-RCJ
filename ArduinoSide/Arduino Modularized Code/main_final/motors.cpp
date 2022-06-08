@@ -161,7 +161,7 @@ bool goForwardPID(int dist) {
   double enc = ((360 / (D * PI)) * dist);
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5) && !stalling) {
     Serial.println("In go forward PID");
-    victim();
+    victimForward((int)((abs((double)ports[motorEncUse].count)/enc)*100));
     int onRamp = isOnRamp();
     if (onRamp == 1) {
       //      //Serial2.write('u');
