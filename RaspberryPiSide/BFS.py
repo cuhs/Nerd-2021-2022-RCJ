@@ -1,5 +1,3 @@
-import threading
-
 import util
 import sys
 import time
@@ -14,7 +12,6 @@ import inspect
 from vidThread import VideoGet
 import ast
 import os
-from threading import Thread
 
 def setupCams():
     # camera setup

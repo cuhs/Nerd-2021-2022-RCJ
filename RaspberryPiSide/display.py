@@ -147,6 +147,15 @@ def createAllMazeWalls(newImg, cFloor, theFloor):
 def addSpecialTiles(pImg, cFloor, theFloor, target, targetFloor):
     newImg = pImg[cFloor].copy()
 
+    if util.path is not None:
+        for i in range(len(util.path)):
+            if util.path[i][1] == cFloor:
+                xPixel = (util.path[i][0] % config.mazeSideLen) * config.displaySize
+                yPixel = (util.path[i][0] // config.mazeSideLen) * config.displaySize
+                cv2.rectangle(newImg, (xPixel + lineWidth, yPixel + lineWidth),
+                              (xPixel + config.displaySize - lineWidth, yPixel + config.displaySize - lineWidth),
+                              (0, 230, 255), -1)
+
     # parses maze by column
     for x in range(config.mazeSideLen):
         for y in range(config.mazeSideLen):
@@ -160,10 +169,6 @@ def addSpecialTiles(pImg, cFloor, theFloor, target, targetFloor):
             # adds current tile as green
             if tile == util.tile and cFloor == util.floor:
                 cv2.rectangle(newImg, (xPixel + lineWidth, yPixel + lineWidth), (xPixel + config.displaySize - lineWidth, yPixel + config.displaySize - lineWidth), (0, 255, 0), -1)
-            # adds path tiles as yellow
-            if util.path is not None:
-                if (tile, cFloor) in util.path:
-                    cv2.rectangle(newImg, (xPixel + lineWidth, yPixel + lineWidth), (xPixel + config.displaySize - lineWidth, yPixel + config.displaySize - lineWidth), (0, 230, 255), -1)
             # adds target tile as red
             if tile == target and cFloor == targetFloor:
                 cv2.rectangle(newImg, (xPixel + lineWidth, yPixel + lineWidth), (xPixel + config.displaySize - lineWidth, yPixel + config.displaySize - lineWidth), (0, 0, 255), -1)

@@ -2,7 +2,7 @@
 
 mazeSideLen = 20  # must be even
 floorCount = 3  # starts at middle floor
-inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
+inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) * floorCount  # buffer added on setup
 runMode = False  # enables QT interface for running
 
@@ -13,7 +13,7 @@ genFromImage = False  # if false, will generate random maze
 redoLastMaze = False  # allows you to rerun last generated maze, for debugging
 
 showDisplay = True  # 0 no display, 1 is display
-displayRate = 10  # in milliseconds, 0 for until keypress
+displayRate = 1  # in milliseconds, 0 for until keypress
 displaySize = 500  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
 monitorDimensions = (1024, 600)  # (x, y, width, height)
@@ -46,5 +46,3 @@ fpKNN = fpALL + "KNN/"
 fpTXT = fpALL + "IOFiles/"
 fpIMG = fpALL + "IOFiles/"
 fpVIC = fpALL + "IOFiles/victimImages/"
-
-test = 50
