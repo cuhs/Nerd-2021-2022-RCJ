@@ -105,6 +105,7 @@ class AThread(QThread if config.runMode else object):
 
                             # loop through messages and victim checking until movement done
                             while victimMsg != ';':
+                                victimMsg = None
                                 LL, LLP, LC, LCP, RL, RLP, RC, RCP = BFS.searchForVictims()
 
                                 # left letter detected
@@ -159,8 +160,6 @@ class AThread(QThread if config.runMode else object):
                                             util.maze[util.floor][util.tile][util.nVictim + heatDirection] = ord(victimMsg)
                                         else:
                                             IO.sendSerial('n')
-
-                                victimMsg = None
 
                             # if no 'm' was sent, manually update
                             if not didTurn:
@@ -226,6 +225,7 @@ class AThread(QThread if config.runMode else object):
 
                             # loop until movement forward completed
                             while victimMsg != ';':
+                                victimMsg = None
                                 LL, LLP, LC, LCP, RL, RLP, RC, RCP = BFS.searchForVictims()
 
                                 # add victims and their positions
@@ -345,8 +345,6 @@ class AThread(QThread if config.runMode else object):
                                                 display.updateLabels(cTile=util.tile, cFloor=util.floor)
                                             if config.importantDebug or config.serialDebug or config.BFSDebug:
                                                 print("\t\t\t\t\tNOW IN NEXT TILE:" + str(util.tile))
-
-                                victimMsg = None
 
                             # manually update tile if no 'm' received
                             if not wentForward:

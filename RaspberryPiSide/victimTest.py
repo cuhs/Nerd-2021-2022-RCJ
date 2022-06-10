@@ -10,6 +10,8 @@ import letterDetection
 numberOfCams = 1 #number of camera to run
 cap = [None,None] #left, right
 victimDetect = True #true --> tests victim detection, false --> runs camera feed
+width = 160 #camera width
+height = 128 #camera height
 
 #CONFIG_END------------------------------------
 
@@ -17,21 +19,15 @@ victimDetect = True #true --> tests victim detection, false --> runs camera feed
 def initCams():
     if numberOfCams == 1 or numberOfCams == 2:
         cap[0] = cv2.VideoCapture(0)
-        cap[0].set(cv2.SET_PROP_WIDTH)
+        cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+    if numberOfCams == 2:
+        cap[1] = cv2.VideoCapture(1)
+        cap[1].set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        cap[1].set(cv2.CAP_PROP_FRAME_HEIGHT, height)
          
 victimDetecton = letterDetection.Detection()
 
-#cap1 = cv2.VideoCapture(-1)
-#cap2 = cv2.VideoCapture(1)
-
-
-
-#cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-#cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
-
-#total = 0
-#correct = 0
-#start = 0
 
 while cap1.isOpened(): #and cap2.isOpened():
     
