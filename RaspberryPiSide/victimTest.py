@@ -2,127 +2,24 @@ import cv2
 import numpy as np
 import KNN
 import time
-
-global cap1 
-global frame1
-
-cap1 = cv2.VideoCapture(-1)
-
-cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
-
-ret1,frame1 = cap1.read()
-
-class detection():
-
-    def __init__(self):
-
-        self.Debug = True
-        self.size = 30
-        self.KNN = KNN.KNN()
-
-    def dist(self, point1, point2):
-        return np.sqrt(((point1[0] - point2[0]) ** 2) + ((point1[1] - point2[1]) ** 2))
-
-    def getLetter(self, contour, mask, name):
-
-        if len(contour) > 0:
-            
-            contour = sorted(contour, key=cv2.contourArea, reverse = True)
-            
-            for c in contour:
-                rect = cv2.minAreaRect(c)
-                if(rect[1][0]/rect[1][1] < 1.6 and rect[1][0]/rect[1][1] > 0.3):
-                    contour = c
-                    break
-                contour = None
-
-            if contour is not None and cv2.contourArea(contour) > 10:
-                
-                rect = cv2.minAreaRect(contour)
-                box = cv2.boxPoints(rect)
-                box = np.int0(box)
-                
-                cv2.drawContours(frame1, [box], 0, (255,255,0), 3)
-                
-                box = np.float32(box)
-                                
-                center = rect[0]
-                
-                print(rect[1][0]/rect[1][1])
-
-                s = np.sum(box, axis=1)
-                d = np.diff(box, axis=1)
-
-                tL = box[np.argmin(s)]
-                tR = box[np.argmin(d)]
-                bL = box[np.argmax(d)]
-                bR = box[np.argmax(s)]
-
-                pts1 = np.float32([tL, bL, bR, tR])
-                pts2 = np.float32([[0, 0], [self.size, 0], [self.size, self.size], [0, self.size]])
-
-                matrix = cv2.getPerspectiveTransform(pts1, pts2)
-                imgOutput = cv2.warpPerspective(mask, matrix, (self.size, self.size))
-
-                imgOutput = np.flip(np.rot90(imgOutput), 0)
-
-                return imgOutput, center  # , invert
-
-    def letterDetect(self, frame, name):
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        blur = cv2.bilateralFilter(gray, 5, 75,75)
-        mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3)
-        contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        imgOutput, center = self.getLetter(contours, mask, name)
-        return imgOutput, center
-
-    def KNN_finish(self, imgOutput, distLimit):
-        if imgOutput is not None:
-            for x in range(4):
-                result, dist = self.KNN.classify(imgOutput)
-                if dist <= distLimit and result is not None:
-                    return result
-                imgOutput = np.rot90(imgOutput)
-        return None
-
-    def colorDetect(self, frame, hsv_lower, hsv_upper):
-
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-        for i in range(3):
-            mask = cv2.inRange(hsv, hsv_lower[i], hsv_upper[i])
-
-            contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-            if len(contours) > 0:
-
-                contours = max(contours, key=cv2.contourArea)
-
-                if cv2.contourArea(contours) > 210:
-
-                    if i == 0 or i == 2:
-                        print("Red/Yellow")
-                        packages = 1
-
-                    elif i == 1:
-                        print("Green")
-                        packages = 0
-                        
-hsv_lower = {
-    0: (87, 115, 60),
-    1: (40, 30, 50),
-    2: (0, 55, 85)
-}
-
-hsv_upper = {
-     0: (180, 255, 170),
-     1: (100, 150, 155),
-     2: (36, 205, 185)
-}
+import letterDetection
 
 
-main = detection()
+#CONFIG----------------------------------------
+
+numberOfCams = 1 #number of camera to run
+cap = [None,None] #left, right
+victimDetect = True #true --> tests victim detection, false --> runs camera feed
+
+#CONFIG_END------------------------------------
+
+
+def initCams():
+    if numberOfCams == 1 or numberOfCams == 2:
+        cap[0] = cv2.VideoCapture(0)
+        cap[0].set(cv2.SET_PROP_WIDTH)
+         
+victimDetecton = letterDetection.Detection()
 
 #cap1 = cv2.VideoCapture(-1)
 #cap2 = cv2.VideoCapture(1)

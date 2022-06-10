@@ -20,9 +20,16 @@ class Detection:
     # calculate the letter seen by camera, if any
     def getLetter(self, contour, mask, name):
         if len(contour) > 0:
-            contour = max(contour, key=cv2.contourArea)
+            contour = sorted(contour, key=cv2.contourArea, reverse = True)
+            
+             for c in contour:
+                rect = cv2.minAreaRect(c)
+                if(rect[1][0]/rect[1][1] < 1.6 and rect[1][0]/rect[1][1] > 0.3):
+                    contour = c
+                    break
+                contour = None
 
-            if cv2.contourArea(contour) > 0:
+            if contour is not None and cv2.contourArea(contour) > 0:
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
                 box = np.float32(box)
@@ -45,17 +52,7 @@ class Detection:
 
                 imgOutput = np.flip(np.rot90(imgOutput), 0)
 
-                #if self.dist(tL, tR) > self.dist(tL, bL):
-                    #imgOutput = np.rot90(imgOutput)
-
-                #if self.Debug:
-                    #cv2.imwrite("../RaspberryPiSide/IOFiles/victimImages/" + (time.ctime(IO.startTime) + "/" +  "-" + str(time.time()) + "cut.png"), imgOutput) #edit
-                    #cv2.imshow("letter_" + name, imgOutput)
-                    #pass
-
-                # result,dist = self.KNN(imgOutput)
-                
-                return imgOutput, center  # , invert
+                return imgOutput, center 
 
     # process frame and return letter from getLetter
     def letterDetect(self, frame, name):
@@ -120,66 +117,3 @@ class Detection:
             return self.KNN_finish(self.letterDetect(frame, "frame2"), 1000000), self.colorDetectHSV(frame,util.hsv_lower,util.hsv_upper)
         return None, None
     
-# old main below
-'''                       
-hsv_lower = {
-    0: (150,230,70),
-    1: (50,40,85),
-    2: (5,95,160)
-    }
-
-hsv_upper = {
-     0: (179,255,205),
-     1: (90,105,130),
-     2: (50,175,195)
-     }
-main = detection()
-
-cap1 = cv2.VideoCapture(0)
-cap2 = cv2.VideoCapture(1)
-
-cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
-cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
-
-total = 0
-correct = 0
-start = 0
-
-while True:
-    print(main.rightDetectFinal())
-    print(main.leftDetectFinal())
-
-while cap1.isOpened(): #and cap2.isOpened():
-
-    ret1,frame1 = cap1.read()
-    ret2,frame2 = cap2.read()
-                        
-    if ret1 > 0: #and ret2 > 0:
-        #main.colorDetectRatio(frame1)
-        
-        print(str(main.colorDetectHSV(frame1,hsv_lower,hsv_upper)))
-        print(str(main.colorDetectHSV(frame2,hsv_lower,hsv_upper)))
-
-        imgOutput1 = main.letterDetect(frame1,"frame1")
-        imgOutput2 = main.letterDetect(frame2, "frame2")
-        
-        result1 = main.KNN_finish(imgOutput1,10000000)
-        result2 = main.KNN_finish(imgOutput2,10000000)
-            
-        print("Camera1 " + str(result1))
-        print("Camera2 " + str(result2))
-            
-        if main.Debug:
-        
-            cv2.imshow("frame1",frame1)
-            cv2.imshow("frame2",frame2)
-
-            
-        if cv2.waitKey(1) == ord('q'):
-            break
-
-cap1.release()
-cap2.release()
-cv2.destroyAllWindows()'''
