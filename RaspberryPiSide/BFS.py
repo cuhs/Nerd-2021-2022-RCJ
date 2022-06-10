@@ -259,6 +259,10 @@ def loadCheckpoint(checkpoint):
         if config.importantDebug or config.BFSDebug:
             print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
 
+        # LED on/off, wait for 'a'
+        if config.inputMode == 2:
+            IO.setupInput(config.inputMode)
+
         # get walls on startup
         util.maze[util.floor][util.tile] = util.getWalls()
 
@@ -281,61 +285,49 @@ def searchForVictims():
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
 
         # get letter and color victims
-        leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][:,:])
+        LLetterVictim, LLetterPosition, LColorVictim, LColorPosition = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][:,:])
 
         # send and record letter victim
-        if leftLetterVictim is not None:
-            leftLetterVictim = leftLetterVictim.lower()
+        if LLetterVictim is not None:
+            LLetterVictim = LLetterVictim.lower()
             if config.runMode:
-                display.updateLabels(LVictim=leftLetterVictim)
+                display.updateLabels(LVictim=LLetterVictim)
             if config.victimDebug or config.importantDebug:
-                print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
-            if not util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim]:
-                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
-                IO.sendData(config.inputMode, leftLetterVictim)
-                if config.saveVictimDebug:
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:,:])
+                print("\t\t\t\tLETTER VICTIM FOUND: " + LLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
 
         # send and record color victim
-        elif leftColorVictim is not None:
-            leftColorVictim = leftColorVictim.lower()
+        elif LColorVictim is not None:
+            LColorVictim = LColorVictim.lower()
             if config.runMode:
-                display.updateLabels(LVictim=leftColorVictim)
+                display.updateLabels(LVictim=LColorVictim)
             if config.victimDebug or config.importantDebug:
-                print("\t\t\t\tCOLOR VICTIM FOUND: " + leftColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
-            if not util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim]:
-                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
-                IO.sendData(config.inputMode, leftColorVictim)
-                if config.saveVictimDebug:
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:,:])
+                print("\t\t\t\tCOLOR VICTIM FOUND: " + LColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
 
         # check if searching is needed on right camera
         if config.cameraCount == 2:
             # get letter and color victims
-            rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][:,:])
+            RLetterVictim, RLetterPosition, RColorVictim, RColorPosition = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][:,:])
 
             # send and record letter victim
-            if rightLetterVictim is not None:
-                rightLetterVictim = rightLetterVictim.upper()
+            if RLetterVictim is not None:
+                RLetterVictim = RLetterVictim.upper()
                 if config.runMode:
-                    display.updateLabels(RVictim=rightLetterVictim)
+                    display.updateLabels(RVictim=RLetterVictim)
                 if config.victimDebug or config.importantDebug:
-                    print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToRight(util.direction)))
-                if not util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim]:
-                    util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] = ord(rightLetterVictim)
-                    IO.sendData(config.inputMode, rightLetterVictim)
-                    if config.saveVictimDebug:
-                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:,:])
+                    print("\t\t\t\tLETTER VICTIM FOUND: " + RLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToRight(util.direction)))
 
             # send and record color victim
-            elif rightColorVictim is not None:
-                rightColorVictim = rightColorVictim.upper()
+            elif RColorVictim is not None:
+                RColorVictim = RColorVictim.upper()
                 if config.runMode:
-                    display.updateLabels(RVictim=rightColorVictim)
+                    display.updateLabels(RVictim=RColorVictim)
                 if config.victimDebug or config.importantDebug:
-                    print("\t\t\t\tCOLOR VICTIM FOUND: " + rightColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToRight(util.direction)))
-                if not util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim]:
-                    util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] = ord(rightColorVictim)
-                    IO.sendData(config.inputMode, rightColorVictim)
-                    if config.saveVictimDebug:
-                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:,:])
+                    print("\t\t\t\tCOLOR VICTIM FOUND: " + RColorVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToRight(util.direction)))
+
+            if LLetterVictim or LColorVictim or RLetterVictim or RColorVictim:
+                return LLetterVictim, LLetterPosition, LColorVictim, LColorPosition, RLetterVictim, RLetterPosition, RColorVictim, RColorPosition
+
+    return None, None, None, None, None, None, None, None
+
+def saveVictimImage(v):
+    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + v + "-" + time.ctime(time.time()) + ".png"), IO.frame[0 if v.islower() else 1][1][:,:])
