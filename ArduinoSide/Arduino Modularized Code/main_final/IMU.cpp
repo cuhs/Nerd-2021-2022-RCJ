@@ -10,7 +10,7 @@ void initIMU() {
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_IMUPLUS))
   {
     /* There was a problem detecting the BNO055 ... check your connections */
-    Serial.print("Ooops, no BNO055 detected .pp.. Check your wiring or I2C ADDR!");
+    Serial3.print("Ooops, no BNO055 detected .pp.. Check your wiring or I2C ADDR!");
     while (1);
   }
 
@@ -20,7 +20,7 @@ void initIMU() {
 }
 
 void reset() {
-  Serial.println("Resetting.");
+  Serial3.println("Resetting.");
   digitalWrite(resetPinIMU, HIGH);
   digitalWrite(resetPinIMU, LOW);
 
@@ -78,7 +78,7 @@ void displayIMU() {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   while (true) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    Serial.println((int)euler.x());
+    Serial3.println((int)euler.x());
   }
 }
 void turnRight(int degree) {
@@ -90,8 +90,8 @@ void turnRight(int degree) {
   while (error >= 2) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     error = target - euler.x();
-    //      Serial.print("error: ");
-    //      Serial.println(error);
+    //      Serial3.print("error: ");
+    //      Serial3.println(error);
     ports[RIGHT].setMotorSpeed(-150);
     ports[LEFT].setMotorSpeed(150);
   }
@@ -118,7 +118,7 @@ void turnAbs(int degree) {
   int startingError = error;
   bool shouldSendM = true;
   while (abs(error) >= 3 && !stalling) {
-    Serial.println("In turnAbs degrees");
+    Serial3.println("In turnAbs degrees");
     victim();
     tcaselect(7);
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -129,25 +129,25 @@ void turnAbs(int degree) {
     } else if (error < -180)
       error = 360 + error;
     if(shouldSendM && abs(error)<=(7*abs(startingError))/10){
-      Serial.println("Sending m");
+      Serial3.println("Sending m");
       shouldSendM = false;
       delay(1);
       Serial2.write('m');
       delay(1);
     }
     if (ports[LEFT].count == prev_count && !checking) {
-      Serial.println("set start time");
+      Serial3.println("set start time");
       startTime = millis();
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
-      Serial.println("checking false");
+      Serial3.println("checking false");
       checking = false;
     }
     if (ports[LEFT].count == prev_count && !stalling) {
-      Serial.println("motors might be stalling");
+      Serial3.println("motors might be stalling");
       endTime = millis();
       if (endTime - startTime > 1000 && getDirection((int)euler.x()) != -1) {
-        Serial.println("STALLING");
+        Serial3.println("STALLING");
         stalling = true;
       }
     }
@@ -166,14 +166,14 @@ void turnAbs(int degree) {
       fix += 80;
     else
       fix -= 80;
-    //    Serial.print(fix);
-    //    Serial.print("\tEuler: ");
-    //    Serial.print(euler.x());
-    //    Serial.print("\terror: ");
-    //    Serial.println(error);
+    //    Serial3.print(fix);
+    //    Serial3.print("\tEuler: ");
+    //    Serial3.print(euler.x());
+    //    Serial3.print("\terror: ");
+    //    Serial3.println(error);
     ports[RIGHT].setMotorSpeed(-fix);
     ports[LEFT].setMotorSpeed(fix);
-    //Serial.println(euler.x());
+    //Serial3.println(euler.x());
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
@@ -205,18 +205,18 @@ void turnAbsNoVictim(int degree) {
       error = 360 + error;
 
     if (ports[LEFT].count == prev_count && !checking) {
-      Serial.println("set start time");
+      Serial3.println("set start time");
       startTime = millis();
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
-      Serial.println("checking false");
+      Serial3.println("checking false");
       checking = false;
     }
     if (ports[LEFT].count == prev_count && !stalling) {
-      Serial.println("motors might be stalling");
+      Serial3.println("motors might be stalling");
       endTime = millis();
       if (endTime - startTime > 1000 && getDirection((int)euler.x()) != -1) {
-        Serial.println("STALLING");
+        Serial3.println("STALLING");
         stalling = true;
       }
     }
@@ -227,14 +227,14 @@ void turnAbsNoVictim(int degree) {
       fix += 60;
     else
       fix -= 60;
-    //    Serial.print(fix);
-    //    Serial.print("\tEuler: ");
-    //    Serial.print(euler.x());
-    //    Serial.print("\terror: ");
-    //    Serial.println(error);
+    //    Serial3.print(fix);
+    //    Serial3.print("\tEuler: ");
+    //    Serial3.print(euler.x());
+    //    Serial3.print("\terror: ");
+    //    Serial3.println(error);
     ports[RIGHT].setMotorSpeed(-fix);
     ports[LEFT].setMotorSpeed(fix);
-    //Serial.println(euler.x());
+    //Serial3.println(euler.x());
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
@@ -264,28 +264,29 @@ bool triangulation(int left, int right) {
     if (distFromCenter == 0)
       angle = 0;
     else
-      angle = (90 - atan2(30, distFromCenter) * 360 / (2 * 3.1415927));
+      angle = (90 - atan2(30, distFromCenter) * 360 / (2 * PI));
     forwardCm = sqrt(pow(distFromCenter, 2) + 900);
     if(getDirection(euler.x()!=-1))
       currAngle = getDirection(euler.x());
      else
       currAngle = euler.x();
-    //    Serial.print("RIGHT, distFromCenter: ");
-    //    Serial.print(distFromCenter);
-    //    Serial.print(" angle: ");
-    //    Serial.print(angle);
-    //    Serial.print(" forwardCM: ");
-    //    Serial.print(forwardCm);
-    //    Serial.print(" currAng: ");
-    //    Serial.println(currAngle);
+    //    Serial3.print("RIGHT, distFromCenter: ");
+    //    Serial3.print(distFromCenter);
+    //    Serial3.print(" angle: ");
+    //    Serial3.print(angle);
+    //    Serial3.print(" forwardCM: ");
+    //    Serial3.print(forwardCm);
+    //    Serial3.print(" currAng: ");
+    //    Serial3.println(currAngle);
     int ang = currAngle - angle;
     if (ang > 360) ang = ang % 360;
+    if(ang < 0) ang = ang + 360;
     turnAbsNoVictim(ang);
-    //Serial.println("Done turn");
+    //Serial3.println("Done turn");
     noBlack = goForwardPID(forwardCm);
-    //Serial.println("Done forward");
+    //Serial3.println("Done forward");
     turnAbsNoVictim(currAngle);
-    //Serial.println("Done adjust");
+    //Serial3.println("Done adjust");
 
     //closer to left wall
   } else {
@@ -299,26 +300,27 @@ bool triangulation(int left, int right) {
       currAngle = getDirection(euler.x());
      else
       currAngle = euler.x();
-    //    Serial.print("LEFT, distFromCenter: ");
-    //    Serial.print(distFromCenter);
-    //    Serial.print(" angle: ");
-    //    Serial.print(angle);
-    //    Serial.print(" forwardCM: ");
-    //    Serial.print(forwardCm);
-    //    Serial.print(" currAng: ");
-    //    Serial.println(currAngle);
+    //    Serial3.print("LEFT, distFromCenter: ");
+    //    Serial3.print(distFromCenter);
+    //    Serial3.print(" angle: ");
+    //    Serial3.print(angle);
+    //    Serial3.print(" forwardCM: ");
+    //    Serial3.print(forwardCm);
+    //    Serial3.print(" currAng: ");
+    //    Serial3.println(currAngle);
     int ang = currAngle + angle;
     if (ang > 360) ang = ang % 360;
+    if(ang < 0) ang = ang + 360;
     turnAbsNoVictim(ang);
-    //Serial.println("Done turn");
+    //Serial3.println("Done turn");
     noBlack = goForwardPID(forwardCm);
-    //Serial.println("Done forward");
+    //Serial3.println("Done forward");
     turnAbsNoVictim(currAngle);
-    // Serial.println("Done adjust");
+    // Serial3.println("Done adjust");
 
   }
-  Serial.print("noBlack: ");
-  Serial.println((int)noBlack);
+  Serial3.print("noBlack: ");
+  Serial3.println((int)noBlack);
   return noBlack;
 }
 

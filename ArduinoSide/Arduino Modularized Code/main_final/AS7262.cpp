@@ -5,7 +5,7 @@ Adafruit_AS726x ams;
 void setupLightSensors(){
   tcaselect(3);
   if(!ams.begin()){
-    Serial.println("could not connect to sensor! Please check your wiring.");
+    Serial3.println("could not connect to sensor! Please check your wiring.");
     while(1);
   }
   ams.drvOn();
@@ -38,12 +38,12 @@ int detectTiles(bool shouldM){
     Serial2.write('b');
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
-    Serial.println("Saw Black");
+    Serial3.println("Saw Black");
     return 1;
   }else if(range >= 140){
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
-    Serial.println("Saw Silver");
+    Serial3.println("Saw Silver");
     return 2;
   }
   return 0;
