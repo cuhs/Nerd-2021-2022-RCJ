@@ -3,6 +3,16 @@ import numpy as np
 import KNN
 import time
 
+global cap1 
+global frame1
+
+cap1 = cv2.VideoCapture(-1)
+
+cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+
+ret1,frame1 = cap1.read()
+
 class detection():
 
     def __init__(self):
@@ -18,17 +28,28 @@ class detection():
 
         if len(contour) > 0:
             
-            contour = max(contour, key=cv2.contourArea)
+            contour = sorted(contour, key=cv2.contourArea, reverse = True)
+            
+            for c in contour:
+                rect = cv2.minAreaRect(c)
+                if(rect[1][0]/rect[1][1] < 1.6 and rect[1][0]/rect[1][1] > 0.3):
+                    contour = c
+                    break
+                contour = None
 
-            if cv2.contourArea(contour) > 0:
+            if contour is not None and cv2.contourArea(contour) > 10:
                 
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
-                box = np.float32(box)
+                box = np.int0(box)
                 
+                cv2.drawContours(frame1, [box], 0, (255,255,0), 3)
+                
+                box = np.float32(box)
+                                
                 center = rect[0]
                 
-                #print(center)
+                print(rect[1][0]/rect[1][1])
 
                 s = np.sum(box, axis=1)
                 d = np.diff(box, axis=1)
@@ -45,15 +66,6 @@ class detection():
                 imgOutput = cv2.warpPerspective(mask, matrix, (self.size, self.size))
 
                 imgOutput = np.flip(np.rot90(imgOutput), 0)
-
-                #if self.dist(tL, tR) > self.dist(tL, bL):
-                    #imgOutput = np.rot90(imgOutput)
-
-                #if self.Debug:
-                    #cv2.imshow("letter_" + name, imgOutput)
-                    #pass
-
-                # result,dist = self.KNN(imgOutput)
 
                 return imgOutput, center  # , invert
 
@@ -80,7 +92,6 @@ class detection():
 
         for i in range(3):
             mask = cv2.inRange(hsv, hsv_lower[i], hsv_upper[i])
-            #cv2.imshow("mask",mask)
 
             contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -110,15 +121,13 @@ hsv_upper = {
      2: (36, 205, 185)
 }
 
-#path = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sat Apr 30 16:48:05 2022/"
 
 main = detection()
 
-cap1 = cv2.VideoCapture(-1)
+#cap1 = cv2.VideoCapture(-1)
 #cap2 = cv2.VideoCapture(1)
 
-cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
+
 
 #cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 #cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
@@ -139,7 +148,7 @@ while cap1.isOpened(): #and cap2.isOpened():
 
     #ret2,frame2 = cap2.read()
     
-    #frame1 = frame1[:,:150] #H, W LEFT
+    frame1 = frame1[:,:150] #H, W LEFT
     
     gray = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
     
@@ -173,14 +182,16 @@ while cap1.isOpened(): #and cap2.isOpened():
         result1 =  main.KNN_finish(imgOutput1,10000000)
         
         print(str(result1))
+        
+        cv2.imshow("imgOUtput", imgOutput1)
         #result1 =  main.KNN_finish(imgOutput1,9000000)
         
-        if result1 is not None:
+        '''if result1 is not None:
             print("victim")
             cv2.imshow("thvictim", thresh2)
             #cv2.imshow("victim", frame1)
             cv2.waitKey(1000)
-            cv2.destroyAllWindows()
+            cv2.destroyAllWindows()'''
 
 
         #result2 = main.KNN_finish(imgOutput2,10000000)
