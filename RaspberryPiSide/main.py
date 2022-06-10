@@ -239,9 +239,14 @@ class AThread(QThread if config.runMode else object):
                                 elif RC:
                                     victimList.append((RC, RCP))
 
+                                if config.importantDebug or config.victimDebug:
+                                    print("\t\t\t\t\tVICTIM LIST: " + str(victimList))
+
                                 # victim responses
                                 for v in victimList:
                                     # send victim
+                                    if config.importantDebug or config.victimDebug or config.serialDebug:
+                                        print("\t\t\t\t\t\t\tSENDING: " + v[0])
                                     IO.sendSerial(v[0])
 
                                     # get cm from the wall for determining the tile of the victim
@@ -269,6 +274,9 @@ class AThread(QThread if config.runMode else object):
                                         loadingCheckpoint = True
                                         break
                                     cmMoved += int(victimMsg)
+
+                                    if config.importantDebug or config.BFSDebug or config.victimDebug or config.serialDebug:
+                                        print("cm from wall: " + str(cmFromWall) + "cmMoved: " + str(cmMoved))
 
                                     # validate if the victim should be sent
                                     if util.victimInPreviousTile(cmFromWall, v[1], cmMoved) != wentForward and \
