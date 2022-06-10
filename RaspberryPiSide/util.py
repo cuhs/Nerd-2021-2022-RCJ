@@ -222,4 +222,6 @@ def goOnRamp(cMaze, cTile, cFloor, upRamp, sendMsg=True):
 def victimInPreviousTile(cmFromWall, victimPosition, cmMoved):
     imageCmTotal = math.tan(math.radians(80)) * cmFromWall
     cmFromCamera = ((victimPosition - (config.cameraWidth // 2)) / config.cameraWidth) * imageCmTotal
+    if config.importantDebug or config.victimDebug:
+        print("\t\t\t\t\t\t\t\tcmFromCamera: " + cmFromCamera)
     return -15 < cmFromCamera + cmMoved < 15

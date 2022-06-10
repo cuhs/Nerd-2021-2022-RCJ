@@ -1,8 +1,8 @@
 # config file for settings that may differ when debugging, on different systems, etc.
 
-mazeSideLen = 8  # must be even
+mazeSideLen = 20  # must be even
 floorCount = 3  # starts at middle floor
-inputMode = 1  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
+inputMode = 2  # 0 -> manual, 1 -> input or gen from file, 2 -> serial
 recursionLimit = (mazeSideLen ** 2) * floorCount  # buffer added on setup
 runMode = False  # enables QT interface for running
 
