@@ -2,8 +2,6 @@ import cv2
 import numpy as np
 import KNN
 import util
-import IO
-import time
 
 class Detection:
 
@@ -35,7 +33,6 @@ class Detection:
                 box = np.float32(box)
                 
                 center = rect[0][0]
-                #print("center: " + str(center))
 
                 s = np.sum(box, axis=1)
                 d = np.diff(box, axis=1)
@@ -52,8 +49,9 @@ class Detection:
                 imgOutput = cv2.warpPerspective(mask, matrix, (self.size, self.size))
 
                 imgOutput = np.flip(np.rot90(imgOutput), 0)
-
-                return imgOutput, center 
+                return imgOutput, center
+            
+        return None, None
 
     # process frame and return letter from getLetter
     def letterDetect(self, frame, name):
@@ -80,21 +78,14 @@ class Detection:
 
         for i in range(3):
             mask = cv2.inRange(hsv, hsv_lower[i], hsv_upper[i])
-            # cv2.imshow("mask",mask)
 
             contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             if len(contours) > 0:
                 contours = max(contours, key=cv2.contourArea)
 
-                if cv2.contourArea(contours) > 210:
+                if cv2.contourArea(contours) > 210: #210
                     rect = cv2.minAreaRect(contours)
                     center = rect[0][0]
-                    if i == 0:
-                        #print("red")
-                        pass
-                    if i == 2:
-                        #print("yellow")
-                        pass
                     if i == 0 or i == 2:
                         return "Y", center
                         # packages = 1
