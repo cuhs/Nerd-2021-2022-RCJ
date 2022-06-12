@@ -1,7 +1,7 @@
 #include "IMU.h"
 
 int resetPinIMU = A6;
-const int ROBOT_WIDTH = 18;
+const int ROBOT_WIDTH = 19;
 Adafruit_BNO055 bno;
 int finishedRamp = 0;
 
@@ -118,7 +118,7 @@ void turnAbs(int degree) {
   int startingError = error;
   bool shouldSendM = true;
   while (abs(error) >= 3 && !stalling) {
-    Serial3.println("In turnAbs degrees");
+    //Serial3.println("In turnAbs degrees");
     victim();
     tcaselect(7);
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -129,22 +129,22 @@ void turnAbs(int degree) {
     } else if (error < -180)
       error = 360 + error;
     if(shouldSendM && abs(error)<=(7*abs(startingError))/10){
-      Serial3.println("Sending m");
+      //Serial3.println("Sending m");
       shouldSendM = false;
       delay(1);
       Serial2.write('m');
       delay(1);
     }
     if (ports[LEFT].count == prev_count && !checking) {
-      Serial3.println("set start time");
+      //Serial3.println("set start time");
       startTime = millis();
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
-      Serial3.println("checking false");
+      //Serial3.println("checking false");
       checking = false;
     }
     if (ports[LEFT].count == prev_count && !stalling) {
-      Serial3.println("motors might be stalling");
+      //Serial3.println("motors might be stalling");
       endTime = millis();
       if (endTime - startTime > 1000 && getDirection((int)euler.x()) != -1) {
         Serial3.println("STALLING");
@@ -205,15 +205,15 @@ void turnAbsNoVictim(int degree) {
       error = 360 + error;
 
     if (ports[LEFT].count == prev_count && !checking) {
-      Serial3.println("set start time");
+      //Serial3.println("set start time");
       startTime = millis();
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
-      Serial3.println("checking false");
+      //Serial3.println("checking false");
       checking = false;
     }
     if (ports[LEFT].count == prev_count && !stalling) {
-      Serial3.println("motors might be stalling");
+      //Serial3.println("motors might be stalling");
       endTime = millis();
       if (endTime - startTime > 1000 && getDirection((int)euler.x()) != -1) {
         Serial3.println("STALLING");
@@ -247,6 +247,7 @@ bool triangulation(int left, int right) {
   int angle;
   int forwardCm;
   int currAngle;
+  int tileLength = 30;
   bool noBlack = true;
   //no walls
   if (left > 20 && right > 20 || left + ROBOT_WIDTH + right <25) {
@@ -257,10 +258,10 @@ bool triangulation(int left, int right) {
       return false;
     return true;
   }
-
+  
   //closer to right wall
   if (left > right) {
-    distFromCenter = 15 - (right + ROBOT_WIDTH / 2);
+    distFromCenter = (tileLength/2) - (right + ROBOT_WIDTH / 2);
     if (distFromCenter == 0)
       angle = 0;
     else
@@ -290,15 +291,15 @@ bool triangulation(int left, int right) {
 
     //closer to left wall
   } else {
-    distFromCenter = 15 - (left + ROBOT_WIDTH / 2);
+    distFromCenter = (tileLength/2) - (left + ROBOT_WIDTH / 2);
     if (distFromCenter == 0)
       angle = 0;
     else
-      angle = (90 - atan2(30, distFromCenter) * 360 / (2 * 3.1415927));
+      angle = (90-atan2(30, distFromCenter) * 360 / (2 * PI));
     forwardCm = sqrt(pow(distFromCenter, 2) + 900);
     if(getDirection(euler.x()!=-1))
       currAngle = getDirection(euler.x());
-     else
+    else
       currAngle = euler.x();
     //    Serial3.print("LEFT, distFromCenter: ");
     //    Serial3.print(distFromCenter);
@@ -319,8 +320,8 @@ bool triangulation(int left, int right) {
     // Serial3.println("Done adjust");
 
   }
-  Serial3.print("noBlack: ");
-  Serial3.println((int)noBlack);
+//  Serial3.print("noBlack: ");
+//  Serial3.println((int)noBlack);
   return noBlack;
 }
 
