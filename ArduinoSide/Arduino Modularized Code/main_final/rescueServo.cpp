@@ -183,6 +183,14 @@ void victim() {
   }
 }
 
+//stringchr returns pointer to char in string
+bool stringchr(const char *s, char c){
+  for(int i = 0; s[i] != '\0'; i++){
+    if(s[i]==c) return true;
+  }
+  return false;
+}
+
 void victimForward(int percentage) {
   if (!isHeat) {
     doHeatVictim(getHeatSensorReadings('L'), getHeatSensorReadings('R'));
@@ -195,19 +203,32 @@ void victimForward(int percentage) {
     Serial3.print("Victim Message Received: ");
     Serial3.println(incoming_byte);
     
-    if (isalpha(incoming_byte)==0 || ((incoming_byte - tolower(incoming_byte))==0 && getSensorReadings(0) < 35) || ((incoming_byte - toupper(incoming_byte))==0 && getSensorReadings(1) < 35)) { //if letter is uppercase
-      if(strchr("YGHSU", incoming_byte) != NULL){
+    if (!stringchr("YGHSUyghsu", incoming_byte) || (stringchr("yghsu", incoming_byte) && getSensorReadings(1) < 35) || (stringchr("YGHSU", incoming_byte) && getSensorReadings(0) < 35)) { //if letter is uppercase
+      if(stringchr("YGHSU\0", incoming_byte)){
         int distRight = getSensorReadings(0); 
+        Serial3.print("sending the pi pre-victim values: ");
+        Serial3.print(distRight/10 + '0');
+        Serial3.print(distRight%10 + '0');
+        Serial3.print(percentage/10 + '0');
+        Serial3.println(percentage%10 + '0');
         Serial2.write(distRight/10 + '0');
         Serial2.write(distRight%10 + '0');
         Serial2.write(percentage/10 + '0');
         Serial2.write(percentage%10 + '0');
-      }else if(strchr("yghsu", incoming_byte) != NULL){
+      }else if(stringchr("yghsu\0", incoming_byte)){
         int distLeft = getSensorReadings(1);
+        Serial3.print("sending the pi pre-victim values: ");
+        Serial3.print(distLeft/10 + '0');
+        Serial3.print(distLeft%10 + '0');
+        Serial3.print(percentage/10 + '0');
+        Serial3.println(percentage%10 + '0');
         Serial2.write(distLeft/10 + '0');
         Serial2.write(distLeft%10 + '0');
         Serial2.write(percentage/10 + '0');
         Serial2.write(percentage%10 + '0');
+      }else{
+        Serial3.print("incoming_byte: ");
+        Serial3.print(incoming_byte);
       }
       switch (incoming_byte) {
         case 'Y': // 1 kit

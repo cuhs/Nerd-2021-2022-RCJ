@@ -115,11 +115,11 @@ int rampMoveForward(char dir) {
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
   avgAng = avgAng/itCt;
-  //plainGoForward(5);
-  Serial3.print("Angle: ");
-  Serial3.print(avgAng);
-  Serial3.print(" amttravelled: ");
-  Serial3.println(amountTravelled*cos((abs(avgAng)*PI)/180));
+//  //plainGoForward(5);
+//  Serial3.print("Angle: ");
+//  Serial3.print(avgAng);
+//  Serial3.print(" amttravelled: ");
+//  Serial3.println(amountTravelled*cos((abs(avgAng)*PI)/180));
   alignFront();
   
   return amountTravelled*cos((abs(avgAng)*PI)/180);
@@ -174,8 +174,8 @@ bool goForwardPID(int dist) {
       //      finishedRamp=1;
       int amtOfRamp = rampMoveForward('u');
       int beforeEnc = (ports[motorEncUse].count*D*PI)/360;
-      Serial3.print("AmtOfRamp pre down: ");
-      Serial3.println(amtOfRamp);
+//      Serial3.print("AmtOfRamp pre down: ");
+//      Serial3.println(amtOfRamp);
       if(amtOfRamp<40){
         amtOfRamp += rampMoveForward('d');
         if(amtOfRamp%30>=15)
@@ -183,12 +183,12 @@ bool goForwardPID(int dist) {
         amtOfRamp += beforeEnc;
         delay(1);
         Serial2.write('s');
-        Serial3.print(" (amtOfRamp/30)+'0': ");
-        Serial3.print((amtOfRamp/30)+'0');
-        Serial3.print(" (char)(amtOfRamp/30)+'0': ");
-        Serial3.print((char)(amtOfRamp/30)+'0');
-        Serial3.print(" amtOfRamp: ");
-        Serial3.println(amtOfRamp);
+//        Serial3.print(" (amtOfRamp/30)+'0': ");
+//        Serial3.print((amtOfRamp/30)+'0');
+//        Serial3.print(" (char)(amtOfRamp/30)+'0': ");
+//        Serial3.print((char)(amtOfRamp/30)+'0');
+//        Serial3.print(" amtOfRamp: ");
+//        Serial3.println(amtOfRamp);
         Serial2.write((char)(amtOfRamp/30)+'0');
         plainGoForward(5);
         alignFront();
@@ -212,11 +212,11 @@ bool goForwardPID(int dist) {
         if(amtOfRamp%30>=15)
           amtOfRamp+=30;
         amtOfRamp += beforeEnc;
-        Serial3.print(" (amtOfRamp/30)+'0': ");
-        Serial3.print((amtOfRamp/30)+'0');
-        Serial3.print(" (char)(amtOfRamp/30)+'0': ");
-        Serial3.println((char)(amtOfRamp/30)+'0');
-        Serial2.write((char)(amtOfRamp/30)+'0');
+//        Serial3.print(" (amtOfRamp/30)+'0': ");
+//        Serial3.print((amtOfRamp/30)+'0');
+//        Serial3.print(" (char)(amtOfRamp/30)+'0': ");
+//        Serial3.println((char)(amtOfRamp/30)+'0');
+//        Serial2.write((char)(amtOfRamp/30)+'0');
         plainGoForward(5);
         alignFront();
         
@@ -238,15 +238,15 @@ bool goForwardPID(int dist) {
       delay(1);
       return false;
     }else if(whatTile==2 && whatToReturn && abs(ports[motorEncUse].count)>=(6*enc)/10){
-      Serial3.print("in whatTile==2 ");
-      Serial3.println((int)whatToReturn);
+//      Serial3.print("in whatTile==2 ");
+//      Serial3.println((int)whatToReturn);
       Serial2.print(';');
       Serial2.print('t');
       whatToReturn = false;
       shouldSendM=false;
     }
-    Serial3.print("whatToReturn: ");
-    Serial3.println((int)whatToReturn);
+//    Serial3.print("whatToReturn: ");
+//    Serial3.println((int)whatToReturn);
     if(shouldSendM && abs(ports[motorEncUse].count)>=(5*enc)/10){
       Serial3.println("Sending m");
       shouldSendM = false;
@@ -255,8 +255,8 @@ bool goForwardPID(int dist) {
       delay(1);
     }
     char c = obstacleDetect();
-    Serial3.print("obstacleDetect: ");
-    Serial3.println(c);
+//    Serial3.print("obstacleDetect: ");
+//    Serial3.println(c);
     if(c=='l'){
       curEnc = ports[motorEncUse].count;
 //      tcaselect(7);
@@ -281,15 +281,15 @@ bool goForwardPID(int dist) {
       ports[motorEncUse].count = curEnc;
     }
     if (ports[LEFT].count == prev_count && !checking) {
-      Serial3.println("set start time");
+//      Serial3.println("set start time");
       startTime = millis();
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
-      Serial3.println("checking false");
+//      Serial3.println("checking false");
       checking = false;
     }
     if (ports[LEFT].count == prev_count && !stalling) {
-      Serial3.println("motors might be stalling");
+//      Serial3.println("motors might be stalling");
       endTime = millis();
       if (endTime - startTime > 1000) {
         Serial3.println("STALLING");

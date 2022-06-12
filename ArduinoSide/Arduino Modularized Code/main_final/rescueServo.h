@@ -17,5 +17,6 @@ void victim();
 void victimForward(int);
 void RGB_color(int red_light_value, int green_light_value, int blue_light_value, int, char);
 void turnOnLED(bool,int,int,int);
+bool stringchr(const char*, char);
 
 #endif
