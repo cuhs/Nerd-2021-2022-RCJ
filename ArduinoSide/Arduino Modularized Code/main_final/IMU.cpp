@@ -1,7 +1,7 @@
 #include "IMU.h"
 
 int resetPinIMU = A6;
-const int ROBOT_WIDTH = 18;
+const int ROBOT_WIDTH = 19;
 Adafruit_BNO055 bno;
 int finishedRamp = 0;
 
