@@ -9,14 +9,14 @@ import letterDetection
 
 numberOfCams = 2 #number of camera to run
 cap = [None,None] #left, right
-victimDetect = True #true --> tests victim detection, false --> runs camera feed
+victimDetect = False #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
 width = 160 #camera width
 height = 128 #camera height
 cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads, height then width
 cameraCutR = [0, 128, 0, 160]  # right slicing to ignore treads, height then width
-checkFPS = False #true to check frames per second
-showCenter = True #true to show center of the victim, only works if victimDetect is true
+checkFPS = True #true to check frames per second
+showCenter = False #true to show center of the victim, only works if victimDetect is true
 
 
 #CONFIG_END------------------------------------
