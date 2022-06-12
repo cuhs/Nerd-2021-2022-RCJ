@@ -64,16 +64,19 @@ while (numberOfCams == 1 and cap[0].isOpened()) or (numberOfCams == 2 and cap[1]
                     cv2.line(frameL,(np.int0(colorCL),cameraCutL[0]),(np.int0(colorCL),cameraCutL[1]), 3)
             else:
                 print("Left Camera: No color detected")
+                
         if numberOfCams == 2:
             letterR, letterCR, colorR, colorCR = vD.leftDetectFinal(retR, frameR)
             if letterR is not None:
                 print("Right Camera: Letter is " + str(letterR) + " at x-position " + str(np.int0(letterCR)))
-                cv2.line(frameR,(np.int0(letterCR),cameraCutR[0]),(np.int0(letterCR),cameraCutR[1]), 3)
+                if showCenter:
+                    cv2.line(frameR,(np.int0(letterCR),cameraCutR[0]),(np.int0(letterCR),cameraCutR[1]), 3)
             else:
                 print("Right Camera: No letter detected")
             if colorR is not None:
                 print("Right Camera: Color is " + str(colorR) + " at x-position " + str(np.int0(colorCR)))
-                cv2.line(frameR,(np.int0(colorCR),cameraCutR[0]),(np.int0(colorCR),cameraCutR[1]), 3)
+                if showCenter:
+                    cv2.line(frameR,(np.int0(colorCR),cameraCutR[0]),(np.int0(colorCR),cameraCutR[1]), 3)
             else:
                 print("Right Camera: No color detected")
 
