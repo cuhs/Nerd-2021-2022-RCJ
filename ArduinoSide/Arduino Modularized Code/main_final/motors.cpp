@@ -160,7 +160,7 @@ bool goForwardPID(int dist) {
 
   double enc = ((360 / (D * PI)) * dist);
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5) && !stalling) {
-    Serial3.println("In go forward PID");
+    //Serial3.println("In go forward PID");
     victim();
     int onRamp = isOnRamp();
     if (onRamp == 1) {
@@ -292,16 +292,16 @@ bool goForwardPID(int dist) {
 //      Serial3.println("motors might be stalling");
       endTime = millis();
       if (endTime - startTime > 1000) {
-        Serial3.println("STALLING");
+        //Serial3.println("STALLING");
         stalling = true;
       }
     }
     prev_count = ports[LEFT].count;
-    Serial3.print(enc);
-    Serial3.print(' ');
-    Serial3.print(getSensorReadings(2));
-    Serial3.print(' ');
-    Serial3.println(abs(ports[motorEncUse].count));
+    //Serial3.print(enc);
+    //Serial3.print(' ');
+    //Serial3.print(getSensorReadings(2));
+    //Serial3.print(' ');
+    //Serial3.println(abs(ports[motorEncUse].count));
 
     
     fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.25, 0.005, 0));
@@ -314,7 +314,7 @@ bool goForwardPID(int dist) {
     ports[LEFT].setMotorSpeed(fix + 50 + angIncrease);
 
   }
-  Serial3.println("Finished going forward(in motors)");
+  //Serial3.println("Finished going forward(in motors)");
   delay(10);
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);

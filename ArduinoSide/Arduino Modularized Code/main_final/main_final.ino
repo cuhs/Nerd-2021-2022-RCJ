@@ -87,7 +87,7 @@ void loop() {
         Serial3.println(';');
         }
         //isHeat = false;
-        Serial3.println("finished going forward");
+        //Serial3.println("finished going forward");
         break;
         
       case 'L':

@@ -147,7 +147,7 @@ void turnAbs(int degree) {
       //Serial3.println("motors might be stalling");
       endTime = millis();
       if (endTime - startTime > 1000 && getDirection((int)euler.x()) != -1) {
-        Serial3.println("STALLING");
+        //Serial3.println("STALLING");
         stalling = true;
       }
     }
@@ -216,7 +216,7 @@ void turnAbsNoVictim(int degree) {
       //Serial3.println("motors might be stalling");
       endTime = millis();
       if (endTime - startTime > 1000 && getDirection((int)euler.x()) != -1) {
-        Serial3.println("STALLING");
+        //Serial3.println("STALLING");
         stalling = true;
       }
     }

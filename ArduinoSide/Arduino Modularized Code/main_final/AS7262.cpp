@@ -38,12 +38,12 @@ int detectTiles(bool shouldM){
     Serial2.write('b');
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
-    Serial3.println("Saw Black");
+    //Serial3.println("Saw Black");
     return 1;
   }else if(range >= 140){
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
-    Serial3.println("Saw Silver");
+    //Serial3.println("Saw Silver");
     return 2;
   }
   return 0;

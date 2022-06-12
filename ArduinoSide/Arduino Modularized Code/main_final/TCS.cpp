@@ -51,7 +51,7 @@ bool detectBlack(bool shouldM) {
     Serial2.write('b');
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
-    Serial3.println("Saw Black");
+    //Serial3.println("Saw Black");
     return true;
   }
   return false;
