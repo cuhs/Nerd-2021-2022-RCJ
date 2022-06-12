@@ -11,7 +11,7 @@ void turnTo(int dir) {
 }
 
 void wiggle(int angle, int wiggleAmt, int rVal, int gVal, int bVal) { //1200 ms
-  Serial3.println("In wiggle");
+  //Serial3.println("In wiggle");
   bool isOn = false;
   for (int i = 1; i < wiggleAmt; i++) {
     if(i%2==1){
@@ -22,7 +22,7 @@ void wiggle(int angle, int wiggleAmt, int rVal, int gVal, int bVal) { //1200 ms
     myservo.write(angle + i);
     delay(100);
   }
-  Serial3.println("Done wiggle");
+  //Serial3.println("Done wiggle");
 }
 
 void turnOnLED(bool lightUp, int rVal, int gVal, int bVal){
@@ -39,7 +39,7 @@ void turnOnLED(bool lightUp, int rVal, int gVal, int bVal){
 }
 
 void dropKits(char dir, int amt, int rVal, int gVal, int bVal) {
-  Serial3.println("In dropKits");
+  //Serial3.println("In dropKits");
   myservo.attach(A7, 550, 2600); // attaches the servo on pin A7 to the servo object
   if (dir == 'L') {
     for (int i = 0; i < amt; i++) {
@@ -63,7 +63,7 @@ void dropKits(char dir, int amt, int rVal, int gVal, int bVal) {
   myservo.write(C_angle);
   wiggle(C_angle, 5, rVal, gVal, bVal); //1200ms
   myservo.detach();
-  Serial3.println("Done dropKits");
+  //Serial3.println("Done dropKits");
 }
 
 void RGB_color(int rVal, int gVal, int bVal, int rescueKits, char dir) {
