@@ -102,7 +102,8 @@ class Detection:
     def rightDetectFinal(self,ret,frame):
         if ret > 0:
             imgOutput, center = self.letterDetect(frame,"frame1")
-            letter, letter_center  = self.KNN_finish(imgOutput, center, 1000000)
+            cv2.imshow("imgOutputR", imgOutput)
+            letter, letter_center  = self.KNN_finish(imgOutput, center, 10000000)
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
             return letter, letter_center, color, color_center
         return None, None, None, None
@@ -111,7 +112,8 @@ class Detection:
     def leftDetectFinal(self,ret,frame):
         if ret > 0:
             imgOutput, center = self.letterDetect(frame,"frame2")
-            letter, letter_center  = self.KNN_finish(imgOutput, center, 1000000)
+            cv2.imshow("imgOutputL", imgOutput)
+            letter, letter_center  = self.KNN_finish(imgOutput, center, 10000000)
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
             return letter, letter_center, color, color_center
         return None, None, None, None
