@@ -105,7 +105,6 @@ class AThread(QThread if config.runMode else object):
 
                             # loop through messages and victim checking until movement done
                             while victimMsg != ';':
-                                victimMsg = None
                                 LL, LLP, LC, LCP, RL, RLP, RC, RCP = BFS.searchForVictims()
 
                                 # left letter detected
@@ -160,6 +159,8 @@ class AThread(QThread if config.runMode else object):
                                             util.maze[util.floor][util.tile][util.nVictim + heatDirection] = ord(victimMsg)
                                         else:
                                             IO.sendSerial('n')
+
+                                victimMsg = None
 
                             # if no 'm' was sent, manually update
                             if not didTurn:
@@ -225,7 +226,6 @@ class AThread(QThread if config.runMode else object):
 
                             # loop until movement forward completed
                             while victimMsg != ';':
-                                victimMsg = None
                                 LL, LLP, LC, LCP, RL, RLP, RC, RCP = BFS.searchForVictims()
 
                                 # add victims and their positions
@@ -239,9 +239,47 @@ class AThread(QThread if config.runMode else object):
                                 elif RC:
                                     victimList.append((RC, RCP))
 
-                                if config.importantDebug or config.victimDebug:
-                                    print("\t\t\t\t\tVICTIM LIST: " + str(victimList))
-                                    
+                                # victim responses
+                                for v in victimList:
+                                    # send victim
+                                    IO.sendSerial(v[0])
+
+                                    # get cm from the wall for determining the tile of the victim
+                                    victimMsg = IO.getNextSerialByte()
+                                    if victimMsg == '_':
+                                        continue
+                                    if victimMsg == 'a':
+                                        loadingCheckpoint = True
+                                        break
+                                    cmFromWall = int(victimMsg) * 10
+                                    victimMsg = IO.getNextSerialByte()
+                                    if victimMsg == 'a':
+                                        loadingCheckpoint = True
+                                        break
+                                    cmFromWall += int(victimMsg)
+
+                                    # get cm moved for determining the tile of the victim
+                                    victimMsg = IO.getNextSerialByte()
+                                    if victimMsg == 'a':
+                                        loadingCheckpoint = True
+                                        break
+                                    cmMoved = int(victimMsg) * 10
+                                    victimMsg = IO.getNextSerialByte()
+                                    if victimMsg == 'a':
+                                        loadingCheckpoint = True
+                                        break
+                                    cmMoved += int(victimMsg)
+
+                                    # validate if the victim should be sent
+                                    if util.victimInPreviousTile(cmFromWall, v[1], cmMoved) != wentForward and \
+                                            not util.maze[util.floor][util.tile][(util.dirToLeft(util.direction) if v[0].islower() else util.dirToRight(util.direction)) + util.nVictim]:
+                                        util.maze[util.floor][util.tile][(util.dirToLeft(util.direction) if v[0].islower() else util.dirToRight(util.direction)) + util.nVictim] = ord(v[0])
+                                        if config.saveVictimDebug:
+                                            BFS.saveVictimImage(v[0])
+                                        IO.sendSerial('y')
+                                    else:
+                                        IO.sendSerial('n')
+
                                 if IO.ser.in_waiting:
                                     victimMsg = IO.getNextSerialByte()
                                     if victimMsg == 'a':
@@ -300,51 +338,7 @@ class AThread(QThread if config.runMode else object):
                                             if config.importantDebug or config.serialDebug or config.BFSDebug:
                                                 print("\t\t\t\t\tNOW IN NEXT TILE:" + str(util.tile))
 
-                                # victim responses
-                                for v in victimList:
-                                    # send victim
-                                    if config.importantDebug or config.victimDebug or config.serialDebug:
-                                        print("\t\t\t\t\t\t\tSENDING: " + v[0])
-                                    IO.sendSerial(v[0])
-
-                                    # get cm from the wall for determining the tile of the victim
-                                    victimMsg = IO.getNextSerialByte()
-                                    if victimMsg == '_':
-                                        continue
-                                    if victimMsg == 'a':
-                                        loadingCheckpoint = True
-                                        break
-                                    cmFromWall = int(victimMsg) * 10
-                                    victimMsg = IO.getNextSerialByte()
-                                    if victimMsg == 'a':
-                                        loadingCheckpoint = True
-                                        break
-                                    cmFromWall += int(victimMsg)
-
-                                    # get cm moved for determining the tile of the victim
-                                    victimMsg = IO.getNextSerialByte()
-                                    if victimMsg == 'a':
-                                        loadingCheckpoint = True
-                                        break
-                                    cmMoved = int(victimMsg) * 10
-                                    victimMsg = IO.getNextSerialByte()
-                                    if victimMsg == 'a':
-                                        loadingCheckpoint = True
-                                        break
-                                    cmMoved += int(victimMsg)
-
-                                    if config.importantDebug or config.BFSDebug or config.victimDebug or config.serialDebug:
-                                        print("cm from wall: " + str(cmFromWall) + "cmMoved: " + str(cmMoved))
-
-                                    # validate if the victim should be sent
-                                    if util.victimInPreviousTile(cmFromWall, v[1], cmMoved) != wentForward and \
-                                            not util.maze[util.floor][util.tile][(util.dirToLeft(util.direction) if v[0].islower() else util.dirToRight(util.direction)) + util.nVictim]:
-                                        util.maze[util.floor][util.tile][(util.dirToLeft(util.direction) if v[0].islower() else util.dirToRight(util.direction)) + util.nVictim] = ord(v[0])
-                                        if config.saveVictimDebug:
-                                            BFS.saveVictimImage(v[0])
-                                        IO.sendSerial('y')
-                                    else:
-                                        IO.sendSerial('n')
+                                victimMsg = None
 
                             # manually update tile if no 'm' received
                             if not wentForward:
