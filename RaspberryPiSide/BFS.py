@@ -281,7 +281,7 @@ def searchForVictims():
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
 
         # get letter and color victims
-        leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][:,:])
+        leftLetterVictim, leftLetterCenter, leftColorVictim, leftColorCenter = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][:,:])
 
         # send and record letter victim
         if leftLetterVictim is not None:
@@ -312,7 +312,7 @@ def searchForVictims():
         # check if searching is needed on right camera
         if config.cameraCount == 2:
             # get letter and color victims
-            rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][:,:])
+            rightLetterVictim, rightLetterCenter, rightColorVictim, rightColorCenter = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][:,:])
 
             # send and record letter victim
             if rightLetterVictim is not None:

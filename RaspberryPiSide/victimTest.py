@@ -11,46 +11,52 @@ numberOfCams = 2 #number of camera to run
 cap = [None,None] #left, right
 victimDetect = False #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
+fullDetect = True #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 width = 160 #camera width
 height = 128 #camera height
 cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads, height then width
 cameraCutR = [0, 128, 0, 160]  # right slicing to ignore treads, height then width
-checkFPS = True #true to check frames per second
+checkFPS = False #true to check frames per second
 showCenter = False #true to show center of the victim, only works if victimDetect is true
-
+path = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Tue Jun 14 17:00:13 2022/u-Tue Jun 14 17:00:22 2022.png" #set to None if not testing an image
+threshParam = [17,3]
 
 #CONFIG_END------------------------------------
 
 
 def initCams():
-    if numberOfCams == 1 or numberOfCams == 2:
+    if numberOfCams == 1 or numberOfCams == 2 and path is None:
         cap[0] = cv2.VideoCapture(0)
         cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, width)
         cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-    if numberOfCams == 2:
+    if numberOfCams == 2 and path is None:
         cap[1] = cv2.VideoCapture(1)
         cap[1].set(cv2.CAP_PROP_FRAME_WIDTH, width)
         cap[1].set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        
         
          
 vD = letterDetection.Detection()
 
 initCams()
 
-while (numberOfCams == 1 and cap[0].isOpened()) or (numberOfCams == 2 and cap[1].isOpened()):
+while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (numberOfCams == 2 and cap[1].isOpened()):
     
-    if numberOfCams == 1 or numberOfCams == 2:
+    if numberOfCams == 1 or numberOfCams == 2 and path is None:
         retL, frameL = cap[0].read()
         frameL = frameL[cameraCutL[0]:cameraCutL[1],cameraCutL[2]:cameraCutL[3]]
-    if numberOfCams == 2:
+    if numberOfCams == 2 and path is None:
         retR, frameR = cap[1].read()
         frameR = frameR[cameraCutR[0]:cameraCutR[1],cameraCutR[2]:cameraCutR[3]]
+    if path is not None:
+        frame = cv2.imread(path)
+        dim = frame.shape
     
     if checkFPS:
         startTime = time.time()
         
     if victimDetect:
-        if numberOfCams == 1 or numberOfCams == 2:
+        if numberOfCams == 1 or numberOfCams == 2 and path is None:
             letterL, letterCL, colorL, colorCL = vD.leftDetectFinal(retL, frameL)
             if letterL is not None:
                 print("Left Camera: Letter is " + str(letterL) + " at x-position " + str(np.int0(letterCL)))
@@ -65,7 +71,7 @@ while (numberOfCams == 1 and cap[0].isOpened()) or (numberOfCams == 2 and cap[1]
             else:
                 print("Left Camera: No color detected")
                 
-        if numberOfCams == 2:
+        if numberOfCams == 2 and path is None:
             letterR, letterCR, colorR, colorCR = vD.leftDetectFinal(retR, frameR)
             if letterR is not None:
                 print("Right Camera: Letter is " + str(letterR) + " at x-position " + str(np.int0(letterCR)))
@@ -79,21 +85,63 @@ while (numberOfCams == 1 and cap[0].isOpened()) or (numberOfCams == 2 and cap[1]
                     cv2.line(frameR,(np.int0(colorCR),cameraCutR[0]),(np.int0(colorCR),cameraCutR[1]), 3)
             else:
                 print("Right Camera: No color detected")
+                
+        if path is not None:
+            letter, letterC, color, colorC = vD.leftDetectFinal(1,frame)
+            if letter is not None:
+                print("Path: Letter is " + str(letter) + " at x-position " + str(np.int0(letterC)))
+                if showCenter:
+                    cv2.line(frame,(np.int0(letterC),0),(np.int0(letterC),dim[0]), 3)
+            else:
+                print("Path: No letter detected")
+            if color is not None:
+                print("Path: Color is " + str(color) + " at x-position " + str(np.int0(colorC)))
+                if showCenter:
+                    cv2.line(frameR,(np.int0(colorC),0),(np.int0(colorC),dim[0]), 3)
+            else:
+                print("Path: No color detected")
+
+    if fullDetect:
+        if numberOfCams == 1 or numberOfCams == 2 and path is None:
+            grayL = cv2.cvtColor(frameL, cv2.COLOR_BGR2GRAY)
+            blurL = cv2.bilateralFilter(grayL, 5, 75, 75)
+            threshL = cv2.adaptiveThreshold(blurL,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
+            imgOutputL, cL = vD.letterDetect(frameL, "frameL") 
+            
+        if numberOfCams == 2 and path is None:
+            grayR = cv2.cvtColor(frameR, cv2.COLOR_BGR2GRAY)
+            blurR = cv2.bilateralFilter(grayR, 5, 75, 75)
+            threshR = cv2.adaptiveThreshold(blurR,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
+            imgOutputR, cR = vD.letterDetect(frameR, "frameR")
+            
+        if path is not None:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            blur = cv2.bilateralFilter(gray, 5, 75, 75)
+            thresh = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
+            imgOutput, c = vD.letterDetect(frame, "frame")
+            
+
 
     if showFrames:
-        if numberOfCams == 1 or numberOfCams == 2:
+        if numberOfCams == 1 or numberOfCams == 2 and path is None:
             if retL > 0:
                 cv2.imshow("frameL", frameL)
-        if numberOfCams == 2:
+        if numberOfCams == 2 and path is None:
             if retR > 0:
                 cv2.imshow("frameR", frameR)
-
+        if path is not None:
+            cv2.imshow("pathImage",frame)
+        if fullDetect:
+            if numberOfCams == 1 or numberOfCams == 2 and path is None:
+                cv2.imshow("threshL", threshL)
+                cv2.imshow("imgOutputL", imgOutputL)
+            if numberOfCams == 2 and path is None:
+                cv2.imshow("threshR", threshR)
+                cv2.imshow("imgOutputR", imgOutputR)
+            if path is not None:
+                cv2.imshow("thresh", thresh)
+                cv2.imshow("imgOutput", imgOutput)
     
-    '''gray = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
-    
-    blur = cv2.bilateralFilter(gray, 5, 75,75)
-
-    thresh2  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3) #21, 5'''
                             
     '''if result1 is not None:
         print("victim")
