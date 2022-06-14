@@ -155,6 +155,8 @@ bool goForwardPID(int dist) {
   int fix = 0;
   bool whatToReturn = true;
   int whatTile = 0;
+  bool seesSilver = false;
+  bool isSilver = false;
 
   ports[motorEncUse].count = 0;
 
@@ -217,6 +219,7 @@ bool goForwardPID(int dist) {
 //        Serial3.print(" (char)(amtOfRamp/30)+'0': ");
 //        Serial3.println((char)(amtOfRamp/30)+'0');
 //        Serial2.write((char)(amtOfRamp/30)+'0');
+        Serial2.write((char)(amtOfRamp/30)+'0');
         plainGoForward(5);
         alignFront();
         
@@ -225,8 +228,13 @@ bool goForwardPID(int dist) {
       return true;
     }
     if(whatToReturn)
-      whatTile = detectTiles(shouldSendM);
+      whatTile = detectTiles();
     if (whatTile == 1) {
+      if(shouldSendM){
+        Serial2.write('m');
+      }
+      Serial2.write(';');
+      Serial2.write('b');
       while (ports[motorEncUse].count > 0) {
         ports[RIGHT].setMotorSpeed(-80);
         ports[LEFT].setMotorSpeed(-80);
@@ -237,13 +245,20 @@ bool goForwardPID(int dist) {
       Serial2.read();
       delay(1);
       return false;
-    }else if(whatTile==2 && whatToReturn && abs(ports[motorEncUse].count)>=(6*enc)/10){
+    }else if(!seesSilver && whatTile==2 && whatToReturn && abs(ports[motorEncUse].count)>=(6*enc)/10){// speed bump - turns slightly to make sure it is silver and not speed bump
 //      Serial3.print("in whatTile==2 ");
 //      Serial3.println((int)whatToReturn);
-      Serial2.print(';');
-      Serial2.print('t');
-      whatToReturn = false;
-      shouldSendM=false;
+      seesSilver = true;
+      tcaselect(7);
+      imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+      int theCurrAngle = euler.x();
+      turnAbsNoVictim((theCurrAngle + 30)%360);
+      if(detectTiles() == 2){
+        isSilver = true;
+        whatToReturn = false;
+        shouldSendM=false;
+      }
+      turnAbsNoVictim(theCurrAngle);
     }
 //    Serial3.print("whatToReturn: ");
 //    Serial3.println((int)whatToReturn);
@@ -292,7 +307,7 @@ bool goForwardPID(int dist) {
 //      Serial3.println("motors might be stalling");
       endTime = millis();
       if (endTime - startTime > 1000) {
-        //Serial3.println("STALLING");
+        Serial3.println("STALLING");
         stalling = true;
       }
     }
@@ -316,6 +331,11 @@ bool goForwardPID(int dist) {
   }
   //Serial3.println("Finished going forward(in motors)");
   delay(10);
+  if(isSilver){
+    Serial3.print("sending t");
+    Serial2.write(';');
+    Serial2.write('t');
+  }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
   return whatToReturn;

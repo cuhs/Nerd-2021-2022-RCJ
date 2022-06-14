@@ -11,7 +11,7 @@ void setupLightSensors(){
   ams.drvOn();
 }
 
-int detectTiles(bool shouldM){
+int detectTiles(){
   tcaselect(3);
   ams.startMeasurement();
   bool rdy=false;
@@ -31,16 +31,11 @@ int detectTiles(bool shouldM){
   if(range>500)
     return 0;
   if(range<=40 && avg <=15){
-    if(shouldM){
-      Serial2.write('m');
-    }
-    Serial2.write(';');
-    Serial2.write('b');
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
     //Serial3.println("Saw Black");
     return 1;
-  }else if(range >= 140){
+  }else if(range >= 150){
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
     //Serial3.println("Saw Silver");
