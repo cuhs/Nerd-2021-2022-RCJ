@@ -12,7 +12,7 @@ extern Adafruit_AS726x ams;
 extern uint16_t sensorValues[AS726x_NUM_CHANNELS];
 
 void setupLightSensors();
-int detectTiles(bool);
+int detectTiles();
 int maxSix(int,int,int,int,int,int);
 int minSix(int,int,int,int,int,int);
 int findRange(int,int,int,int,int,int);
