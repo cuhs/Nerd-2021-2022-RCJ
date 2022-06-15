@@ -20,6 +20,7 @@ int isOnRamp();
 bool notStable();
 void displayIMU();
 void turnRight(int);
+bool isNearTarget(int, int);
 bool isOnSpeedBump();
 
 extern int resetPinIMU;

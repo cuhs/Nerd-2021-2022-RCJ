@@ -43,6 +43,16 @@ int getDirection(int dir) {
   return -1;
 }
 
+bool isNearTarget(int dir, int target){
+  if(target > 350 || target < 10){
+    if(dir > 340 || dir < 20) return true;
+    else
+      return false;
+  }
+  if(abs(target - dir) < 20) return true;
+  return false;
+}
+
 void turnAbs(char t) {
   //get BNO values
   tcaselect(7);
@@ -146,7 +156,7 @@ void turnAbs(int degree) {
     if (ports[LEFT].count == prev_count && !stalling) {
       //Serial3.println("motors might be stalling");
       endTime = millis();
-      if (endTime - startTime > 1000 && getDirection((int)euler.x()) != -1) {
+      if (endTime - startTime > 1000 && isNearTarget((int)euler.x(), targetDir)) {
         Serial3.println("STALLING");
         stalling = true;
       }
