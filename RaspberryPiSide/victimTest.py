@@ -11,14 +11,14 @@ numberOfCams = 2 #number of camera to run
 cap = [None,None] #left, right
 victimDetect = False #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
-fullDetect = True #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
+fullDetect = False #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 width = 160 #camera width
 height = 128 #camera height
 cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads, height then width
-cameraCutR = [0, 128, 0, 160]  # right slicing to ignore treads, height then width
+cameraCutR = [0, 128, 5, 155]  # right slicing to ignore treads, height then width
 checkFPS = False #true to check frames per second
 showCenter = False #true to show center of the victim, only works if victimDetect is true
-path = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Tue Jun 14 17:00:13 2022/u-Tue Jun 14 17:00:22 2022.png" #set to None if not testing an image
+path = None #"/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Tue Jun 14 17:00:13 2022/u-Tue Jun 14 17:00:22 2022.png" #set to None if not testing an image
 threshParam = [17,3]
 
 #CONFIG_END------------------------------------

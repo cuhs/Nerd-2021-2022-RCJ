@@ -281,7 +281,7 @@ def searchForVictims():
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
 
         # get letter and color victims
-        leftLetterVictim, leftLetterCenter, leftColorVictim, leftColorCenter = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][:,:])
+        leftLetterVictim, leftLetterCenter, leftColorVictim, leftColorCenter = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][config.cameraCutL[0]:config.cameraCutL[1],config.cameraCutL[2]:config.cameraCutL[3]])
         
         # send and record color victim
         if leftColorVictim is not None:
@@ -294,7 +294,7 @@ def searchForVictims():
                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
                 IO.sendData(config.inputMode, leftColorVictim)
                 if config.saveVictimDebug:
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:,:])
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][config.cameraCutL[0]:config.cameraCutL[1],config.cameraCutL[2]:config.cameraCutL[3]])
         
         #send and record letter victim
         elif leftLetterVictim is not None:
@@ -307,12 +307,12 @@ def searchForVictims():
                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
                 IO.sendData(config.inputMode, leftLetterVictim)
                 if config.saveVictimDebug:
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:,:])
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][config.cameraCutL[0]:config.cameraCutL[1],config.cameraCutL[2]:config.cameraCutL[3]])
 
         # check if searching is needed on right camera
         if config.cameraCount == 2:
             # get letter and color victims
-            rightLetterVictim, rightLetterCenter, rightColorVictim, rightColorCenter = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][:,:])        
+            rightLetterVictim, rightLetterCenter, rightColorVictim, rightColorCenter = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][config.cameraCutR[0]:config.cameraCutR[1],config.cameraCutR[2]:config.cameraCutR[3]])        
 
             # send and record color victim
             if rightColorVictim is not None:
@@ -325,7 +325,7 @@ def searchForVictims():
                     util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] = ord(rightColorVictim)
                     IO.sendData(config.inputMode, rightColorVictim)
                     if config.saveVictimDebug:
-                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:,:])
+                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][config.cameraCutR[0]:config.cameraCutR[1],config.cameraCutR[2]:config.cameraCutR[3]])
             
             # send and record letter victim
             elif rightLetterVictim is not None:
@@ -338,4 +338,4 @@ def searchForVictims():
                     util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] = ord(rightLetterVictim)
                     IO.sendData(config.inputMode, rightLetterVictim)
                     if config.saveVictimDebug:
-                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:,:])
+                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][config.cameraCutR[0]:config.cameraCutR[1],config.cameraCutR[2]:config.cameraCutR[3]])
