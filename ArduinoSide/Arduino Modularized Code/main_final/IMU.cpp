@@ -32,13 +32,16 @@ void reset() {
 }
 
 int getDirection(int dir) {
-  if (dir <= 20 || dir >= 340)
+  return getDirection(dir, 4);
+}
+int getDirection(int dir, int factor){
+  if (dir <= 5*factor || dir >= 360-(5*factor))
     return 0;
-  if (dir <= 115 && dir >= 70)
+  if (dir <= 90+(factor*5) && dir >= 90-(factor*5))
     return 90;
-  if (dir <= 200 && dir >= 160)
+  if (dir <= 180+(factor*5) && dir >= 180-(factor*5))
     return 180;
-  if (dir <= 290 && dir >= 250)
+  if (dir <= 270+(factor*5) && dir >= 270-(factor*5))
     return 270;
   return -1;
 }
@@ -61,24 +64,24 @@ void turnAbs(char t) {
   int pos = euler.x();
   //turning right
   if (t == 'r') {
-    if (pos > 315 || pos < 45)
+    if (pos >= 315 || pos < 45)
       turnAbs(90);
-    else if (pos > 45 && pos < 135)
+    else if (pos >= 45 && pos < 135)
       turnAbs(180);
-    else if (pos > 135 && pos < 225)
+    else if (pos >= 135 && pos < 225)
       turnAbs(270);
-    else if (pos > 225 && pos < 315)
+    else if (pos >= 225 && pos < 315)
       turnAbs(0);
 
     //turning left
   } else if (t == 'l') {
-    if (pos > 315 || pos < 45)
+    if (pos >= 315 || pos < 45)
       turnAbs(270);
-    else if (pos > 45 && pos < 135)
+    else if (pos >= 45 && pos < 135)
       turnAbs(0);
-    else if (pos > 135 && pos < 225)
+    else if (pos >= 135 && pos < 225)
       turnAbs(90);
-    else if (pos > 225 && pos < 315)
+    else if (pos >= 225 && pos < 315)
       turnAbs(180);
   }
 }
@@ -225,7 +228,7 @@ void turnAbsNoVictim(int degree) {
     if (ports[LEFT].count == prev_count && !stalling) {
       //Serial3.println("motors might be stalling");
       endTime = millis();
-      if (endTime - startTime > 1000 && getDirection((int)euler.x()) != -1) {
+      if (endTime - startTime > 1000 && isNearTarget((int)euler.x(), targetDir)) {
         Serial3.println("STALLING");
         stalling = true;
       }
@@ -261,7 +264,7 @@ bool triangulation(int left, int right) {
   bool noBlack = true;
   //no walls
   if (left > 20 && right > 20 || left + ROBOT_WIDTH + right <25) {
-    int di = getDirection(euler.x());
+    int di = getDirection(euler.x(),9);
     if(di!=-1)
       turnAbsNoVictim(di);
     if (!goForwardTilesPID(1))
@@ -277,8 +280,8 @@ bool triangulation(int left, int right) {
     else
       angle = (90 - atan2(30, distFromCenter) * 360 / (2 * PI));
     forwardCm = sqrt(pow(distFromCenter, 2) + 900);
-    if(getDirection(euler.x()!=-1))
-      currAngle = getDirection(euler.x());
+    if(getDirection(euler.x(),9)!=-1)
+      currAngle = getDirection(euler.x(),9);
      else
       currAngle = euler.x();
     //    Serial3.print("RIGHT, distFromCenter: ");
@@ -307,8 +310,8 @@ bool triangulation(int left, int right) {
     else
       angle = (90-atan2(30, distFromCenter) * 360 / (2 * PI));
     forwardCm = sqrt(pow(distFromCenter, 2) + 900);
-    if(getDirection(euler.x()!=-1))
-      currAngle = getDirection(euler.x());
+    if(getDirection(euler.x(),9)!=-1)
+      currAngle = getDirection(euler.x(),9);
     else
       currAngle = euler.x();
     //    Serial3.print("LEFT, distFromCenter: ");
@@ -341,13 +344,13 @@ int isOnRamp() {
   //if(frontTof>50) return 0;
   if (euler.y() < -15) {
     int ang = euler.x();
-    if(getDirection(ang)!=-1)
+    if(getDirection(ang, 9)!=-1)
       turnAbs(getDirection(ang));
     return 2;
   }
   else if (euler.y() > 15) {
     int ang = euler.x();
-    if(getDirection(ang)!=-1)
+    if(getDirection(ang, 9)!=-1)
       turnAbs(getDirection(ang));
     return 1;
   }

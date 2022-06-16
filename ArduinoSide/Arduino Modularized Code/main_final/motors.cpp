@@ -8,40 +8,37 @@ bool goForwardTilesPID(int tiles) {
 }
 
 int rampMoveForward(char dir) {
-  int Lspeed = 0;
-  int KP = 2;
-  int Rspeed = 0;
+//  int Lspeed = 0;
+//  int KP = 2;
+//  int Rspeed = 0;
+  int motorSpeed = 0;
   //int theAng = 0;
   int motorEncUse = LEFT;
   if (dir == 'u') {
-    Lspeed = 120;
-    Rspeed = 120;// on fresh batteries: KP=2   on not so fresh batteries: 6-10
-    KP = 3;
+    motorSpeed = 140;
     finishedRamp = 1;
   } else if (dir == 'd') {
-    Lspeed = 90;
-    Rspeed = 90;
-    KP=1;
+    motorSpeed = 90;
     finishedRamp = 2;
   }
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  int angle = euler.x();
-  angle=getDirection(angle);
-  double error;
-  double pastError=0;
-  double integral=0;
-  int currAng;
+//  int angle = euler.x();
+//  angle=getDirection(angle);
+//  double error;
+//  double pastError=0;
+//  double integral=0;
+  //int currAng;
   int startingEnc = ports[motorEncUse].count;
   int avgAng = 0;
   int itCt = 0;
-  while (!notStable()) {
-    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    currAng=euler.x();
-    if(currAng>345)
-      currAng=currAng-360;
-    error = angle - currAng;
-    int fix = PID(error, pastError, integral, KP, 0, 0);
+  while (isOnRamp() == 0) {
+//    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+//    currAng=euler.x();
+//    if(currAng>345)
+//      currAng=currAng-360;
+//    error = angle - currAng;
+//    int fix = PID(error, pastError, integral, KP, 0, 0);
 //    int obsFix = 0;
 //    char c = obstacleDetect();
     //if(c=='r' || c == 'l') obsFix = 50;
@@ -66,8 +63,8 @@ int rampMoveForward(char dir) {
 //        ports[LEFT].setMotorSpeed(Lspeed-fix);
 //      //}
 //    }
-      ports[LEFT].setMotorSpeed(Lspeed);
-      ports[RIGHT].setMotorSpeed(Rspeed);
+      ports[LEFT].setMotorSpeed(motorSpeed);
+      ports[RIGHT].setMotorSpeed(motorSpeed);
     if(Serial2.available()) Serial2.read();
 //    Serial3.print("target: ");
 //    Serial3.print(angle);
@@ -80,12 +77,12 @@ int rampMoveForward(char dir) {
   }
   
   while (notStable()) {
-    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    currAng=euler.x();
-    if(currAng>345)
-      currAng=currAng-360;
-    error = angle - currAng;
-    int fix = PID(error, pastError, integral, KP, 0, 0);
+//    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+//    currAng=euler.x();
+//    if(currAng>345)
+//      currAng=currAng-360;
+//    error = angle - currAng;
+//    int fix = PID(error, pastError, integral, KP, 0, 0);
 //    if(fix>0){
 //      ports[RIGHT].setMotorSpeed(Rspeed-fix);
 //      ports[LEFT].setMotorSpeed(Lspeed+fix);
@@ -94,8 +91,9 @@ int rampMoveForward(char dir) {
 //      ports[LEFT].setMotorSpeed(Lspeed-fix);
 //      ports[RIGHT].setMotorSpeed(Rspeed+fix);
 //    }
-    ports[LEFT].setMotorSpeed(Lspeed);
-    ports[RIGHT].setMotorSpeed(Rspeed);
+    ports[LEFT].setMotorSpeed(motorSpeed);
+    ports[RIGHT].setMotorSpeed(motorSpeed);
+    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     int ca = euler.y();
     if(abs(ca)>15){
       avgAng += ca;
@@ -162,7 +160,6 @@ bool goForwardPID(int dist) {
 
   double enc = ((360 / (D * PI)) * dist);
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5) && !stalling) {
-    //Serial3.println("In go forward PID");
     victim();
     int onRamp = isOnRamp();
     if (onRamp == 1) {
@@ -322,11 +319,11 @@ bool goForwardPID(int dist) {
     fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.25, 0.005, 0));
     int angIncrease = 0;
     if(isOnSpeedBump())
-      angIncrease = 30;
+      angIncrease = 40;
     //Serial3.println(fix);
 
-    ports[RIGHT].setMotorSpeed(fix + 50 + angIncrease);
-    ports[LEFT].setMotorSpeed(fix + 50 + angIncrease);
+    ports[RIGHT].setMotorSpeed(fix + 30 + angIncrease);
+    ports[LEFT].setMotorSpeed(fix + 30 + angIncrease);
 
   }
   //Serial3.println("Finished going forward(in motors)");
