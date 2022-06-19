@@ -115,7 +115,7 @@ cap1 = cv2.VideoCapture(-1)
 
 cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
 cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
-#cap1.set(cv2.CAP_PROP_FPS, 60)
+cap1.set(cv2.CAP_PROP_FPS, 60)
 
 #cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 #cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
@@ -141,7 +141,7 @@ while cap1.isOpened(): #and cap2.isOpened():
     
     blur = cv2.bilateralFilter(gray, 5, 75,75)
 
-    thresh2  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 21,5)
+    thresh2  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15,5)
 
 
     #frame2 = frame2[:,:152] #RIGHT
@@ -160,7 +160,8 @@ while cap1.isOpened(): #and cap2.isOpened():
         #result1 =  main.KNN_finish(imgOutput1,9000000)
         
         if result1 is not None:
-            print("victim")
+            print(result1)
+            cv2.imshow("imgOUtput",imgOutput1)
             cv2.imshow("thvictim", thresh2)
             cv2.imshow("victim", frame1)
             cv2.waitKey(1000)
