@@ -19,7 +19,7 @@ cameraCutR = [0, 128, 5, 155]  # right slicing to ignore treads, height then wid
 checkFPS = False #true to check frames per second
 showCenter = False #true to show center of the victim, only works if victimDetect is true
 pathVI = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages"
-path = pathVI + "/Thu Jun 16 18:52:25 2022/u-Thu Jun 16 18:58:51 2022.png" #set to None if not testing an image
+path = pathVI + "/Fri May 20 18:53:19 2022/u-Fri May 20 18:56:06 2022.png" #set to None if not testing an image
 threshParam = [17,3]
 
 #CONFIG_END------------------------------------
@@ -116,18 +116,11 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
             imgOutputR, cR = vD.letterDetect(frameR, "frameR")
             
         if path is not None:
+            #REMINDER: MAKING CHANGES HERE WILL NOT EFFECT VICTIM DETECTION/KNN
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             blur = cv2.bilateralFilter(gray, 5, 75, 75)
             thresh = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
-            imgOutput, c = vD.letterDetect(frame, "frame")
-            
-            #for r in range(0,30):
-                #for h in range(0,30):
-                    #imgOutput[r][h] = not imgOutput[r][h]
-                    
-            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/imgOutput.png", imgOutput)'''
-            
-
+            imgOutput, c = vD.letterDetect(frame, "frame")            
 
     if showFrames:
         if numberOfCams == 1 or numberOfCams == 2 and path is None:

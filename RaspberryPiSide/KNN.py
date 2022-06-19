@@ -14,6 +14,8 @@ class KNN:
     def classify(self, imgOutput):
         knnInput = imgOutput.reshape(1, 30*30).astype(np.float32)
         _, result, neighbors, distance = self.knn.findNearest(knnInput, 1)
+        
+        print(distance)
                     
         lowestDist = distance[:, 0]
         result = chr(result[0][0])
