@@ -7,6 +7,7 @@ list_features = []
 count = 0
 countEnter = 0
 
+print("hi")
 
 with open("KNN/features3.txt", 'r') as featuresRead, open("KNN/features3-2.txt", 'w') as features:
     
