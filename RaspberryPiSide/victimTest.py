@@ -11,15 +11,16 @@ numberOfCams = 2 #number of camera to run
 cap = [None,None] #left, right
 victimDetect = True #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
-fullDetect = False #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
+fullDetect = True #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 width = 160 #camera width
 height = 128 #camera height
 cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads, height then width
 cameraCutR = [0, 128, 5, 155]  # right slicing to ignore treads, height then width
 checkFPS = False #true to check frames per second
 showCenter = False #true to show center of the victim, only works if victimDetect is true
-path = None #"/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Tue Jun 14 17:00:13 2022/u-Tue Jun 14 17:00:22 2022.png" #set to None if not testing an image
-threshParam = [41,17]
+pathVI = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages"
+path = pathVI + "/Thu Jun 16 18:52:25 2022/u-Thu Jun 16 18:58:51 2022.png" #set to None if not testing an image
+threshParam = [17,3]
 
 #CONFIG_END------------------------------------
 
@@ -120,6 +121,12 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
             thresh = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
             imgOutput, c = vD.letterDetect(frame, "frame")
             
+            #for r in range(0,30):
+                #for h in range(0,30):
+                    #imgOutput[r][h] = not imgOutput[r][h]
+                    
+            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/imgOutput.png", imgOutput)'''
+            
 
 
     if showFrames:
@@ -134,16 +141,13 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
         if fullDetect:
             if numberOfCams == 1 or numberOfCams == 2 and path is None:
                 cv2.imshow("threshL", threshL)
-                if imgOutputL is not None:
-                    cv2.imshow("imgOutputL", imgOutputL)
+                cv2.imshow("imgOutputL", imgOutputL)
             if numberOfCams == 2 and path is None:
                 cv2.imshow("threshR", threshR)
-                if imgOutputR is not None:
-                    cv2.imshow("imgOutputR", imgOutputR)
+                cv2.imshow("imgOutputR", imgOutputR)
             if path is not None:
                 cv2.imshow("thresh", thresh)
-                if imgOutput is not None:
-                    cv2.imshow("imgOutput", imgOutput)
+                cv2.imshow("imgOutput", imgOutput*255)
     
                             
     '''if result1 is not None:

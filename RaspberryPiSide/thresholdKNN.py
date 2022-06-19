@@ -21,7 +21,8 @@ with open("KNN/features3.txt", 'r') as featuresRead, open("KNN/features3-2.txt",
                 num = (float(value[0]) + float(value[2])/10 + float(value[3])/100) * (10**float(value[23])+1)
                 #print(num)
                 if num > 127:
-                    lineFinal += "2.550000000000000000e+02" + letter
+                    #lineFinal += "2.550000000000000000e+02" + letter
+                    lineFinal += "1.000000000000000000e+00" + letter
                 else:
                     lineFinal += "0.000000000000000000e+00" + letter
                 value = ""
