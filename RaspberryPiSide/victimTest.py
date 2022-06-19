@@ -9,7 +9,7 @@ import letterDetection
 
 numberOfCams = 2 #number of camera to run
 cap = [None,None] #left, right
-victimDetect = False #true --> tests victim detection, false --> runs camera feed
+victimDetect = True #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
 fullDetect = False #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 width = 160 #camera width
@@ -19,7 +19,7 @@ cameraCutR = [0, 128, 5, 155]  # right slicing to ignore treads, height then wid
 checkFPS = False #true to check frames per second
 showCenter = False #true to show center of the victim, only works if victimDetect is true
 path = None #"/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Tue Jun 14 17:00:13 2022/u-Tue Jun 14 17:00:22 2022.png" #set to None if not testing an image
-threshParam = [17,3]
+threshParam = [41,17]
 
 #CONFIG_END------------------------------------
 
@@ -134,13 +134,16 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
         if fullDetect:
             if numberOfCams == 1 or numberOfCams == 2 and path is None:
                 cv2.imshow("threshL", threshL)
-                cv2.imshow("imgOutputL", imgOutputL)
+                if imgOutputL is not None:
+                    cv2.imshow("imgOutputL", imgOutputL)
             if numberOfCams == 2 and path is None:
                 cv2.imshow("threshR", threshR)
-                cv2.imshow("imgOutputR", imgOutputR)
+                if imgOutputR is not None:
+                    cv2.imshow("imgOutputR", imgOutputR)
             if path is not None:
                 cv2.imshow("thresh", thresh)
-                cv2.imshow("imgOutput", imgOutput)
+                if imgOutput is not None:
+                    cv2.imshow("imgOutput", imgOutput)
     
                             
     '''if result1 is not None:

@@ -1,11 +1,11 @@
 import cv2
 import numpy as np
-import old_detection
+import letterDetection
 
 cap = cv2.VideoCapture(0)
 
-labels = open("KNN/labels3.txt",'w')
-features = open("KNN/features3.txt",'w')
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
 
 size = 30
 
@@ -14,71 +14,69 @@ list_features = []
 
 letter_count = {'H':0,'S':0,'U':0}
 
+main = letterDetection.Detection()
+
+print("start")
 
 
-main = old_detection.detection()
+with open("KNN/labels4.txt", 'w') as labels, open ("KNN/features4.txt", 'w') as features:
 
-print("hey ")
 
-while(cap.isOpened):
-    
-    ret, frame = cap.read()
-    
-    frame = frame[:,:560]
-    
-    if(ret > 0):
+    while(cap.isOpened):
         
-        #Greyscaling, blurring, thresholding
-        cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-        mask = cv2.inRange(frame,(0,0,0),(30,30,30))
-        contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            
-        input_key = cv2.waitKey(1)
+        ret, frame = cap.read()
         
-        if input_key == ord(' '):
+        frame = frame[:,:150]
         
-            imgOutput = main.getLetter(contours,mask,1)
+        if(ret > 0):
                     
-            letter = chr(cv2.waitKey(0)).upper()
+            imgOutput, center = main.letterDetect(frame, "frame")
+                
+            input_key = cv2.waitKey(1)
             
-            if letter in ['H','S','U']:
+            if input_key == ord(' '):
+            
                 
-                letter_count[letter] += 1
-                
-                print("--------------------")
-                print("H:",letter_count['H'])
-                print("S:",letter_count['S'])
-                print("U:",letter_count['U'])
-                
-                list_labels.append(np.float32(ord(letter)))
-                list_features.append(imgOutput.reshape(1,size*size).astype(np.float32))
-                                              
-        elif input_key == ord('q'):
+                cv2.imshow("imgOutput", imgOutput)
                         
-            tuple_labels = tuple(list_labels)
-            tuple_features = tuple(list_features)
-            
-            training_labels = np.vstack(tuple_labels)
-            training_features = np.vstack(tuple_features)
-            
-            print(list_labels)
+                letter = chr(cv2.waitKey(0)).upper()
+                
+                if letter in ['H','S','U']:
+                    
+                    letter_count[letter] += 1
+                
+                    print("--------------------")
+                    print("H:",letter_count['H'])
+                    print("S:",letter_count['S'])
+                    print("U:",letter_count['U'])
+                    
+                    list_labels.append(np.float32(ord(letter)))
+                    list_features.append(imgOutput.reshape(1,size*size).astype(np.float32))
+                                                  
+            elif input_key == ord('q'):
+                            
+                tuple_labels = tuple(list_labels)
+                tuple_features = tuple(list_features)
+                
+                training_labels = np.vstack(tuple_labels)
+                training_features = np.vstack(tuple_features)
+                
+                print(list_labels)
 
-            print(training_labels)
-            print(training_features)
-            print(training_features.shape)
+                print(training_labels)
+                print(training_features)
+                print(training_features.shape)
+                
+                np.savetxt(labels,training_labels)
+                np.savetxt(features,training_features)
+                
+                break 
             
-            np.savetxt("KNN/labels3.txt",training_labels)
-            np.savetxt(features,training_features)
-            
-            break 
-        
-        cv2.imshow("frame",frame)
+            cv2.imshow("frame",frame)
+            cv2.imshow("imgOutput", imgOutput)
 
-features.close
-labels.close
-
-cap.release()
-cv2.destroyAllWindows()
+    cap.release()
+    cv2.destroyAllWindows()
     
     
             
