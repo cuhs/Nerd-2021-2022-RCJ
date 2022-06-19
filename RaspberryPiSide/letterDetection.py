@@ -53,10 +53,10 @@ class Detection:
                 for r in range(0,30):
                     for h in range(0,30):
                         if imgOutput[r][h] < 127:
-                            imgOutput[r][h] = 0
+                            imgOutput[r][h] = 0 
                         else:
-                            imgOutput[r][h] = 255
-                            
+                            imgOutput[r][h] = 1 
+                                                        
                 return imgOutput, center
             
         return None, None
