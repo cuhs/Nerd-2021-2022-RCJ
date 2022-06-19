@@ -49,6 +49,14 @@ class Detection:
                 imgOutput = cv2.warpPerspective(mask, matrix, (self.size, self.size))
 
                 imgOutput = np.flip(np.rot90(imgOutput), 0)
+                
+                for r in range(0,30):
+                    for h in range(0,30):
+                        if imgOutput[r][h] < 127:
+                            imgOutput[r][h] = 0
+                        else:
+                            imgOutput[r][h] = 255
+                            
                 return imgOutput, center
             
         return None, None
@@ -58,8 +66,9 @@ class Detection:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blur = cv2.bilateralFilter(gray, 5, 75,75)
         mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3)
-        contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         imgOutput, center = self.getLetter(contours, mask, name)
+                    
         return imgOutput, center
 
     # check for letters with KNN
