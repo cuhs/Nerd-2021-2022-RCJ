@@ -2,133 +2,57 @@ import cv2
 import numpy as np
 import KNN
 import time
+import letterDetection
 
-class detection():
 
-    def __init__(self):
+#CONFIG----------------------------------------
 
-        self.Debug = True
-        self.size = 30
-        self.KNN = KNN.KNN()
+numberOfCams = 2 #number of camera to run
+cap = [None,None] #left, right
+victimDetect = True #true --> tests victim detection, false --> runs camera feed
+showFrames = True #true to see actual camera frames
+fullDetect = True #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
+width = 160 #camera width
+height = 128 #camera height
+cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads, height then width
+cameraCutR = [0, 128, 5, 155]  # right slicing to ignore treads, height then width
+checkFPS = False #true to check frames per second
+showCenter = False #true to show center of the victim, only works if victimDetect is true
+pathVI = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages"
+path = pathVI + "/Thu Jun 16 18:52:25 2022/u-Thu Jun 16 18:58:51 2022.png" #set to None if not testing an image
+threshParam = [17,3]
 
-    def dist(self, point1, point2):
-        return np.sqrt(((point1[0] - point2[0]) ** 2) + ((point1[1] - point2[1]) ** 2))
+#CONFIG_END------------------------------------
 
-    def getLetter(self, contour, mask, name):
 
-        if len(contour) > 0:
-            
-            contour = max(contour, key=cv2.contourArea)
+def initCams():
+    if numberOfCams == 1 or numberOfCams == 2 and path is None:
+        cap[0] = cv2.VideoCapture(0)
+        cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+    if numberOfCams == 2 and path is None:
+        cap[1] = cv2.VideoCapture(1)
+        cap[1].set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        cap[1].set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+        
+        
+         
+vD = letterDetection.Detection()
 
-            if cv2.contourArea(contour) > 0:
 
-                rect = cv2.minAreaRect(contour)
-                box = cv2.boxPoints(rect)
-                box = np.float32(box)
-
-                s = np.sum(box, axis=1)
-                d = np.diff(box, axis=1)
-
-                tL = box[np.argmin(s)]
-                tR = box[np.argmin(d)]
-                bL = box[np.argmax(d)]
-                bR = box[np.argmax(s)]
-
-                pts1 = np.float32([tL, bL, bR, tR])
-                pts2 = np.float32([[0, 0], [self.size, 0], [self.size, self.size], [0, self.size]])
-
-                matrix = cv2.getPerspectiveTransform(pts1, pts2)
-                imgOutput = cv2.warpPerspective(mask, matrix, (self.size, self.size))
-
-                imgOutput = np.flip(np.rot90(imgOutput), 0)
-
-                #if self.dist(tL, tR) > self.dist(tL, bL):
-                    #imgOutput = np.rot90(imgOutput)
-
-                #if self.Debug:
-                    #cv2.imshow("letter_" + name, imgOutput)
-                    #pass
-
-                # result,dist = self.KNN(imgOutput)
-
-                return imgOutput  # , invert
-
-    def letterDetect(self, frame, name):
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        blur = cv2.bilateralFilter(gray, 5, 75,75)
-        mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15,5)
-        contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        imgOutput = self.getLetter(contours, mask, name)
-        return imgOutput
-
-    def KNN_finish(self, imgOutput, distLimit):
-        if imgOutput is not None:
-            for x in range(4):
-                result, dist = self.KNN.classify(imgOutput)
-                if dist <= distLimit and result is not None:
-                    return result
-                imgOutput = np.rot90(imgOutput)
-        return None
-
-    def colorDetect(self, frame, hsv_lower, hsv_upper):
-
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-        for i in range(3):
-            mask = cv2.inRange(hsv, hsv_lower[i], hsv_upper[i])
-            #cv2.imshow("mask",mask)
-
-            contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-            if len(contours) > 0:
-
-                contours = max(contours, key=cv2.contourArea)
-
-                if cv2.contourArea(contours) > 210:
-
-                    if i == 0 or i == 2:
-                        print("Red/Yellow")
-                        packages = 1
-
-                    elif i == 1:
-                        print("Green")
-                        packages = 0
-                        
-hsv_lower = {
-    0: (87, 115, 60),
-    1: (40, 30, 50),
-    2: (0, 55, 85)
-}
-
-hsv_upper = {
-     0: (180, 255, 170),
-     1: (100, 150, 155),
-     2: (36, 205, 185)
-}
-
-#path = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages/Sat Apr 30 16:48:05 2022/"
-
-main = detection()
-
-cap1 = cv2.VideoCapture(-1)
-#cap2 = cv2.VideoCapture(1)
-
-cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
-cap1.set(cv2.CAP_PROP_FPS, 60)
-
-#cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
-#cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
-
-#total = 0
-#correct = 0
-#start = 0
-
-while cap1.isOpened(): #and cap2.isOpened():
+while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (numberOfCams == 2 and cap[1].isOpened()):
     
-    ret1,frame1 = cap1.read()
-    #frame1 = frame1[:,:150]
+    if numberOfCams == 1 or numberOfCams == 2 and path is None:
+        retL, frameL = cap[0].read()
+        frameL = frameL[cameraCutL[0]:cameraCutL[1],cameraCutL[2]:cameraCutL[3]]
+    if numberOfCams == 2 and path is None:
+        retR, frameR = cap[1].read()
+        frameR = frameR[cameraCutR[0]:cameraCutR[1],cameraCutR[2]:cameraCutR[3]]
+    if path is not None:
+        frame = cv2.imread(path)
+        dim = frame.shape
     
+<<<<<<< HEAD
     #startTime = time.time()
     
     #frame1 = cv2.flip(frame1, 0)
@@ -166,49 +90,139 @@ while cap1.isOpened(): #and cap2.isOpened():
             cv2.imshow("victim", frame1)
             cv2.waitKey(1000)
             cv2.destroyAllWindows()
-
-
-        #result2 = main.KNN_finish(imgOutput2,10000000)
+=======
+    if checkFPS:
+        startTime = time.time()
         
-        #cv2.imwrite("/home/pi/Documents/VictimImages/" + str(time.time()) + ".png", frame1)
-        
-        
-        
-        '''if cv2.waitKey(1) == ord(' '):
-            print("Do you like this image?")
-            #cv2.destroyAllWindows()
-            cv2.imshow("image_mask",imgOutput1)
-            letter = cv2.waitKey(0)
-            cv2.destroyAllWindows()
-            if letter == ord('y'):
-                cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + str(time.time()) + ".png",frame1)
-                #cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + "mask" + str(time.time()) + ".png",imgOutput1)
-                print("saved!")
+    if victimDetect:
+        if numberOfCams == 1 or numberOfCams == 2 and path is None:
+            letterL, letterCL, colorL, colorCL = vD.leftDetectFinal(retL, frameL)
+            if letterL is not None:
+                print("Left Camera: Letter is " + str(letterL) + " at x-position " + str(np.int0(letterCL)))
+                if showCenter:
+                    cv2.line(frameL,(np.int0(letterCL),cameraCutL[0]),(np.int0(letterCL),cameraCutL[1]), 3)
             else:
-                print("not saved")'''
+                print("Left Camera: No letter detected")
+            if colorL is not None:
+                print("Left Camera: Color is " + str(colorL) + " at x-position " + str(np.int0(colorCL)))
+                if showCenter:
+                    cv2.line(frameL,(np.int0(colorCL),cameraCutL[0]),(np.int0(colorCL),cameraCutL[1]), 3)
+            else:
+                print("Left Camera: No color detected")
+                
+        if numberOfCams == 2 and path is None:
+            letterR, letterCR, colorR, colorCR = vD.leftDetectFinal(retR, frameR)
+            if letterR is not None:
+                print("Right Camera: Letter is " + str(letterR) + " at x-position " + str(np.int0(letterCR)))
+                if showCenter:
+                    cv2.line(frameR,(np.int0(letterCR),cameraCutR[0]),(np.int0(letterCR),cameraCutR[1]), 3)
+            else:
+                print("Right Camera: No letter detected")
+            if colorR is not None:
+                print("Right Camera: Color is " + str(colorR) + " at x-position " + str(np.int0(colorCR)))
+                if showCenter:
+                    cv2.line(frameR,(np.int0(colorCR),cameraCutR[0]),(np.int0(colorCR),cameraCutR[1]), 3)
+            else:
+                print("Right Camera: No color detected")
+                
+        if path is not None:
+            letter, letterC, color, colorC = vD.leftDetectFinal(1,frame)
+            if letter is not None:
+                print("Path: Letter is " + str(letter) + " at x-position " + str(np.int0(letterC)))
+                if showCenter:
+                    cv2.line(frame,(np.int0(letterC),0),(np.int0(letterC),dim[0]), 3)
+            else:
+                print("Path: No letter detected")
+            if color is not None:
+                print("Path: Color is " + str(color) + " at x-position " + str(np.int0(colorC)))
+                if showCenter:
+                    cv2.line(frameR,(np.int0(colorC),0),(np.int0(colorC),dim[0]), 3)
+            else:
+                print("Path: No color detected")
 
-        
-        #print("Camera1 " + str(result1))
-        #print("Time taken: " + str((time.time()-startTime)))
-        #print("Camera2 " + result2)
-        
-        #print()
+    if fullDetect:
+        if numberOfCams == 1 or numberOfCams == 2 and path is None:
+            grayL = cv2.cvtColor(frameL, cv2.COLOR_BGR2GRAY)
+            blurL = cv2.bilateralFilter(grayL, 5, 75, 75)
+            threshL = cv2.adaptiveThreshold(blurL,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
+            imgOutputL, cL = vD.letterDetect(frameL, "frameL") 
             
-        if main.Debug:
-            #pass 
-            cv2.imshow("frame1",frame1)
-            cv2.imshow("thresh",thresh2)
-            #cv2.imshow("mask",thresh2)
-            #if imgOutput1 is not None:
-                #cv2.imshow("imgOutput1",imgOutput1)
-            #cv2.imshow("combine",combine)
-            #cv2.imshow("frame2",frame2)
+        if numberOfCams == 2 and path is None:
+            grayR = cv2.cvtColor(frameR, cv2.COLOR_BGR2GRAY)
+            blurR = cv2.bilateralFilter(grayR, 5, 75, 75)
+            threshR = cv2.adaptiveThreshold(blurR,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
+            imgOutputR, cR = vD.letterDetect(frameR, "frameR")
+            
+        if path is not None:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            blur = cv2.bilateralFilter(gray, 5, 75, 75)
+            thresh = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
+            imgOutput, c = vD.letterDetect(frame, "frame")
+            
+            #for r in range(0,30):
+                #for h in range(0,30):
+                    #imgOutput[r][h] = not imgOutput[r][h]
+                    
+            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/imgOutput.png", imgOutput)'''
+            
+>>>>>>> 905ae9e878176d326aa067b49a1b383841e952fb
+
+
+    if showFrames:
+        if numberOfCams == 1 or numberOfCams == 2 and path is None:
+            if retL > 0:
+                cv2.imshow("frameL", frameL)
+        if numberOfCams == 2 and path is None:
+            if retR > 0:
+                cv2.imshow("frameR", frameR)
+        if path is not None:
+            cv2.imshow("pathImage",frame)
+        if fullDetect:
+            if numberOfCams == 1 or numberOfCams == 2 and path is None:
+                cv2.imshow("threshL", threshL)
+                cv2.imshow("imgOutputL", imgOutputL)
+            if numberOfCams == 2 and path is None:
+                cv2.imshow("threshR", threshR)
+                cv2.imshow("imgOutputR", imgOutputR)
+            if path is not None:
+                cv2.imshow("thresh", thresh)
+                cv2.imshow("imgOutput", imgOutput*255)
+    
+                            
+    '''if result1 is not None:
+        print("victim")
+        cv2.imshow("thvictim", thresh2)
+        cv2.imshow("victim", frame1)
+        cv2.waitKey(1000)
+        cv2.destroyAllWindows()'''
+
+                
+        
+    '''
+    if cv2.waitKey(1) == ord(' '):
+        print("Do you like this image?")
+        #cv2.destroyAllWindows()
+        cv2.imshow("image_mask",imgOutput1)
+        letter = cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        if letter == ord('y'):
+            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + str(time.time()) + ".png",frame1)
+            #cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + "mask" + str(time.time()) + ".png",imgOutput1)
+            print("saved!")
+        else:
+            print("not saved")'''
+        
+
+    if checkFPS:
+        print("Time taken: " + str((time.time()-startTime)))
 
             
     if cv2.waitKey(1)  == ord('q'):
         break
 
-cap1.release()
-#cap2.release()
+if numberOfCams == 1 or numberOfCams == 2:
+    cap[0].release()
+if numberOfCams == 2:
+    cap[1].release()
 cv2.destroyAllWindows()
 

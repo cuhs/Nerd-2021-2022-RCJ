@@ -16,15 +16,15 @@ void sendWallValues(int frontDist, int rightDist, int leftDist) {
     walls[0] = '1';
 
   // for debugging
-  Serial.print("[");
+  Serial3.print("[");
   for (int i = 0; i < 3; i++) {
-    Serial.print(walls[i]);
+    Serial3.print(walls[i]);
     if (i != 4)
-      Serial.print(", "); //for formatting purposes, no technical meaning
+      Serial3.print(", "); //for formatting purposes, no technical meaning
     else
-      Serial.print("]");
+      Serial3.print("]");
   }
-  Serial.println();
+  Serial3.println();
 
   delay(1);
   Serial2.write(walls, 3);
@@ -34,7 +34,7 @@ void sendWallValues(int frontDist, int rightDist, int leftDist) {
 //max is eight sensors allowed
 void setupSensors2() {
   if (numSensors > 8) {
-    Serial.println("Max number of sensors!");
+    Serial3.println("Max number of sensors!");
     return;
   }
   for (int i = 0; i < numSensors; i++) {
@@ -42,8 +42,8 @@ void setupSensors2() {
     sensor[i].setTimeout(500);
     if (!sensor[i].init())
     {
-      Serial.print("Failed to detect and initalize sensor: ");
-      Serial.println(i);
+      Serial3.print("Failed to detect and initalize sensor: ");
+      Serial3.println(i);
       while (1) {}
     }
     sensor[i].startContinuous();
@@ -81,11 +81,14 @@ void alignFront() {
 
 int getSensorReadings(int num) {
   tcaselect(num);
+  int error = 0;
+  
   if(num==0)
-    return lox.readRangeContinuousMillimeters() /10 - 3 ;
-  if(num==1)
-    return (lox.readRangeContinuousMillimeters()-10) / 10;
-  if(num==2)
-    return (lox.readRangeContinuousMillimeters()-15) / 10;
-  return lox.readRangeContinuousMillimeters() / 10;
+    error = 0;
+  else if(num==1)
+    error = 1;
+  else if(num==2)
+    error = 1;
+  return lox.readRangeContinuousMillimeters()/10-error;
+  //return lox.readRangeContinuousMillimeters() / 10;
 }

@@ -36,7 +36,7 @@ class VideoGet:
                     #leftFrame = IO.frame[0][1][:,:150]
                     
                     if config.victimDebug and IO.frame[0][1] is not None:
-                        cv2.imshow("left", IO.frame[0][1])
+                        cv2.imshow("left", IO.frame[0][1][config.cameraCutL[0]:config.cameraCutL[1],config.cameraCutL[2]:config.cameraCutL[3]])
                         cv2.waitKey(1)
                         
                     #if config.saveVictimDebug:
@@ -57,7 +57,7 @@ class VideoGet:
                     #rightFrame = IO.frame[1][1][:,:150]
                    
                     if config.victimDebug and IO.frame[1][1] is not None:
-                        cv2.imshow("right", IO.frame[1][1])
+                        cv2.imshow("right", IO.frame[1][1][config.cameraCutR[0]:config.cameraCutR[1],config.cameraCutR[2]:config.cameraCutR[3]])
                         cv2.waitKey(1)
                         
                     #if config.saveVictimDebug:

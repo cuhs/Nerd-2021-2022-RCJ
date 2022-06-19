@@ -12,6 +12,7 @@
 void initIMU();
 void reset();
 int getDirection(int);
+int getDirection(int, int);
 void turnAbs(char t);
 void turnAbs(int);
 void turnAbsNoVictim(int);
@@ -20,6 +21,8 @@ int isOnRamp();
 bool notStable();
 void displayIMU();
 void turnRight(int);
+bool isNearTarget(int, int);
+bool isOnSpeedBump();
 
 extern int resetPinIMU;
 extern Adafruit_BNO055 bno;

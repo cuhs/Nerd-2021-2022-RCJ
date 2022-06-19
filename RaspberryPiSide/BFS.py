@@ -1,5 +1,3 @@
-import threading
-
 import util
 import sys
 import time
@@ -14,7 +12,6 @@ import inspect
 from vidThread import VideoGet
 import ast
 import os
-from threading import Thread
 
 def setupCams():
     # camera setup
@@ -284,23 +281,10 @@ def searchForVictims():
             print("\t\t\t\tERROR: CAMERA 2 NOT OPENED")
 
         # get letter and color victims
-        leftLetterVictim, leftColorVictim = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][:225,:300])
-
-        # send and record letter victim
-        if leftLetterVictim is not None:
-            leftLetterVictim = leftLetterVictim.lower()
-            if config.runMode:
-                display.updateLabels(LVictim=leftLetterVictim)
-            if config.victimDebug or config.importantDebug:
-                print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
-            if not util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim]:
-                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
-                IO.sendData(config.inputMode, leftLetterVictim)
-                if config.saveVictimDebug:
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:225,:300])
-
+        leftLetterVictim, leftLetterCenter, leftColorVictim, leftColorCenter = letterDetection.Detection().leftDetectFinal(IO.frame[0][0], IO.frame[0][1][config.cameraCutL[0]:config.cameraCutL[1],config.cameraCutL[2]:config.cameraCutL[3]])
+        
         # send and record color victim
-        elif leftColorVictim is not None:
+        if leftColorVictim is not None:
             leftColorVictim = leftColorVictim.lower()
             if config.runMode:
                 display.updateLabels(LVictim=leftColorVictim)
@@ -310,28 +294,28 @@ def searchForVictims():
                 util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftColorVictim)
                 IO.sendData(config.inputMode, leftColorVictim)
                 if config.saveVictimDebug:
-                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][:225,:300])
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][config.cameraCutL[0]:config.cameraCutL[1],config.cameraCutL[2]:config.cameraCutL[3]])
+        
+        #send and record letter victim
+        elif leftLetterVictim is not None:
+            leftLetterVictim = leftLetterVictim.lower()
+            if config.runMode:
+                display.updateLabels(LVictim=leftLetterVictim)
+            if config.victimDebug or config.importantDebug:
+                print("\t\t\t\tLETTER VICTIM FOUND: " + leftLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToLeft(util.direction)))
+            if not util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim]:
+                util.maze[util.floor][util.tile][util.dirToLeft(util.direction) + util.nVictim] = ord(leftLetterVictim)
+                IO.sendData(config.inputMode, leftLetterVictim)
+                if config.saveVictimDebug:
+                    cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + leftLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[0][1][config.cameraCutL[0]:config.cameraCutL[1],config.cameraCutL[2]:config.cameraCutL[3]])
 
         # check if searching is needed on right camera
         if config.cameraCount == 2:
             # get letter and color victims
-            rightLetterVictim, rightColorVictim = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][:230,20:])
-
-            # send and record letter victim
-            if rightLetterVictim is not None:
-                rightLetterVictim = rightLetterVictim.upper()
-                if config.runMode:
-                    display.updateLabels(RVictim=rightLetterVictim)
-                if config.victimDebug or config.importantDebug:
-                    print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToRight(util.direction)))
-                if not util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim]:
-                    util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] = ord(rightLetterVictim)
-                    IO.sendData(config.inputMode, rightLetterVictim)
-                    if config.saveVictimDebug:
-                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:230,20:])
+            rightLetterVictim, rightLetterCenter, rightColorVictim, rightColorCenter = letterDetection.Detection().rightDetectFinal(IO.frame[1][0], IO.frame[1][1][config.cameraCutR[0]:config.cameraCutR[1],config.cameraCutR[2]:config.cameraCutR[3]])        
 
             # send and record color victim
-            elif rightColorVictim is not None:
+            if rightColorVictim is not None:
                 rightColorVictim = rightColorVictim.upper()
                 if config.runMode:
                     display.updateLabels(RVictim=rightColorVictim)
@@ -341,4 +325,17 @@ def searchForVictims():
                     util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] = ord(rightColorVictim)
                     IO.sendData(config.inputMode, rightColorVictim)
                     if config.saveVictimDebug:
-                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][:230,20:])
+                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightColorVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][config.cameraCutR[0]:config.cameraCutR[1],config.cameraCutR[2]:config.cameraCutR[3]])
+            
+            # send and record letter victim
+            elif rightLetterVictim is not None:
+                rightLetterVictim = rightLetterVictim.upper()
+                if config.runMode:
+                    display.updateLabels(RVictim=rightLetterVictim)
+                if config.victimDebug or config.importantDebug:
+                    print("\t\t\t\tLETTER VICTIM FOUND: " + rightLetterVictim + " AT TILE: " + str((util.tile, util.floor)) + " DIRECTION: " + str(util.dirToRight(util.direction)))
+                if not util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim]:
+                    util.maze[util.floor][util.tile][util.dirToRight(util.direction) + util.nVictim] = ord(rightLetterVictim)
+                    IO.sendData(config.inputMode, rightLetterVictim)
+                    if config.saveVictimDebug:
+                        cv2.imwrite(config.fpVIC + (time.ctime(IO.startTime) + "/" + rightLetterVictim + "-" + time.ctime(time.time()) + ".png"), IO.frame[1][1][config.cameraCutR[0]:config.cameraCutR[1],config.cameraCutR[2]:config.cameraCutR[3]])

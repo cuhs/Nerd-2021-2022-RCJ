@@ -13,16 +13,16 @@ genFromImage = False  # if false, will generate random maze
 redoLastMaze = False  # allows you to rerun last generated maze, for debugging
 
 showDisplay = False  # 0 no display, 1 is display
-displayRate = 10  # in milliseconds, 0 for until keypress
+displayRate = 1  # in milliseconds, 0 for until keypress
 displaySize = 500  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
 monitorDimensions = (1024, 600)  # (x, y, width, height)
 
 importantDebug = False  # important print statements, overrides other settings
-BFSDebug = False  # print statements for maze traversal
+BFSDebug = True  # print statements for maze traversal
 victimDebug = False  # shows camera feeds
 saveVictimDebug = True  # saves victim images if found
-serialDebug = False  # prints serial IO
+serialDebug = True  # prints serial IO
 
 port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0)
 rate = 9600  # serial port rate
@@ -30,8 +30,10 @@ LEDPin = 18  # GPIO pin for LED
 
 doVictim = True  # check for color and letter victims
 cameraCount = 2  # number of cameras, cam0 is left, cam1 is right. if only one camera, left
-cameraWidth = 320  # width of camera feed for both cameras 160
-cameraHeight = 240  # height of camera feed for both cameras 128
+cameraWidth = 160  # width of camera feed for both cameras 160
+cameraHeight = 128  # height of camera feed for both cameras 128
+cameraCutL = [0,128,0,150] #left slicing to ignore treads 
+cameraCutR = [0,128,5,155] #right slicing to ignore treads
 
 manualCheckpointLoading = False  # load back to last checkpoint when 'c' is pressed
 
@@ -46,5 +48,3 @@ fpKNN = fpALL + "KNN/"
 fpTXT = fpALL + "IOFiles/"
 fpIMG = fpALL + "IOFiles/"
 fpVIC = fpALL + "IOFiles/victimImages/"
-
-test = 50

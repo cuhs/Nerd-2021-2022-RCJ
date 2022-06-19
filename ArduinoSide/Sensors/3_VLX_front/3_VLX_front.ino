@@ -18,13 +18,13 @@ void tcaselect(uint8_t i) {
 }
 void setup()
 {
-  Serial.begin(9600);
+  Serial3.begin(9600);
   Wire.begin();
   tcaselect(0);
   sensor[0].setTimeout(500);
   if (!sensor[0].init())
   {
-    Serial.println("Failed to detect and initialize sensor!");
+    Serial3.println("Failed to detect and initialize sensor!");
     while (1) {}
   }
   sensor[0].startContinuous();
@@ -32,7 +32,7 @@ void setup()
   sensor[1].setTimeout(500);
   if (!sensor[1].init())
   {
-    Serial.println("Failed to detect and initialize sensor!");
+    Serial3.println("Failed to detect and initialize sensor!");
     while (1) {}
   }
   sensor[1].startContinuous();
@@ -40,7 +40,7 @@ void setup()
   sensor[2].setTimeout(500);
   if (!sensor[2].init())
   {
-    Serial.println("Failed to detect and initialize sensor!");
+    Serial3.println("Failed to detect and initialize sensor!");
     while (1) {}
   }
   sensor[2].startContinuous();
@@ -53,18 +53,18 @@ void setup()
 void loop()
 {
   tcaselect(0);
-  Serial.print("Sensor 0: " + String(sensor[0].readRangeContinuousMillimeters()));
-  if (sensor[0].timeoutOccurred()) { Serial.print(" TIMEOUT"); }
+  Serial3.print("Sensor0:" + String(sensor[0].readRangeContinuousMillimeters()));
+  if (sensor[0].timeoutOccurred()) { Serial3.print(" TIMEOUT"); }
 
-  //Serial.println();
+  //Serial3.println();
   tcaselect(1);
-  Serial.print("\tSensor 1: " + String(sensor[1].readRangeContinuousMillimeters()));
-  if (sensor[1].timeoutOccurred()) { Serial.print(" TIMEOUT"); }
+  Serial3.print(" Sensor1:" + String(sensor[1].readRangeContinuousMillimeters()));
+  if (sensor[1].timeoutOccurred()) { Serial3.print(" TIMEOUT"); }
 
-  //Serial.println();
+  //Serial3.println();
   tcaselect(2);
-  Serial.print("\tSensor 2: " + String(sensor[2].readRangeContinuousMillimeters()));
-  if (sensor[2].timeoutOccurred()) { Serial.print(" TIMEOUT"); }
+  Serial3.println(" Sensor2:" + String(sensor[2].readRangeContinuousMillimeters()));
+  if (sensor[2].timeoutOccurred()) { Serial3.print(" TIMEOUT"); }
 
-  Serial.println();
+  Serial3.println();
 }
