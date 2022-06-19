@@ -23,7 +23,7 @@ const double D = 7; //6.9 6.5
 
 bool goForwardTilesPID(int tiles);
 bool goForwardPID(int dist);
-void plainGoForward(int dist);
+void plainGoForward(int dist, int);
 void motorinterruptleft();
 void motorinterruptright();
 int rampMoveForward(char);

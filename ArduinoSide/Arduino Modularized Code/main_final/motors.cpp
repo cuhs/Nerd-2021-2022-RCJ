@@ -123,13 +123,13 @@ int rampMoveForward(char dir) {
   return amountTravelled*cos((abs(avgAng)*PI)/180);
 }
 
-void plainGoForward(int dist){
+void plainGoForward(int dist, int motorSpeed){
   int motorEncUse = LEFT;
   ports[motorEncUse].count = 0;
   double enc = ((360 / (D * PI)) * dist);
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
-    ports[RIGHT].setMotorSpeed(100);
-    ports[LEFT].setMotorSpeed(100);
+    ports[RIGHT].setMotorSpeed(motorSpeed);
+    ports[LEFT].setMotorSpeed(motorSpeed);
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
@@ -189,7 +189,7 @@ bool goForwardPID(int dist) {
 //        Serial3.print(" amtOfRamp: ");
 //        Serial3.println(amtOfRamp);
         Serial2.write((char)(amtOfRamp/30)+'0');
-        plainGoForward(5);
+        plainGoForward(5, 100);
         alignFront();
         finishedRamp = 0;
       }
@@ -217,7 +217,7 @@ bool goForwardPID(int dist) {
 //        Serial3.println((char)(amtOfRamp/30)+'0');
 //        Serial2.write((char)(amtOfRamp/30)+'0');
         Serial2.write((char)(amtOfRamp/30)+'0');
-        plainGoForward(5);
+        plainGoForward(5, 100);
         alignFront();
         
         finishedRamp = 0;
@@ -254,8 +254,18 @@ bool goForwardPID(int dist) {
         isSilver = true;
         whatToReturn = false;
         shouldSendM=false;
+        turnAbsNoVictim(theCurrAngle);
+      }else{
+        turnAbsNoVictim(theCurrAngle);
+        while (ports[motorEncUse].count > 0) {
+          ports[RIGHT].setMotorSpeed(-80);
+          ports[LEFT].setMotorSpeed(-80);
+        }
+        ports[RIGHT].setMotorSpeed(0);
+        ports[LEFT].setMotorSpeed(0);
+        plainGoForward(28, 200);
       }
-      turnAbsNoVictim(theCurrAngle);
+      
     }
 //    Serial3.print("whatToReturn: ");
 //    Serial3.println((int)whatToReturn);
