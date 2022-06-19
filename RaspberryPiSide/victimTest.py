@@ -39,6 +39,7 @@ def initCams():
          
 vD = letterDetection.Detection()
 
+initCams()
 
 while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (numberOfCams == 2 and cap[1].isOpened()):
     
@@ -52,45 +53,6 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
         frame = cv2.imread(path)
         dim = frame.shape
     
-<<<<<<< HEAD
-    #startTime = time.time()
-    
-    #frame1 = cv2.flip(frame1, 0)
-
-    #ret2,frame2 = cap2.read()
-    
-    #frame1 = frame1[:,:150] #H, W LEFT
-    
-    gray = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
-    
-    blur = cv2.bilateralFilter(gray, 5, 75,75)
-
-    thresh2  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15,5)
-
-
-    #frame2 = frame2[:,:152] #RIGHT
-                            
-    if ret1 > 0: #and ret2 > 0:
-        
-        print(main.colorDetect(frame1,hsv_lower,hsv_upper))
-        #print(main.colorDetect(frame1,hsv_lower,hsv_upper))
-
-        imgOutput1 = main.letterDetect(frame1,"frame1")
-        #imgOutput1 = main.letterDetect(frame1,"frame1")
-
-        #imgOutput2 = main.letterDetect(frame2, "frame2")
-        
-        result1 =  main.KNN_finish(imgOutput1,9000000)
-        #result1 =  main.KNN_finish(imgOutput1,9000000)
-        
-        if result1 is not None:
-            print(result1)
-            cv2.imshow("imgOUtput",imgOutput1)
-            cv2.imshow("thvictim", thresh2)
-            cv2.imshow("victim", frame1)
-            cv2.waitKey(1000)
-            cv2.destroyAllWindows()
-=======
     if checkFPS:
         startTime = time.time()
         
@@ -165,7 +127,6 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
                     
             cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/imgOutput.png", imgOutput)'''
             
->>>>>>> 905ae9e878176d326aa067b49a1b383841e952fb
 
 
     if showFrames:
@@ -225,4 +186,3 @@ if numberOfCams == 1 or numberOfCams == 2:
 if numberOfCams == 2:
     cap[1].release()
 cv2.destroyAllWindows()
-
