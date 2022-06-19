@@ -101,7 +101,7 @@ void victim() {
     delay(1);
     Serial3.print("Victim Message Received: ");
     Serial3.println(incoming_byte);
-    if (!stringchr("YGHSUyghsu", incoming_byte) || (stringchr("yghsu", incoming_byte) && getSensorReadings(1) < 35) || (stringchr("YGHSU", incoming_byte) && getSensorReadings(0) < 35)) { //if letter is uppercase
+    if (!stringchr("YGHSUyghsu", incoming_byte) || (stringchr("yghsu", incoming_byte) && getSensorReadings(1) < 25) || (stringchr("YGHSU", incoming_byte) && getSensorReadings(0) < 25)) { //if letter is uppercase
 
       switch (incoming_byte) {
         case 'Y': // 1 kit
@@ -176,10 +176,11 @@ void victim() {
           Serial3.print("#2 hmmm wut is this: ");
           Serial3.println(incoming_byte);
       }
-    }else{
-      Serial3.println("Sending '_'");
-      Serial2.write('_');
     }
+//    }else{
+//      Serial3.println("Sending '_'");
+//      Serial2.write('_');
+//    }
   }
 }
 
