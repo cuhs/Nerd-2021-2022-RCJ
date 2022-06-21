@@ -109,6 +109,7 @@ int rampMoveForward(char dir) {
 //    Serial3.print(" fix: ");
 //    Serial3.println(fix);
   }
+  plainGoForward(5,100);
   int amountTravelled = ((ports[motorEncUse].count-startingEnc)*D*PI)/360;
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
@@ -118,15 +119,16 @@ int rampMoveForward(char dir) {
 //  Serial3.print(avgAng);
 //  Serial3.print(" amttravelled: ");
 //  Serial3.println(amountTravelled*cos((abs(avgAng)*PI)/180));
-  alignFront();
+  amountTravelled = amountTravelled*cos((abs(avgAng)*PI)/180);
+  amountTravelled += alignFront(true);
   
-  return amountTravelled*cos((abs(avgAng)*PI)/180);
+  return amountTravelled;
 }
 
 void plainGoForward(int dist, int motorSpeed){
   int motorEncUse = LEFT;
-  ports[motorEncUse].count = 0;
-  double enc = ((360 / (D * PI)) * dist);
+  int initEnc = ports[motorEncUse].count;
+  double enc = ((360 / (D * PI)) * dist) + initEnc;
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
     ports[RIGHT].setMotorSpeed(motorSpeed);
     ports[LEFT].setMotorSpeed(motorSpeed);
@@ -177,7 +179,7 @@ bool goForwardPID(int dist) {
 //      Serial3.println(amtOfRamp);
       if(amtOfRamp<40){
         amtOfRamp += rampMoveForward('d');
-        if(amtOfRamp%30>=15)
+        if(amtOfRamp%30>=10)
           amtOfRamp+=30;
         amtOfRamp += beforeEnc;
         delay(1);
@@ -189,8 +191,8 @@ bool goForwardPID(int dist) {
 //        Serial3.print(" amtOfRamp: ");
 //        Serial3.println(amtOfRamp);
         Serial2.write((char)(amtOfRamp/30)+'0');
-        plainGoForward(5, 100);
-        alignFront();
+//        plainGoForward(5, 100);
+//        alignFront();
         finishedRamp = 0;
       }
       return true;
@@ -217,8 +219,8 @@ bool goForwardPID(int dist) {
 //        Serial3.println((char)(amtOfRamp/30)+'0');
 //        Serial2.write((char)(amtOfRamp/30)+'0');
         Serial2.write((char)(amtOfRamp/30)+'0');
-        plainGoForward(5, 100);
-        alignFront();
+//        plainGoForward(5, 100);
+//        alignFront();
         
         finishedRamp = 0;
       }
