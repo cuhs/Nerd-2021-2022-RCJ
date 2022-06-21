@@ -9,6 +9,7 @@
 
 void sendWallValues(int frontDist, int rightDist, int leftDist);
 void setupSensors2();
+int alignFront(bool);
 void alignFront();
 int getSensorReadings(int sensorNum);
 

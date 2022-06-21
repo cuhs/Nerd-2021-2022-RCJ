@@ -13,7 +13,7 @@ void setup() {
 
 void loop() {
   leftMotor.run(150);
-  rightMotor.run(-150);
+  rightMotor.run(150);
 //  delay(500);
 //  leftMotor.run(0);
 //  rightMotor.run(0);

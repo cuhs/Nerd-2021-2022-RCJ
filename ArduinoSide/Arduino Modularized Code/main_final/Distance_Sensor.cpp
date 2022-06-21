@@ -50,10 +50,11 @@ void setupSensors2() {
   }
 }
 
-void alignFront() {
+int alignFront(bool b) {
   int frontDist = getSensorReadings(2);
   int minimumDist = 25;
-
+  int motorEncUse = LEFT;
+  int initEncCount = ports[motorEncUse].count;
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
 
@@ -74,9 +75,13 @@ void alignFront() {
       frontDist = getSensorReadings(2);
     }
   }
-
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
+  return ports[motorEncUse].count - initEncCount;
+}
+
+void alignFront(){
+  alignFront(true);
 }
 
 int getSensorReadings(int num) {
