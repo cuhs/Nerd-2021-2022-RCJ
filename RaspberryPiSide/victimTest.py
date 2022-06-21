@@ -6,10 +6,10 @@ import letterDetection
 
 
 #CONFIG----------------------------------------
-
-numberOfCams = 2 #number of camera to run
+ 
+numberOfCams = 1 #number of camera to run
 cap = [None,None] #left, right
-victimDetect = True #true --> tests victim detection, false --> runs camera feed
+victimDetect = False #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
 fullDetect = True #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 width = 160 #camera width
@@ -20,7 +20,8 @@ checkFPS = False #true to check frames per second
 showCenter = False #true to show center of the victim, only works if victimDetect is true
 pathVI = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages"
 path = pathVI + "/Fri May 20 18:53:19 2022/u-Fri May 20 18:56:06 2022.png" #set to None if not testing an image
-threshParam = [17,3]
+path = None
+threshParam = [59,11]
 
 #CONFIG_END------------------------------------
 
@@ -134,13 +135,16 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
         if fullDetect:
             if numberOfCams == 1 or numberOfCams == 2 and path is None:
                 cv2.imshow("threshL", threshL)
-                cv2.imshow("imgOutputL", imgOutputL)
+                if imgOutputL is not None:
+                    cv2.imshow("imgOutputL", imgOutputL*255)
             if numberOfCams == 2 and path is None:
                 cv2.imshow("threshR", threshR)
-                cv2.imshow("imgOutputR", imgOutputR)
+                if imgOutputR is not None:
+                    cv2.imshow("imgOutputR", imgOutputR*255)
             if path is not None:
                 cv2.imshow("thresh", thresh)
-                cv2.imshow("imgOutput", imgOutput*255)
+                if imgOutput is not None:
+                    cv2.imshow("imgOutput", imgOutput*255)
     
                             
     '''if result1 is not None:
@@ -152,19 +156,17 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
 
                 
         
-    '''
+    
     if cv2.waitKey(1) == ord(' '):
         print("Do you like this image?")
-        #cv2.destroyAllWindows()
-        cv2.imshow("image_mask",imgOutput1)
+        cv2.imshow("image_mask",imgOutputL*255)
         letter = cv2.waitKey(0)
         cv2.destroyAllWindows()
         if letter == ord('y'):
-            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + str(time.time()) + ".png",frame1)
-            #cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + "mask" + str(time.time()) + ".png",imgOutput1)
+            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + str(time.time()) + ".png",frameL)
             print("saved!")
         else:
-            print("not saved")'''
+            print("not saved")
         
 
     if checkFPS:

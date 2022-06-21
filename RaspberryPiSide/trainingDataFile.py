@@ -15,7 +15,7 @@ main = letterDetection.Detection()
 directory = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims"
 
 
-with open("KNN/labels5.txt", 'w') as labels, open ("KNN/features5.txt", 'w') as features:
+with open("KNN/labels6.txt", 'w') as labels, open ("KNN/features6.txt", 'w') as features:
 
     for filename in os.listdir(directory):    
         

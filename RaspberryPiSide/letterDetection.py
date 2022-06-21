@@ -22,7 +22,8 @@ class Detection:
             
             for c in contour:
                 rect = cv2.minAreaRect(c)
-                if(rect[1][0]/(rect[1][1] if rect[1][1] != 0 else 0.001) < 1.6 and rect[1][0]/(rect[1][1] if rect[1][1] else 0.001) > 0.3):
+               #print(rect[1][0]/rect[1][1])
+                if(rect[1][0]/(rect[1][1] if rect[1][1] != 0 else 0.001) < 2.5 and rect[1][0]/(rect[1][1] if rect[1][1] else 0.001) > 0.3):
                     contour = c
                     break
                 contour = None
@@ -65,7 +66,7 @@ class Detection:
     def letterDetect(self, frame, name):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blur = cv2.bilateralFilter(gray, 5, 75,75)
-        mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 17,3)
+        mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 59,11)
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         imgOutput, center = self.getLetter(contours, mask, name)
                     
