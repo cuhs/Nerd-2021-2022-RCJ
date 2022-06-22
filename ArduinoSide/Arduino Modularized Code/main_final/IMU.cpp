@@ -345,13 +345,13 @@ int isOnRamp() {
   if (euler.y() < -15) {
     int ang = euler.x();
     if(getDirection(ang, 9)!=-1)
-      turnAbs(getDirection(ang));
+      turnAbsNoVictim(getDirection(ang));
     return 2;
   }
   else if (euler.y() > 15) {
     int ang = euler.x();
     if(getDirection(ang, 9)!=-1)
-      turnAbs(getDirection(ang));
+      turnAbsNoVictim(getDirection(ang));
     return 1;
   }
   return 0;
