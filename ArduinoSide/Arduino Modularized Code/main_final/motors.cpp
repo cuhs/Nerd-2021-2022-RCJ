@@ -109,7 +109,7 @@ int rampMoveForward(char dir) {
 //    Serial3.print(" fix: ");
 //    Serial3.println(fix);
   }
-  plainGoForward(5,100);
+  //plainGoForward(5,100);
   int amountTravelled = ((ports[motorEncUse].count-startingEnc)*D*PI)/360;
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);

@@ -77,7 +77,7 @@ int alignFront(bool b) {
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
-  return ports[motorEncUse].count - initEncCount;
+  return ((ports[motorEncUse].count - initEncCount)*D*PI)/360;
 }
 
 void alignFront(){
