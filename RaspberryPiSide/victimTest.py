@@ -9,9 +9,10 @@ import letterDetection
  
 numberOfCams = 1 #number of camera to run
 cap = [None,None] #left, right
-victimDetect = False #true --> tests victim detection, false --> runs camera feed
+victimDetect = True #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
-fullDetect = True #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
+fullDetect = False #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
+oneCamEverythingDetect = False #Will show everything as letterDetection class sees, to use shut down victimDetect, full Detect, and showFrames, set cams to 1
 width = 160 #camera width
 height = 128 #camera height
 cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads, height then width
@@ -121,7 +122,17 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             blur = cv2.bilateralFilter(gray, 5, 75, 75)
             thresh = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
-            imgOutput, c = vD.letterDetect(frame, "frame")            
+            imgOutput, c = vD.letterDetect(frame, "frame")
+    
+    
+    #Will show everything as letterDetection class sees, to use shut down victimDetect, full Detect, and showFrames, set cams to 1
+    if oneCamEverythingDetect and not victimDetect and not fullDetect and not showFrames and numberOfCams == 1:
+        vD.setDebugMode(True)
+        vD.letterDetect(frameL)
+        
+    else:
+        vD.setDebugMode(False)
+        
 
     if showFrames:
         if numberOfCams == 1 or numberOfCams == 2 and path is None:
@@ -157,16 +168,16 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
                 
         
     
-    if cv2.waitKey(1) == ord(' '):
+    '''if cv2.waitKey(1) == ord(' '):
         print("Do you like this image?")
-        cv2.imshow("image_mask",imgOutputL*255)
+        #cv2.imshow("image_mask",imgOutputL*255)
         letter = cv2.waitKey(0)
         cv2.destroyAllWindows()
         if letter == ord('y'):
             cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + str(time.time()) + ".png",frameL)
             print("saved!")
         else:
-            print("not saved")
+            print("not saved")'''
         
 
     if checkFPS:

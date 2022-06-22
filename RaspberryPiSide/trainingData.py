@@ -30,7 +30,7 @@ with open("KNN/labels4.txt", 'w') as labels, open ("KNN/features4.txt", 'w') as 
         
         if(ret > 0):
                     
-            imgOutput, center = main.letterDetect(frame, "frame")
+            imgOutput, center = main.letterDetect(frame)
                 
             input_key = cv2.waitKey(1)
             

@@ -10,13 +10,16 @@ class Detection:
         self.Debug = False
         self.size = 30
         self.KNN = KNN.KNN()
+        
+    def setDebugMode(self, mode):
+        self.Debug = mode
 
     # calculate the distance between two points
     def dist(self, point1, point2):
         return np.sqrt(((point1[0] - point2[0]) ** 2) + ((point1[1] - point2[1]) ** 2))
 
     # calculate the letter seen by camera, if any
-    def getLetter(self, contour, mask, name):
+    def getLetter(self, frame,contour, mask):
         if len(contour) > 0:
             contour = sorted(contour, key=cv2.contourArea, reverse = True)
             
@@ -31,9 +34,17 @@ class Detection:
             if contour is not None and cv2.contourArea(contour) > 0:
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
-                box = np.float32(box)
+                
+                box = np.int32(box)
                 
                 center = rect[0][0]
+                
+                if self.Debug == True:
+                    #cv2.drawContours(frame, [box], 0, (255,255,0),2)
+                    #cv2.circle(frame, (int(rect[0][0]), int(rect[0][1])), 2, (255,255,0),-1)
+                    cv2.imshow("frame", frame)
+                    
+                box = np.float32(box)
 
                 s = np.sum(box, axis=1)
                 d = np.diff(box, axis=1)
@@ -63,12 +74,16 @@ class Detection:
         return None, None
 
     # process frame and return letter from getLetter
-    def letterDetect(self, frame, name):
+    def letterDetect(self, frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blur = cv2.bilateralFilter(gray, 5, 75,75)
         mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 59,11)
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        imgOutput, center = self.getLetter(contours, mask, name)
+        imgOutput, center = self.getLetter(frame,contours, mask)
+        
+        if self.Debug == True:
+            cv2.imshow("mask", mask)
+            cv2.imshow("imgOutput", imgOutput*255)
                     
         return imgOutput, center
 
@@ -111,8 +126,8 @@ class Detection:
     #letter center color center 
     def rightDetectFinal(self,ret,frame):
         if ret > 0:
-            imgOutput, center = self.letterDetect(frame,"frame1")
-            letter, letter_center  = self.KNN_finish(imgOutput, center, 10000000)
+            imgOutput, center = self.letterDetect(frame)
+            letter, letter_center  = self.KNN_finish(imgOutput, center, 100)
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
             return letter, letter_center, color, color_center
         return None, None, None, None
@@ -120,8 +135,8 @@ class Detection:
     # return letter and color victims from left camera
     def leftDetectFinal(self,ret,frame):
         if ret > 0:
-            imgOutput, center = self.letterDetect(frame,"frame2")
-            letter, letter_center  = self.KNN_finish(imgOutput, center, 10000000)
+            imgOutput, center = self.letterDetect(frame)
+            letter, letter_center  = self.KNN_finish(imgOutput, center, 100)
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
             return letter, letter_center, color, color_center
         return None, None, None, None
