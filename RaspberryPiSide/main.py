@@ -104,7 +104,7 @@ class AThread(QThread if config.runMode else object):
                             didTurn = False
 
                             while victimMsg != ';':
-                                BFS.searchForVictims()
+                                BFS.searchForVictims(False)
                                 victimMsg = IO.getNextSerialByte()
 
                                 if victimMsg == 'a':
@@ -193,7 +193,7 @@ class AThread(QThread if config.runMode else object):
                             wentForward = False
 
                             while victimMsg != ';':
-                                BFS.searchForVictims()
+                                BFS.searchForVictims(True)
                                 victimMsg = IO.getNextSerialByte()
 
                                 if victimMsg == 'a':
