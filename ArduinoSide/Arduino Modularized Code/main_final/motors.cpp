@@ -8,14 +8,10 @@ bool goForwardTilesPID(int tiles) {
 }
 
 int rampMoveForward(char dir) {
-//  int Lspeed = 0;
-//  int KP = 2;
-//  int Rspeed = 0;
   int motorSpeed = 0;
-  //int theAng = 0;
   int motorEncUse = LEFT;
   if (dir == 'u') {
-    motorSpeed = 140;
+    motorSpeed = 150;
     finishedRamp = 1;
   } else if (dir == 'd') {
     motorSpeed = 90;
@@ -23,46 +19,10 @@ int rampMoveForward(char dir) {
   }
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-//  int angle = euler.x();
-//  angle=getDirection(angle);
-//  double error;
-//  double pastError=0;
-//  double integral=0;
-  //int currAng;
   int startingEnc = ports[motorEncUse].count;
   int avgAng = 0;
   int itCt = 0;
   while (isOnRamp() == 0) {
-//    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-//    currAng=euler.x();
-//    if(currAng>345)
-//      currAng=currAng-360;
-//    error = angle - currAng;
-//    int fix = PID(error, pastError, integral, KP, 0, 0);
-//    int obsFix = 0;
-//    char c = obstacleDetect();
-    //if(c=='r' || c == 'l') obsFix = 50;
-//    if(fix>0){
-//      
-//      ports[LEFT].setMotorSpeed(Lspeed+fix);
-////      if(c=='l')
-////        ports[RIGHT].setMotorSpeed(-120);
-////      else if(c=='r')
-////        ports[LEFT].setMotorSpeed(-120);
-//    //  else{
-//        ports[RIGHT].setMotorSpeed(Rspeed-fix);
-//      //}
-//    }
-//    else{
-//      ports[RIGHT].setMotorSpeed(Rspeed+fix);
-////      if(c=='r')
-////        ports[LEFT].setMotorSpeed(-120);
-////      else if(c=='l')
-////        ports[RIGHT].setMotorSpeed(-120);
-//     // else{
-//        ports[LEFT].setMotorSpeed(Lspeed-fix);
-//      //}
-//    }
       ports[LEFT].setMotorSpeed(motorSpeed);
       ports[RIGHT].setMotorSpeed(motorSpeed);
     if(Serial2.available()) Serial2.read();
@@ -77,20 +37,6 @@ int rampMoveForward(char dir) {
   }
   
   while (notStable()) {
-//    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-//    currAng=euler.x();
-//    if(currAng>345)
-//      currAng=currAng-360;
-//    error = angle - currAng;
-//    int fix = PID(error, pastError, integral, KP, 0, 0);
-//    if(fix>0){
-//      ports[RIGHT].setMotorSpeed(Rspeed-fix);
-//      ports[LEFT].setMotorSpeed(Lspeed+fix);
-//    }
-//    else{
-//      ports[LEFT].setMotorSpeed(Lspeed-fix);
-//      ports[RIGHT].setMotorSpeed(Rspeed+fix);
-//    }
     ports[LEFT].setMotorSpeed(motorSpeed);
     ports[RIGHT].setMotorSpeed(motorSpeed);
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -100,25 +46,12 @@ int rampMoveForward(char dir) {
       ++itCt;
     }
     if(Serial2.available()) Serial2.read();
-//    Serial3.print("target: ");
-//    Serial3.print(angle);
-//    Serial3.print(" error: ");
-//    Serial3.print(error);
-//    Serial3.print(" curr ang: ");
-//    Serial3.print(currAng);
-//    Serial3.print(" fix: ");
-//    Serial3.println(fix);
   }
   //plainGoForward(5,100);
   int amountTravelled = ((ports[motorEncUse].count-startingEnc)*D*PI)/360;
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
   avgAng = avgAng/itCt;
-//  //plainGoForward(5);
-//  Serial3.print("Angle: ");
-//  Serial3.print(avgAng);
-//  Serial3.print(" amttravelled: ");
-//  Serial3.println(amountTravelled*cos((abs(avgAng)*PI)/180));
   amountTravelled = amountTravelled*cos((abs(avgAng)*PI)/180);
   amountTravelled += alignFront(true);
   
@@ -251,8 +184,12 @@ bool goForwardPID(int dist) {
       tcaselect(7);
       imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
       int theCurrAngle = euler.x();
-      turnAbsNoVictim((theCurrAngle + 30)%360);
-      if(detectTiles() == 2){
+      int silvCheck = 0;
+      for(int j = 25; j <= 30; j+=5){
+        turnAbsNoVictim((theCurrAngle + j)%360);
+        silvCheck += detectTiles();
+      }
+      if(silvCheck >= 2){
         isSilver = true;
         whatToReturn = false;
         shouldSendM=false;

@@ -51,13 +51,13 @@ void loop() {
     delay(1);
     Serial3.print("Message detected: ");
     Serial3.println(incoming_byte);
+    if (!stringchr("YGHSUyghsu", incoming_byte) || (stringchr("yghsu", incoming_byte) && getSensorReadings(1) < 25) || (stringchr("YGHSU", incoming_byte) && getSensorReadings(0) < 25)) { //if letter is uppercase
     switch (incoming_byte) {
       case '{':
        // Serial3.println("read {");
         break;
       case 'W':
         rampMoveForward('u');
-        alignFront();
         finishedRamp=0;
         delay(1);
         Serial2.write(';');
@@ -65,7 +65,6 @@ void loop() {
         break;
       case 'M':
         rampMoveForward('d');
-        alignFront();
         finishedRamp=0;
         delay(1);
         Serial2.write(';');
@@ -197,6 +196,7 @@ void loop() {
         Serial3.print("hmmm wut is this: ");
         Serial3.println(incoming_byte);
         break;
+    }
     }
   }
 }
