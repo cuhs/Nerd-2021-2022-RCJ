@@ -13,6 +13,7 @@ victimDetect = True #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
 fullDetect = False #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 oneCamEverythingDetect = False #Will show everything as letterDetection class sees, to use shut down victimDetect, full Detect, and showFrames, set cams to 1
+saveVictim = False
 width = 160 #camera width
 height = 128 #camera height
 cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads, height then width
@@ -167,17 +168,17 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
 
                 
         
-    
-    '''if cv2.waitKey(1) == ord(' '):
-        print("Do you like this image?")
-        #cv2.imshow("image_mask",imgOutputL*255)
-        letter = cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        if letter == ord('y'):
-            cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + str(time.time()) + ".png",frameL)
-            print("saved!")
-        else:
-            print("not saved")'''
+    if saveVictim and numOfCams == 1:
+        if cv2.waitKey(1) == ord(' '):
+            print("Do you like this image?")
+            #cv2.imshow("image_mask",imgOutputL*255)
+            letter = cv2.waitKey(0)
+            cv2.destroyAllWindows()
+            if letter == ord('y'):
+                cv2.imwrite("/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims/" + str(time.time()) + ".png",frameL)
+                print("saved!")
+            else:
+                print("not saved")
         
 
     if checkFPS:
