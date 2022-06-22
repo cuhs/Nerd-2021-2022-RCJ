@@ -88,11 +88,11 @@ class Detection:
         return imgOutput, center
 
     # check for letters with KNN
-    def KNN_finish(self, imgOutput, center, distLimit):
+    def KNN_finish(self, imgOutput, center, hDist, sDist, uDist):
         if imgOutput is not None:
             for x in range(4):
                 result, dist = self.KNN.classify(imgOutput)
-                if dist <= distLimit and result is not None:
+                if (dist <= hDist and result == 'H') or (dist <= sDist and result == 'S') or (dist <= uDist and result == 'U'):
                     return result, center
                 imgOutput = np.rot90(imgOutput)
         return None, None
@@ -127,7 +127,7 @@ class Detection:
     def rightDetectFinal(self,ret,frame):
         if ret > 0:
             imgOutput, center = self.letterDetect(frame)
-            letter, letter_center  = self.KNN_finish(imgOutput, center, 100)
+            letter, letter_center  = self.KNN_finish(imgOutput, center, 100, 100, 200) #image, center, H, S, U
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
             return letter, letter_center, color, color_center
         return None, None, None, None
@@ -136,7 +136,7 @@ class Detection:
     def leftDetectFinal(self,ret,frame):
         if ret > 0:
             imgOutput, center = self.letterDetect(frame)
-            letter, letter_center  = self.KNN_finish(imgOutput, center, 100)
+            letter, letter_center  = self.KNN_finish(imgOutput, center, 100, 100, 200) #image, center, H, S, U
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
             return letter, letter_center, color, color_center
         return None, None, None, None
