@@ -15,7 +15,7 @@ class AThread(QThread if config.runMode else object):
     def run(self):
         # time calculation
         IO.startTime = time.time()
-
+        
         if config.importantDebug:
             print("\nRaspberryPiSide START")
 
