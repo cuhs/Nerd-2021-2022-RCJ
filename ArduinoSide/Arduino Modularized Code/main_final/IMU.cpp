@@ -1,10 +1,12 @@
 #include "IMU.h"
 
-int resetPinIMU = A6;
+
 const int ROBOT_WIDTH = 19;
 Adafruit_BNO055 bno;
+//indicates if the robot has went on a ramp - 1 means up, 2 means down, 0 means didn't do ramp
 int finishedRamp = 0;
 
+//initializes the IMU
 void initIMU() {
   tcaselect(7);
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_IMUPLUS))
@@ -19,6 +21,7 @@ void initIMU() {
   bno.setExtCrystalUse(true);
 }
 
+//resets the IMU - currently not in use
 void reset() {
   Serial3.println("Resetting.");
   digitalWrite(resetPinIMU, HIGH);
@@ -31,9 +34,12 @@ void reset() {
   bno.begin();
 }
 
+//gets the nearest direction the robot is facing(0, 90, 180, or 270) if the robot is within 20 degrees of one of the 4 directions
 int getDirection(int dir) {
   return getDirection(dir, 4);
 }
+
+//gets the nearest direction the robot is facing like the above overloaded function if the robot is within 5*factor degrees of one of the 4 directions
 int getDirection(int dir, int factor){
   if (dir <= 5*factor || dir >= 360-(5*factor))
     return 0;
@@ -46,6 +52,7 @@ int getDirection(int dir, int factor){
   return -1;
 }
 
+//returns true if the robot's angle is near a target angle
 bool isNearTarget(int dir, int target){
   if(target > 350 || target < 10){
     if(dir > 340 || dir < 20) return true;
@@ -56,6 +63,7 @@ bool isNearTarget(int dir, int target){
   return false;
 }
 
+//overloaded function that makes the robot turn right or left depending on its current angular position
 void turnAbs(char t) {
   //get BNO values
   tcaselect(7);
@@ -86,6 +94,7 @@ void turnAbs(char t) {
   }
 }
 
+//displays IMU values - can be used for debugging
 void displayIMU() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -94,6 +103,8 @@ void displayIMU() {
     Serial3.println((int)euler.x());
   }
 }
+
+//turns right - currently not used
 void turnRight(int degree) {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -103,8 +114,6 @@ void turnRight(int degree) {
   while (error >= 2) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     error = target - euler.x();
-    //      Serial3.print("error: ");
-    //      Serial3.println(error);
     ports[RIGHT].setMotorSpeed(-150);
     ports[LEFT].setMotorSpeed(150);
   }
@@ -112,13 +121,16 @@ void turnRight(int degree) {
   ports[LEFT].setMotorSpeed(0);
 }
 
+//turns to an absolute angular position in degrees passed by parameter - will turn right or left depending on which is closer
 void turnAbs(int degree) {
+  //variables used for stall detection
   unsigned long startTime;
   unsigned long endTime;
-
   int prev_count = 0;
   bool stalling = false;
   bool checking = false;
+
+  //variables used for PID turning
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int dir[4] = {0, 90, 180, 270};
@@ -129,41 +141,46 @@ void turnAbs(int degree) {
   int error = targetDir - curDir;
   double pastError = 0;
   int startingError = error;
+
+  //variable used to determine when the arduino should send an 'm' to the pi
   bool shouldSendM = true;
   while (abs(error) >= 3 && !stalling) {
-    //Serial3.println("In turnAbs degrees");
+
+    //checks serial and heat sensors to see if any victims were seen and act accordingly
     victim();
     tcaselect(7);
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     curDir = euler.x();
     error = targetDir - curDir;
+    //makes sure that the robot will turn left or right depending on which way would be closer to the target angle
     if (error > 180) {
       error -= 360;
     } else if (error < -180)
       error = 360 + error;
+
+    //sends 'm' if the robot is 70% done with its turn
     if(shouldSendM && abs(error)<=(7*abs(startingError))/10){
-      //Serial3.println("Sending m");
       shouldSendM = false;
       delay(1);
       Serial2.write('m');
       delay(1);
     }
+    //checks if the robot is stalling
     if (ports[LEFT].count == prev_count && !checking) {
-      //Serial3.println("set start time");
       startTime = millis();
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
-      //Serial3.println("checking false");
       checking = false;
     }
     if (ports[LEFT].count == prev_count && !stalling) {
-      //Serial3.println("motors might be stalling");
       endTime = millis();
       if (endTime - startTime > 1000 && isNearTarget((int)euler.x(), targetDir)) {
         Serial3.println("STALLING");
         stalling = true;
       }
     }
+
+    //if the limit switch is pressed in, goes back slightly before finishing the turn
     prev_count = ports[LEFT].count;
     char c = obstacleDetect();
     if(c != '0'){
@@ -179,11 +196,6 @@ void turnAbs(int degree) {
       fix += 80;
     else
       fix -= 80;
-    //    Serial3.print(fix);
-    //    Serial3.print("\tEuler: ");
-    //    Serial3.print(euler.x());
-    //    Serial3.print("\terror: ");
-    //    Serial3.println(error);
     ports[RIGHT].setMotorSpeed(-fix);
     ports[LEFT].setMotorSpeed(fix);
     //Serial3.println(euler.x());
@@ -191,6 +203,8 @@ void turnAbs(int degree) {
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
 }
+
+//turnAbs but it does not send any 'm', test for obstacles, or test for victims - used for minor turn adjustments such as that used in triangulation
 void turnAbsNoVictim(int degree) {
   unsigned long startTime;
   unsigned long endTime;
@@ -253,6 +267,7 @@ void turnAbsNoVictim(int degree) {
   ports[LEFT].setMotorSpeed(0);
 }
 
+//the main going forward controller - turns using trigonometry in order to center the robot in each tile when it goes forward
 bool triangulation(int left, int right) {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -262,7 +277,7 @@ bool triangulation(int left, int right) {
   int currAngle;
   int tileLength = 30;
   bool noBlack = true;
-  //no walls
+  //if no walls, turn to the nearest direction(0,90,180,270) and go forward without triangulation
   if (left > 20 && right > 20 || left + ROBOT_WIDTH + right <25) {
     int di = getDirection(euler.x(),9);
     if(di!=-1)
@@ -272,38 +287,33 @@ bool triangulation(int left, int right) {
     return true;
   }
   
-  //closer to right wall
+  //if closer to right wall
   if (left > right) {
+    //calculates distance of the robot from the center of the tile
     distFromCenter = (tileLength/2) - (right + ROBOT_WIDTH / 2);
     if (distFromCenter == 0)
       angle = 0;
     else
-      angle = (90 - atan2(30, distFromCenter) * 360 / (2 * PI));
+      angle = (90 - atan2(30, distFromCenter) * 360 / (2 * PI)); // finds the angle the robot needs to turn in order to move to the center of the next tile
+    //uses pythagorean thereom to calculate how much it needs to move forward after turning to move to center of the next tile
     forwardCm = sqrt(pow(distFromCenter, 2) + 900);
+    //saves the angle the robot is in before triangulation
     if(getDirection(euler.x(),9)!=-1)
       currAngle = getDirection(euler.x(),9);
      else
       currAngle = euler.x();
-    //    Serial3.print("RIGHT, distFromCenter: ");
-    //    Serial3.print(distFromCenter);
-    //    Serial3.print(" angle: ");
-    //    Serial3.print(angle);
-    //    Serial3.print(" forwardCM: ");
-    //    Serial3.print(forwardCm);
-    //    Serial3.print(" currAng: ");
-    //    Serial3.println(currAngle);
     int ang = currAngle - angle;
     if (ang > 360) ang = ang % 360;
     if(ang < 0) ang = ang + 360;
+    //does initial turn
     turnAbsNoVictim(ang);
-    //Serial3.println("Done turn");
+    //goes forward the amount calculated above - returns true if there is no black tile detected and false if there is a black tile detected
     noBlack = goForwardPID(forwardCm);
-    //Serial3.println("Done forward");
+    //turns back to the original angle
     turnAbsNoVictim(currAngle);
-    //Serial3.println("Done adjust");
-
     //closer to left wall
   } else {
+    //see above comments for if the right wall is closer - pretty much the same, except the angle that the robot needs to turn is added instead of subtracted from the initial angle
     distFromCenter = (tileLength/2) - (left + ROBOT_WIDTH / 2);
     if (distFromCenter == 0)
       angle = 0;
@@ -314,30 +324,18 @@ bool triangulation(int left, int right) {
       currAngle = getDirection(euler.x(),9);
     else
       currAngle = euler.x();
-    //    Serial3.print("LEFT, distFromCenter: ");
-    //    Serial3.print(distFromCenter);
-    //    Serial3.print(" angle: ");
-    //    Serial3.print(angle);
-    //    Serial3.print(" forwardCM: ");
-    //    Serial3.print(forwardCm);
-    //    Serial3.print(" currAng: ");
-    //    Serial3.println(currAngle);
     int ang = currAngle + angle;
     if (ang > 360) ang = ang % 360;
     if(ang < 0) ang = ang + 360;
     turnAbsNoVictim(ang);
-    //Serial3.println("Done turn");
     noBlack = goForwardPID(forwardCm);
-    //Serial3.println("Done forward");
     turnAbsNoVictim(currAngle);
-    // Serial3.println("Done adjust");
-
   }
-//  Serial3.print("noBlack: ");
-//  Serial3.println((int)noBlack);
   return noBlack;
 }
 
+//tests to see if the robot is on a ramp - return 1 if it is going up and 2 if it is going down
+//turns to the nearest direction(0,90,180,270) if it detects a ramp
 int isOnRamp() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -357,6 +355,8 @@ int isOnRamp() {
   return 0;
 }
 
+
+//detects if the robot is stable - y direction is at or very close to 0
 bool notStable() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);

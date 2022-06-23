@@ -5,11 +5,13 @@ const int R_angle = 165;
 const int L_angle = 5;
 const int C_angle = 82;
 
+//turns the servo motor on our rescue kit dropper to a certain angle
 void turnTo(int dir) {
   myservo.attach(A7, 550, 2600);
   myservo.write(dir);
 }
 
+//wiggles to make sure the rescue kit goes in and comes out correctly - flashes the LED while wiggling
 void wiggle(int angle, int wiggleAmt, int rVal, int gVal, int bVal) { //1200 ms
   //Serial3.println("In wiggle");
   bool isOn = false;
@@ -25,6 +27,8 @@ void wiggle(int angle, int wiggleAmt, int rVal, int gVal, int bVal) { //1200 ms
   //Serial3.println("Done wiggle");
 }
 
+
+//turns on or off the LED depending on if lightUp is true or false
 void turnOnLED(bool lightUp, int rVal, int gVal, int bVal){
   if(lightUp){
     analogWrite(47, rVal);
@@ -38,8 +42,8 @@ void turnOnLED(bool lightUp, int rVal, int gVal, int bVal){
   }  
 }
 
+//drops rescue kits while flashing the LED
 void dropKits(char dir, int amt, int rVal, int gVal, int bVal) {
-  //Serial3.println("In dropKits");
   myservo.attach(A7, 550, 2600); // attaches the servo on pin A7 to the servo object
   if (dir == 'L') {
     for (int i = 0; i < amt; i++) {
@@ -63,9 +67,9 @@ void dropKits(char dir, int amt, int rVal, int gVal, int bVal) {
   myservo.write(C_angle);
   wiggle(C_angle, 5, rVal, gVal, bVal); //1200ms
   myservo.detach();
-  //Serial3.println("Done dropKits");
 }
 
+//main dropping kits and flashing LED controller - stops the bot, flashes LED after dropping kits for enough time to make it a total of 5 seconds
 void RGB_color(int rVal, int gVal, int bVal, int rescueKits, char dir) {
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
@@ -90,24 +94,27 @@ void RGB_color(int rVal, int gVal, int bVal, int rescueKits, char dir) {
   
   turnOnLED(false,rVal,gVal,bVal);
 }
+
+//detects if the StereoPi sends a message indicating a victim detected or if the heat sensors detect a victim
 void victim() {
+  //detect heat victim
   if (!isHeat) {
     doHeatVictim(getHeatSensorReadings('L'), getHeatSensorReadings('R'));
   }
-
+  //wait for if the pi sends a message indicating a victim being detected
   if (Serial2.available()) {
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
     Serial3.print("Victim Message Received: ");
     Serial3.println(incoming_byte);
+    //makes sure the robot is close enough to a wall when a victim is detected
     if (!stringchr("YGHSUyghsu", incoming_byte) || (stringchr("yghsu", incoming_byte) && getSensorReadings(1) < 25) || (stringchr("YGHSU", incoming_byte) && getSensorReadings(0) < 25)) { //if letter is uppercase
-
+      //drops kits and flashes LED if victim is detected
       switch (incoming_byte) {
         case 'Y': // 1 kit
           Serial3.println("red/yellow");
           RGB_color(255, 0, 0, 1, 'R'); // Red
-          //dropKits('R', 1);
           break;
 
         case 'G': // 0 kits
@@ -118,14 +125,12 @@ void victim() {
         case 'H': // 3 kits
           Serial3.println("H");
           RGB_color(0, 0, 255, 3, 'R'); // Blue
-          //dropKits('R', 3);
           break;
 
         //turn left
         case 'S': // 2 kits
           Serial3.println("S");
           RGB_color(0, 255, 255, 2, 'R'); // Cyan
-          //dropKits('R', 2);
           break;
 
         //turn right
@@ -136,7 +141,6 @@ void victim() {
         case 'y': // 1 kit
           Serial3.println("red/yellow");
           RGB_color(255, 0, 0, 1, 'L'); // Red
-          //dropKits('L', 1);
           break;
 
         case 'g': // 0 kits
@@ -147,14 +151,12 @@ void victim() {
         case 'h': // 3 kits
           Serial3.println("H");
           RGB_color(0, 0, 255, 3, 'L'); // Blue
-          //dropKits('L', 3);
           break;
 
         //turn left
         case 's': // 2 kits
           Serial3.println("S");
           RGB_color(0, 255, 255, 2, 'L'); // Cyan
-          //dropKits('L', 2);
           break;
 
         //turn right
@@ -177,14 +179,10 @@ void victim() {
           Serial3.println(incoming_byte);
       }
     }
-//    }else{
-//      Serial3.println("Sending '_'");
-//      Serial2.write('_');
-//    }
   }
 }
 
-//stringchr returns pointer to char in string
+//stringchr returns true if char c is in string s
 bool stringchr(const char *s, char c){
   for(int i = 0; s[i] != '\0'; i++){
     if(s[i]==c) return true;
@@ -192,6 +190,7 @@ bool stringchr(const char *s, char c){
   return false;
 }
 
+//unused alternate victim function
 void victimForward(int percentage) {
   if (!isHeat) {
     doHeatVictim(getHeatSensorReadings('L'), getHeatSensorReadings('R'));

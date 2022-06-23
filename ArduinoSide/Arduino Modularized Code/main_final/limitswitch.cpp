@@ -5,15 +5,11 @@ void setupSwitches(){
   pinMode(RIGHT_SWITCH, INPUT_PULLUP);
 }
 
+//detects if the limit switches are pressed - 'l' if the left is pressed, 'r' if the right is pressed
 char obstacleDetect(){
-//  Serial3.print("left switch: ");
-//  Serial3.print(digitalRead(LEFT_SWITCH));
-//  Serial3.print("\tright switch: ");
-//  Serial3.println(digitalRead(RIGHT_SWITCH));
   if((int)(digitalRead(LEFT_SWITCH))==0)
     return 'l';
   if((int)(digitalRead(RIGHT_SWITCH))==0)
     return 'r';
-
   return '0';
 }

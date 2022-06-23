@@ -35,49 +35,37 @@ void setup() {
 }
 
 void loop() {
- // triangulation(getSensorReadings(1), getSensorReadings(0));
-//turnRight(90);
-//delay(1000);
-//turnAbs(270);
-//while(true);
-  //while(true) displayIMU();
-
-//  goForwardPID(30);
-//  while(true);
-  
+  //wait for the StereoPi to send a Serial message with directions or victims
   if (Serial2.available()) {
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
     Serial3.print("Message detected: ");
     Serial3.println(incoming_byte);
+    //make sure that if a victim is detected, it is within 25 cm from the robot
     if (!stringchr("YGHSUyghsu", incoming_byte) || (stringchr("yghsu", incoming_byte) && getSensorReadings(1) < 25) || (stringchr("YGHSU", incoming_byte) && getSensorReadings(0) < 25)) { //if letter is uppercase
     switch (incoming_byte) {
       case '{':
-       // Serial3.println("read {");
         break;
-      case 'W':
+      case 'W'://message the pi sends when it sees an up ramp on the next tile in the map
         rampMoveForward('u');
         finishedRamp=0;
         delay(1);
         Serial2.write(';');
         delay(1);
         break;
-      case 'M':
+      case 'M'://message the pi sends when it sees a down ramp on the next tile in the map
         rampMoveForward('d');
         finishedRamp=0;
         delay(1);
         Serial2.write(';');
         delay(1);
         break;
-      case 'F':
+      case 'F'://message to go forward(triangulation)
         //get rid of semicolon
         delay(1);
         Serial2.read();
         delay(1);
-        
-       // Serial3.println("forward!");
-        //goForwardTilesPID(1);
         if(triangulation(getSensorReadings(1), getSensorReadings(0))){
         alignFront();
         delay(1);
@@ -85,45 +73,35 @@ void loop() {
         delay(1);
         Serial3.println(';');
         }
-        //isHeat = false;
-        //Serial3.println("finished going forward");
         break;
         
-      case 'L':
+      case 'L'://turn left
         //get rid of semicolon
         delay(1);
         Serial2.read();
         delay(1);
-        
-        //Serial3.println("left!");
         turnAbs('l');
         //if(!isHeat){
         delay(1);
         Serial2.write(';');
         delay(1);
         Serial3.println(';');
-//        }
-//        isHeat=false;
         break;
 
-      case 'R':
+      case 'R'://turn right
         //get rid of semicolon
         delay(1);
         Serial2.read();
         delay(1);
-        
-       // Serial3.println("right!");
         turnAbs('r');
         //if(!isHeat){
         delay(1);
         Serial2.write(';');
         delay(1);
-        Serial3.println(';');
-//        }
-//        isHeat=false;
+        Serial3.println(';');        
         break;
         
-      case '}':
+      case '}'://pi wants wall values to be sent from the arduino
         Serial3.println("}");
         if(finishedRamp==1)
           Serial2.write('u');
@@ -133,6 +111,7 @@ void loop() {
         delay(15);
         sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
         break;
+      //victim messages
       case 'Y': // 1 kit
         Serial3.println("red/yellow");
         RGB_color(255, 0, 0, 1, 'R'); // Red

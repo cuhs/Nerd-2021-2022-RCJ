@@ -8,5 +8,4 @@
 
 extern int finishedRamp;
 extern bool isHeat;
-//extern int frontTof;
 #endif
