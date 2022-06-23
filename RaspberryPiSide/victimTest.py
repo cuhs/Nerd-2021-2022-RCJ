@@ -7,9 +7,9 @@ import letterDetection
 
 #CONFIG----------------------------------------
  
-numberOfCams = 1 #number of camera to run
+numberOfCams = 2 #number of camera to run
 cap = [None,None] #left, right
-victimDetect = True #true --> tests victim detection, false --> runs camera feed
+victimDetect = False #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
 fullDetect = False #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 oneCamEverythingDetect = False #Will show everything as letterDetection class sees, to use shut down victimDetect, full Detect, and showFrames, set cams to 1
@@ -110,20 +110,20 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
             grayL = cv2.cvtColor(frameL, cv2.COLOR_BGR2GRAY)
             blurL = cv2.bilateralFilter(grayL, 5, 75, 75)
             threshL = cv2.adaptiveThreshold(blurL,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
-            imgOutputL, cL = vD.letterDetect(frameL, "frameL") 
+            imgOutputL, cL = vD.letterDetect(frameL) 
             
         if numberOfCams == 2 and path is None:
             grayR = cv2.cvtColor(frameR, cv2.COLOR_BGR2GRAY)
             blurR = cv2.bilateralFilter(grayR, 5, 75, 75)
             threshR = cv2.adaptiveThreshold(blurR,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
-            imgOutputR, cR = vD.letterDetect(frameR, "frameR")
+            imgOutputR, cR = vD.letterDetect(frameR)
             
         if path is not None:
             #REMINDER: MAKING CHANGES HERE WILL NOT EFFECT VICTIM DETECTION/KNN
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             blur = cv2.bilateralFilter(gray, 5, 75, 75)
             thresh = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
-            imgOutput, c = vD.letterDetect(frame, "frame")
+            imgOutput, c = vD.letterDetect(frame)
     
     
     #Will show everything as letterDetection class sees, to use shut down victimDetect, full Detect, and showFrames, set cams to 1

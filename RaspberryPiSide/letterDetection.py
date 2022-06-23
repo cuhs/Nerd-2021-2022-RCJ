@@ -10,6 +10,9 @@ class Detection:
         self.Debug = False
         self.size = 30
         self.KNN = KNN.KNN()
+        self.count = 1
+        #self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        #self.out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('M','J','P','G'), 20, ( 160,128*2))
         
     def setDebugMode(self, mode):
         self.Debug = mode
@@ -40,9 +43,18 @@ class Detection:
                 center = rect[0][0]
                 
                 if self.Debug == True:
-                    #cv2.drawContours(frame, [box], 0, (255,255,0),2)
+                    
+                    frameTemp = np.copy(frame)
+                    maskTemp = cv2.cvtColor(mask,cv2.COLOR_GRAY2BGR)
+                    #cv2.drawContours(frameTemp, [box], 0, (255,255,0),2)
                     #cv2.circle(frame, (int(rect[0][0]), int(rect[0][1])), 2, (255,255,0),-1)
-                    cv2.imshow("frame", frame)
+                    #cv2.imshow("frame", frame)
+                    #imgOutputTemp = cv2.resize(imgOutput,(128,150))
+                    #imgOutputTemp = cv2.cvtColor(imgOutputTemp, cv2.COLOR_GRAY2BGR)\
+                    combine = cv2.vconcat([frameTemp, maskTemp])
+                    print(combine.shape)
+                    cv2.imshow("combine", combine)
+                    #self.out.write(combine)
                     
                 box = np.float32(box)
 
@@ -82,8 +94,9 @@ class Detection:
         imgOutput, center = self.getLetter(frame,contours, mask)
         
         if self.Debug == True:
-            cv2.imshow("mask", mask)
-            cv2.imshow("imgOutput", imgOutput*255)
+            pass
+            #cv2.imshow("mask", mask)
+            #cv2.imshow("imgOutput", imgOutput*255)
                     
         return imgOutput, center
 
@@ -127,7 +140,7 @@ class Detection:
     def rightDetectFinal(self,ret,frame):
         if ret > 0:
             imgOutput, center = self.letterDetect(frame)
-            letter, letter_center  = self.KNN_finish(imgOutput, center, 100, 100, 200) #image, center, H, S, U
+            letter, letter_center  = self.KNN_finish(imgOutput, center, 125, 160, 155) #image, center, H, S, U
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
             return letter, letter_center, color, color_center
         return None, None, None, None
@@ -136,8 +149,11 @@ class Detection:
     def leftDetectFinal(self,ret,frame):
         if ret > 0:
             imgOutput, center = self.letterDetect(frame)
-            letter, letter_center  = self.KNN_finish(imgOutput, center, 100, 100, 200) #image, center, H, S, U
+            letter, letter_center  = self.KNN_finish(imgOutput, center, 125, 160, 155) #image, center, H, S, U
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
             return letter, letter_center, color, color_center
         return None, None, None, None
     
+    def endLetterDetection(self):
+        #self.out.release()
+        pass

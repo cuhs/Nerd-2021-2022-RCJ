@@ -2,6 +2,7 @@ import numpy as np
 import config
 import serial
 import time
+import letterDetection
 
 import display
 import util
@@ -20,7 +21,7 @@ sData = ""
 # cameras
 cap = []
 frame = []
-videoGetter = None
+vD = None
 
 # starting time of the program
 startTime = None

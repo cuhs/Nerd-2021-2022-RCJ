@@ -12,7 +12,7 @@ silverTilePercentage = 2  # percent of silver tiles when randomly generating a m
 genFromImage = False  # if false, will generate random maze
 redoLastMaze = False  # allows you to rerun last generated maze, for debugging
 
-showDisplay = True  # 0 no display, 1 is display
+showDisplay = False  # 0 no display, 1 is display
 displayRate = 1  # in milliseconds, 0 for until keypress
 displaySize = 500  # display size, range from (0 - 1000), see line below
 displaySize = displaySize // mazeSideLen  # adjust for equal image size
@@ -20,9 +20,10 @@ monitorDimensions = (1024, 600)  # (x, y, width, height)
 
 importantDebug = False  # important print statements, overrides other settings
 BFSDebug = True  # print statements for maze traversal
-victimDebug = False  # shows camera feeds
+victimDebug = True  # shows camera feeds
 saveVictimDebug = True  # saves victim images if found
 serialDebug = True  # prints serial IO
+saveVideoDebug = False  # first lets see if it works
 
 port = "/dev/ttyS0"  # serial port path (serial: /dev/ttyAMA0)
 rate = 9600  # serial port rate
