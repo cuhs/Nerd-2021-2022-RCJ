@@ -144,7 +144,7 @@ bool goForwardPID(int dist) {
     }
 
     //detects if there is a black or silver tile, but only if whatToReturn is true(indicates that no black or silver tile has been detected yet)
-    if(whatToReturn)
+    if(whatToReturn && !notStable())
       whatTile = detectTiles();
     if (whatTile == 1) {
       //detected black - sends m if no m was sent yet, then semicolon and 'b'

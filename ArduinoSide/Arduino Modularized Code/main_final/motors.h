@@ -45,6 +45,7 @@ class MegaPiPort: public MeMegaPiDCMotor {
     inline void setMotorSpeed(int16_t spd) {
       // Set motor speed
       int true_speed = (backwards) ? -spd : spd;
+      if(!backwards) true_speed = (true_speed*82)/75;
       // Run specified speed
       MeMegaPiDCMotor::run(true_speed);
     };
