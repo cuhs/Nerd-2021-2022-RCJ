@@ -62,12 +62,12 @@ def reset():
     
     
     # reset video save feed
-    if IO.vD:
+    '''if IO.vD:
         IO.cap[0].release()
         IO.vD.endLetterDetection()
         print("Saved Video!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     IO.vD = letterDetection.Detection()
-    IO.vD.setDebugMode(config.saveVideoDebug)
+    IO.vD.setDebugMode(config.saveVideoDebug)'''
 
     # setup input from file or serial
     IO.setupInput(config.inputMode)
