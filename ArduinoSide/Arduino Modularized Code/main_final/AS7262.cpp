@@ -11,6 +11,7 @@ void setupLightSensors(){
   ams.drvOn();
 }
 
+//detects if there is a silver or black tile - returns 1 if a black tile is detected, 2 for silver tile, and 0 if none are detected
 int detectTiles(){
   tcaselect(3);
   ams.startMeasurement();
@@ -54,6 +55,7 @@ int findRange(int a, int b, int c, int d, int e, int f){
   return maxSix(a,b,c,d,e,f)-minSix(a,b,c,d,e,f);
 }
 
+//gets the numerical range of color data
 int getRange(){
   tcaselect(3);
   ams.startMeasurement();

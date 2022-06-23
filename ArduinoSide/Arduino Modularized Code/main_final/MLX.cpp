@@ -3,10 +3,12 @@
 Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 bool isHeat = false;
 
+//sets up heat sensors
 void setupHeatSensors() {
   mlx.begin();
 }
 
+//gets readings from heat sensors
 int getHeatSensorReadings(char side) {
   if (side == 'L')
     tcaselect(4);
@@ -15,6 +17,8 @@ int getHeatSensorReadings(char side) {
   return (int)mlx.readObjectTempC();
 }
 
+//detects heat victim if the object temperature is more than 4 degrees C more than the ambient temperature
+//writes a 'x' or 'X'(depending on if it is left or right) to the pi, which will send a 'y' if the heat victim was not yet detected
 void doHeatVictim(int leftTemp, int rightTemp) {
   if (leftTemp > (int)mlx.readAmbientTempC() + 4) {
     delay(1);

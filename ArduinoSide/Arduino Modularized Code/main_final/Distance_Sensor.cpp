@@ -4,6 +4,7 @@ VL53L0X lox;//Right: 0 Left: 1 Front: 2
 VL53L0X sensor[numSensors];
 int frontTof = 0;
 
+//function to send wall values to the pi
 void sendWallValues(int frontDist, int rightDist, int leftDist) {
   char walls[3] = {'0', '0', '0'};
   int minimumDist = 20; // Minimum distance to determine if there is a wall on the side
@@ -31,7 +32,7 @@ void sendWallValues(int frontDist, int rightDist, int leftDist) {
   delay(1);
 }
 
-//max is eight sensors allowed
+//max is eight sensors allowed, sets up ToF sensors
 void setupSensors2() {
   if (numSensors > 8) {
     Serial3.println("Max number of sensors!");
@@ -50,6 +51,7 @@ void setupSensors2() {
   }
 }
 
+//aligns the robot if there is a wall in front to 5cm from the wall
 int alignFront(bool b) {
   int frontDist = getSensorReadings(2);
   int minimumDist = 25;
@@ -80,10 +82,12 @@ int alignFront(bool b) {
   return ((ports[motorEncUse].count - initEncCount)*D*PI)/360;
 }
 
+//overloaded alignFront
 void alignFront(){
   alignFront(true);
 }
 
+//gets the sensor readings of a ToF sensor - right is 0, left is 1, front is 2
 int getSensorReadings(int num) {
   tcaselect(num);
   int error = 0;
