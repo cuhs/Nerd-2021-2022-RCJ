@@ -186,10 +186,7 @@ void turnAbs(int degree) {
     if(c != '0'){
       int motorEncUse = LEFT;
       ports[motorEncUse].count=0;      
-      while(ports[motorEncUse].count>((-360 / (D * PI)) * 3)){
-        ports[RIGHT].setMotorSpeed(-80);
-        ports[LEFT].setMotorSpeed(-80);
-      }
+      moveBackwards((-360 / (D * PI)) * 3);
     }
     fix = (int)(PID(error, pastError, integral, 2, 0.005, 0));
     if (fix > 0)

@@ -26,6 +26,7 @@ bool goForwardPID(int dist);
 void plainGoForward(int dist, int);
 void motorinterruptleft();
 void motorinterruptright();
+void moveBackwards(int);
 int rampMoveForward(char);
 
 class MegaPiPort: public MeMegaPiDCMotor {

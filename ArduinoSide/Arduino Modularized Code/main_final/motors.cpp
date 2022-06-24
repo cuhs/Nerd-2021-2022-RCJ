@@ -36,8 +36,14 @@ int rampMoveForward(char dir) {
   }
 
   //moves forward until the robot is not on the ramp
+  double integral = 0.0;
+  double pastError = 0.0;
+  euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  int target = getDirection(euler.x());
   while (notStable()) {
-    ports[LEFT].setMotorSpeed(motorSpeed);
+    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    int fix = PID(target - euler.x(), pastError, integral, 2, 0, 0);
+    ports[LEFT].setMotorSpeed(motorSpeed + fix);
     ports[RIGHT].setMotorSpeed(motorSpeed);
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     //increments avgAng and itCt in order to later calculate average angle
@@ -71,9 +77,45 @@ void plainGoForward(int dist, int motorSpeed){
   while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
     ports[RIGHT].setMotorSpeed(motorSpeed);
     ports[LEFT].setMotorSpeed(motorSpeed);
+    int ramp = isOnRamp();
+    if(ramp==1)
+      rampMoveForward('u');
+    else if(ramp==2)
+      rampMoveForward('d');
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
+}
+
+//moves backwards
+void moveBackwards(int initEnc){
+  //variables used for stall detection
+  unsigned long startTime;
+  unsigned long endTime;
+  int prev_count = 0;
+  bool stalling = false;
+  bool checking = false;
+  while(ports[LEFT].count > initEnc && !stalling){
+    ports[LEFT].setMotorSpeed(-100);
+    ports[RIGHT].setMotorSpeed(-100);
+     //stall detection
+    if (ports[LEFT].count == prev_count && !checking) {
+      startTime = millis();
+      checking = true;
+    } else if (ports[LEFT].count != prev_count) {
+      checking = false;
+    }
+    if (ports[LEFT].count == prev_count && !stalling) {
+      endTime = millis();
+      if (endTime - startTime > 1000) {
+        Serial3.println("STALLING");
+        stalling = true;
+      }
+    }
+    prev_count = ports[LEFT].count;
+  }
+  ports[LEFT].setMotorSpeed(0);
+  ports[RIGHT].setMotorSpeed(0);
 }
 
 bool goForwardPID(int dist) {
@@ -83,6 +125,7 @@ bool goForwardPID(int dist) {
   int prev_count = 0;
   bool stalling = false;
   bool checking = false;
+  
   bool shouldSendM = true;
   int curEnc = 0;
 
@@ -153,12 +196,7 @@ bool goForwardPID(int dist) {
       }
       Serial2.write(';');
       Serial2.write('b');
-      while (ports[motorEncUse].count > 0) {
-        ports[RIGHT].setMotorSpeed(-80);
-        ports[LEFT].setMotorSpeed(-80);
-      }
-      ports[RIGHT].setMotorSpeed(0);
-      ports[LEFT].setMotorSpeed(0);
+      moveBackwards(0);
       delay(1);
       Serial2.read();
       delay(1);
@@ -168,11 +206,12 @@ bool goForwardPID(int dist) {
       seesSilver = true;
       tcaselect(7);
       imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-      int theCurrAngle = euler.x();
+      int theCurrAngle = getDirection(euler.x());
       int silvCheck = 0;
-      turnAbsNoVictim((theCurrAngle + 25)%360);
+      int initialCt = ports[motorEncUse].count;
+      turnAbsNoVictim((theCurrAngle + 30)%360);
       silvCheck += detectTiles();
-      turnAbsNoVictim((theCurrAngle + 335)%360);
+      turnAbsNoVictim((theCurrAngle + 330)%360);
       silvCheck += detectTiles();
       
       if(silvCheck >= 2){
@@ -183,13 +222,11 @@ bool goForwardPID(int dist) {
       }else{
         //if it was a false silver detection, we determine that the robot was probably on a speed bump, so we back up and speed up in order to go through it
         turnAbsNoVictim(theCurrAngle);
-        while (ports[motorEncUse].count > 0) {
-          ports[RIGHT].setMotorSpeed(-80);
-          ports[LEFT].setMotorSpeed(-80);
-        }
-        ports[RIGHT].setMotorSpeed(0);
-        ports[LEFT].setMotorSpeed(0);
+        ports[motorEncUse].count = initialCt;
+        moveBackwards(0);
         plainGoForward(28, 200);
+
+        
       }
       
     }
