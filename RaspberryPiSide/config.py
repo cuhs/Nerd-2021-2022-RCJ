@@ -19,9 +19,9 @@ displaySize = displaySize // mazeSideLen  # adjust for equal image size
 monitorDimensions = (1024, 600)  # (x, y, width, height)
 
 importantDebug = False  # important print statements, overrides other settings
-BFSDebug = True  # print statements for maze traversal
-victimDebug = True  # shows camera feeds
-saveVictimDebug = True  # saves victim images if found
+BFSDebug = False  # print statements for maze traversal
+victimDebug = False  # shows camera feeds
+saveVictimDebug = False  # saves victim images if found
 serialDebug = True  # prints serial IO
 saveVideoDebug = False  # first lets see if it works
 

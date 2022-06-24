@@ -1,13 +1,13 @@
 import cv2
-import letterDetection
+#import letterDetection
 
 cap1 = cv2.VideoCapture(-1)
-cap2 = cv2.VideoCapture(1)
+#cap2 = cv2.VideoCapture(1)
 
-cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
-cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
-cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+cap1.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap1.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+#cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+#cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 
 hsv_lower = {
     0: (150,230,70),
@@ -32,21 +32,22 @@ print(cap1.get(4))
 while cap1.isOpened(): #and cap2.isOpened():
      
     ret1,frame1 = cap1.read()
-    ret2,frame2 = cap2.read()
+    #ret2,frame2 = cap2.read()
     
-    frame1 = frame1[:225,:300]
-    frame2 = frame2[:230,20:]
+    frame1 = frame1[:460,:580]
+    #frame2 = frame2[:230,20:]
     
     
     
     if ret1 > 0: #and ret2 > 0:
         
-        '''
+        
         gray = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-        blur = cv2.bilateralFilter(gray, 5, 75,75)
-        mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15,5)
+        #blur = cv2.bilateralFilter(gray, 5, 75,75)
+        mask  = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 41,17)
         contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
+        '''
         if len(contours) > 0:
             contours = max(contours, key = cv2.contourArea)
             x,y,w,h = cv2.boundingRect(contours)
@@ -54,6 +55,7 @@ while cap1.isOpened(): #and cap2.isOpened():
             print(str(w/h))
             print(str(h/w))
             #0.88, 0.65'''
+        
 
         
         
@@ -72,8 +74,9 @@ while cap1.isOpened(): #and cap2.isOpened():
         #height, width = frame1.shape[:2]
 
 
-        cv2.imshow("frame1", frame1)
-        cv2.imshow("frame2", frame2)
+        cv2.imshow("frame", frame1)
+        cv2.imshow("gray", gray)
+        cv2.imshow("mask", mask)
 
     
     if cv2.waitKey(1) == ord('q'):
