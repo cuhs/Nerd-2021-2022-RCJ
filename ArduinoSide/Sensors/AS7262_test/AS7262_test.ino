@@ -44,7 +44,7 @@ void setup() {
   Serial3.begin(9600);
   //while(!Serial3);
   Wire.begin();
-  
+  Serial3.println("in setup");
   // initialize digital pin LED_BUILTIN as an output.
   //begin and make sure we can talk to the sensor
   tcaselect(3);
