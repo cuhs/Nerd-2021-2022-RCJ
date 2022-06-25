@@ -219,14 +219,6 @@ bool goForwardPID(int dist) {
         whatToReturn = false;
         shouldSendM=false;
         turnAbsNoVictim(theCurrAngle);
-      }else{
-        //if it was a false silver detection, we determine that the robot was probably on a speed bump, so we back up and speed up in order to go through it
-        turnAbsNoVictim(theCurrAngle);
-        ports[motorEncUse].count = initialCt;
-        moveBackwards(0);
-        plainGoForward(28, 200);
-
-        
       }
       
     }
