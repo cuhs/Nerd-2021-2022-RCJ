@@ -31,6 +31,16 @@ void setup() {
   delay(1000);
   Serial3.println('a');
   Serial2.write('a');
+  while(!Serial2.available());
+  char c = Serial2.read();
+  if(c=='y'){
+    turnAbsNoVictim(90);
+    if(getSensorReadings(0)<20)
+      Serial2.write('1');
+    else
+      Serial2.write('0');
+    turnAbsNoVictim(0);
+  }
   sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
 }
 
