@@ -262,6 +262,10 @@ def loadCheckpoint(checkpoint):
         if config.importantDebug or config.BFSDebug:
             print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
 
+        # blink LED and wait for startup
+        if config.inputMode == 2:
+            IO.setupInput(config.inputMode)
+
         # get walls on startup
         util.maze[util.floor][util.tile] = util.getWalls()
 

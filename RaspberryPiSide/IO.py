@@ -46,7 +46,7 @@ def setupInput(mode):
         setupInputFile()
     # serial
     if mode == 2:
-        return setupSerial()
+        setupSerial()
 
 # function to reroute where input is coming from
 def getData(mode, tile, floor):
