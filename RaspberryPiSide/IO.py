@@ -131,7 +131,7 @@ def setupSerial():
     while msg != 'a':  # setup acknowledgement
         print("INVALID SETUP ACKNOWLEDGEMENT: " + msg)
         msg = getNextSerialByte()
-        
+    
     GPIO.output(config.LEDPin, GPIO.LOW)
 
 # gets one byte of data from serial
@@ -202,7 +202,7 @@ def getSerialData():
     # west
     msg = getNextSerialByte()
     if msg == 'a':
-        return msg
+        return msg 
     walls[3] = msg
     time.sleep(0.1)
 
@@ -218,3 +218,7 @@ def sendSerial(msg):
     if config.runMode:
         display.updateLabels(sendData=msg)
     time.sleep(0.1)
+    
+def startupTurn():
+    IO.sendSerial('a')
+    return IO.getNextSerialByte()

@@ -21,6 +21,11 @@ class AThread(QThread if config.runMode else object):
 
         # initialize, (calls reset)
         BFS.init()
+        backWall = IO.startupTurn()
+        while backWall == 'a':
+            BFS.init()
+            backWall = IO.startupTurn()
+        util.maze[util.floor][util.tile][util.oppositeDir(util.direction)] = backWall
 
         if config.importantDebug:
             print("Setup Finished, Running...")

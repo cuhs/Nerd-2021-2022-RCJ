@@ -7,13 +7,13 @@ import letterDetection
 
 #CONFIG----------------------------------------
  
-numberOfCams = 1 #number of camera to run
+numberOfCams = 2 #number of camera to run
 cap = [None,None] #left, right
-victimDetect = False #true --> tests victim detection, false --> runs camera feed
+victimDetect = True #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
-fullDetect = True #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
+fullDetect = False #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 oneCamEverythingDetect = False #Will show everything as letterDetection class sees, to use shut down victimDetect, full Detect, and showFrames, set cams to 1
-saveVictim = True
+saveVictim = False
 width = 160 #camera width
 height = 128 #camera height
 cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads, height then width
