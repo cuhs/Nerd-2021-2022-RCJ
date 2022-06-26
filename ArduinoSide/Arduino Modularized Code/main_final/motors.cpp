@@ -10,6 +10,7 @@ bool goForwardTilesPID(int tiles) {
 
 //moving forward function for if the robot is on a ramp or stairs - 'u' for up, 'd' for down
 int rampMoveForward(char dir) {
+  Serial3.println("in rampMoveForward");
   int motorSpeed = 0;
   int motorEncUse = LEFT;
   //sets motorSpeed and finishedRamp based on if it is down or up
@@ -29,7 +30,7 @@ int rampMoveForward(char dir) {
   int itCt = 0;
 
   //moves forward until the robot is on a ramp - used when the StereoPi tells the Arduino there is a ramp ahead
-  while (isOnRamp() == 0) {
+  while (isOnRamp() == 0 && getSensorReadings(2) > 5) {
       ports[LEFT].setMotorSpeed(motorSpeed);
       ports[RIGHT].setMotorSpeed(motorSpeed);
     if(Serial2.available()) Serial2.read();
@@ -40,7 +41,7 @@ int rampMoveForward(char dir) {
   double pastError = 0.0;
   euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int target = getDirection(euler.x());
-  while (notStable()) {
+  while (notStable() && getSensorReadings(2) > 5) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     int fix = PID(target - euler.x(), pastError, integral, 2, 0, 0);
     ports[LEFT].setMotorSpeed(motorSpeed + fix);
@@ -141,6 +142,8 @@ bool goForwardPID(int dist) {
   //used to determine if a silver tile is detected and differentiate between false identifications
   bool seesSilver = false;
   bool isSilver = false;
+  int silvCt = 0;
+  int totCt = 0;
 
   ports[motorEncUse].count = 0;
 
@@ -185,9 +188,7 @@ bool goForwardPID(int dist) {
       }
       return true;
     }
-
-    //detects if there is a black or silver tile, but only if whatToReturn is true(indicates that no black or silver tile has been detected yet)
-    if(whatToReturn && !notStable())
+    if(!isOnSpeedBump())
       whatTile = detectTiles();
     if (whatTile == 1) {
       //detected black - sends m if no m was sent yet, then semicolon and 'b'
@@ -201,27 +202,29 @@ bool goForwardPID(int dist) {
       Serial2.read();
       delay(1);
       return false;
-    }else if(!seesSilver && whatTile==2 && whatToReturn && abs(ports[motorEncUse].count)>=(6*enc)/10){// speed bump - turns slightly to make sure it is silver and not speed bump
+    }else if(whatTile==2 && abs(ports[motorEncUse].count)>=(6*enc)/10 && !checking){// speed bump - turns slightly to make sure it is silver and not speed bump
       //checks to make sure seeing silver is not a misdetection - turns 25 degrees to the right and to the left, if at least one more of those situations detect silver, it is a silver tile
-      seesSilver = true;
-      tcaselect(7);
-      imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-      int theCurrAngle = getDirection(euler.x());
-      int silvCheck = 0;
-      int initialCt = ports[motorEncUse].count;
-      turnAbsNoVictim((theCurrAngle + 30)%360);
-      silvCheck += detectTiles();
-      turnAbsNoVictim((theCurrAngle + 330)%360);
-      silvCheck += detectTiles();
-      
-      if(silvCheck >= 2){
-        isSilver = true;
-        whatToReturn = false;
-        shouldSendM=false;
-        turnAbsNoVictim(theCurrAngle);
-      }
-      
+//      seesSilver = true;
+//      tcaselect(7);
+//      imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+//      int theCurrAngle = getDirection(euler.x());
+//      int silvCheck = 0;
+//      int initialCt = ports[motorEncUse].count;
+//      turnAbsNoVictim((theCurrAngle + 30)%360);
+//      silvCheck += detectTiles();
+//      turnAbsNoVictim((theCurrAngle + 330)%360);
+//      silvCheck += detectTiles();
+//      
+//      if(silvCheck >= 2){
+//        isSilver = true;
+//        whatToReturn = false;
+//        shouldSendM=false;
+//        turnAbsNoVictim(theCurrAngle);
+//      }       
+        silvCt++;
     }
+    if(abs(ports[motorEncUse].count)>=(6*enc)/10 && !checking)
+      totCt++;
     //sends m if it hasn't yet and if the robot is 50% done with going forward
     if(shouldSendM && abs(ports[motorEncUse].count)>=(5*enc)/10){
       Serial3.println("Sending m");
@@ -274,6 +277,13 @@ bool goForwardPID(int dist) {
 
   }
   //sends messages to the StereoPi if a silver tile was detected
+  if((double)(silvCt)/totCt>0.5){
+    isSilver = true;
+    whatToReturn = false;
+  }else{
+    isSilver = false;
+    whatToReturn = true;
+  }
   delay(10);
   if(isSilver){
     Serial3.print("sending t");

@@ -31,7 +31,7 @@ int detectTiles(){
   int range = findRange(v,b,g,y,o,r);
   if(range>500)
     return 0;
-  if(range<=50 && avg <=50){
+  if(range<=60 && avg <=60){
     //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
     //Serial2.write(';');
     //Serial3.println("Saw Black");
