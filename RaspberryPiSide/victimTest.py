@@ -7,13 +7,13 @@ import letterDetection
 
 #CONFIG----------------------------------------
  
-numberOfCams = 2 #number of camera to run
+numberOfCams = 1 #number of camera to run
 cap = [None,None] #left, right
 victimDetect = False #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
-fullDetect = False #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
+fullDetect = True #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 oneCamEverythingDetect = False #Will show everything as letterDetection class sees, to use shut down victimDetect, full Detect, and showFrames, set cams to 1
-saveVictim = False
+saveVictim = True
 width = 160 #camera width
 height = 128 #camera height
 cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads, height then width
@@ -168,7 +168,7 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
 
                 
         
-    if saveVictim and numOfCams == 1:
+    if saveVictim and numberOfCams == 1:
         if cv2.waitKey(1) == ord(' '):
             print("Do you like this image?")
             #cv2.imshow("image_mask",imgOutputL*255)
