@@ -190,7 +190,9 @@ bool goForwardPID(int dist) {
       }
       return true;
     }
-    if(!isOnSpeedBump())
+    whatTile = 0;
+    bool onSB = isOnSpeedBump();
+    if(!onSB)
       whatTile = detectTiles();
     if (whatTile == 1) {
       //detected black - sends m if no m was sent yet, then semicolon and 'b'
@@ -225,7 +227,7 @@ bool goForwardPID(int dist) {
 //      }       
         silvCt++;
     }
-    if(abs(ports[motorEncUse].count)>=(6*enc)/10 && !checking)
+    if(abs(ports[motorEncUse].count)>=(6*enc)/10 && !checking && !onSB)
       totCt++;
     //sends m if it hasn't yet and if the robot is 50% done with going forward
     if(shouldSendM && abs(ports[motorEncUse].count)>=(5*enc)/10){
@@ -279,7 +281,7 @@ bool goForwardPID(int dist) {
 
   }
   //sends messages to the StereoPi if a silver tile was detected
-  if((double)(silvCt)/totCt>0.5){
+  if((double)(silvCt)/totCt>0.3){
     isSilver = true;
     whatToReturn = false;
   }else{
