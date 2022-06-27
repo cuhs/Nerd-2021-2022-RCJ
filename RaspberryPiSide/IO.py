@@ -220,5 +220,5 @@ def sendSerial(msg):
     time.sleep(0.1)
     
 def startupTurn():
-    IO.sendSerial('a')
-    return IO.getNextSerialByte()
+    sendSerial('a')
+    return getNextSerialByte()
