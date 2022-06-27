@@ -237,14 +237,14 @@ bool goForwardPID(int dist) {
     char c = obstacleDetect();
     if(c=='l'){
       curEnc = ports[motorEncUse].count;
-      while(obstacleDetect()=='l'){
+      while(obstacleDetect()!='0'){
         ports[LEFT].setMotorSpeed(120);
         ports[RIGHT].setMotorSpeed(-140);
       }
       ports[motorEncUse].count = curEnc;
     }else if(c=='r'){
       curEnc = ports[motorEncUse].count;
-      while(obstacleDetect()=='r'){
+      while(obstacleDetect()!='0'){
         ports[LEFT].setMotorSpeed(-140);
         ports[RIGHT].setMotorSpeed(120);
       }
