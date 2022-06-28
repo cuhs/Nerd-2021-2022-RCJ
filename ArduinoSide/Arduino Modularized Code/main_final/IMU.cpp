@@ -299,11 +299,11 @@ bool triangulation(int left, int right) {
       currAngle = getDirection(euler.x(),9);
      else
       currAngle = euler.x();
-    int ang = currAngle - angle;
-    if (ang > 360) ang = ang % 360;
-    if(ang < 0) ang = ang + 360;
+    int targetAng = currAngle - angle;
+    if (targetAng > 360) targetAng = targetAng % 360;
+    if(targetAng < 0) targetAng = targetAng + 360;
     //does initial turn
-    turnAbsNoVictim(ang);
+    turnAbsNoVictim(targetAng);
     //goes forward the amount calculated above - returns true if there is no black tile detected and false if there is a black tile detected
     noBlack = goForwardPID(forwardCm);
     //turns back to the original angle
@@ -321,10 +321,10 @@ bool triangulation(int left, int right) {
       currAngle = getDirection(euler.x(),9);
     else
       currAngle = euler.x();
-    int ang = currAngle + angle;
-    if (ang > 360) ang = ang % 360;
-    if(ang < 0) ang = ang + 360;
-    turnAbsNoVictim(ang);
+    int targetAng = currAngle + angle;
+    if (targetAng > 360) targetAng = targetAng % 360;
+    if(targetAng < 0) targetAng = targetAng + 360;
+    turnAbsNoVictim(targetAng);
     noBlack = goForwardPID(forwardCm);
     turnAbsNoVictim(currAngle);
   }

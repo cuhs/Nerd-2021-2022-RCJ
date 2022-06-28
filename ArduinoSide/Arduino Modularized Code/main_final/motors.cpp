@@ -37,14 +37,10 @@ int rampMoveForward(char dir) {
   }
 
   //moves forward until the robot is not on the ramp
-  double integral = 0.0;
-  double pastError = 0.0;
   euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int target = getDirection(euler.x());
   while (notStable() && getSensorReadings(2) > 5) {
-    euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    int fix = PID(target - euler.x(), pastError, integral, 2, 0, 0);
-    ports[LEFT].setMotorSpeed(motorSpeed + fix);
+    ports[LEFT].setMotorSpeed(motorSpeed);
     ports[RIGHT].setMotorSpeed(motorSpeed);
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     //increments avgAng and itCt in order to later calculate average angle
