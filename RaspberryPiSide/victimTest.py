@@ -109,20 +109,20 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
         if numberOfCams == 1 or numberOfCams == 2 and path is None:
             grayL = cv2.cvtColor(frameL, cv2.COLOR_BGR2GRAY)
             blurL = cv2.bilateralFilter(grayL, 5, 75, 75)
-            threshL = cv2.adaptiveThreshold(blurL,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
+            threshL = cv2.adaptiveThreshold(blurL,1,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
             imgOutputL, cL = vD.letterDetect(frameL) 
             
         if numberOfCams == 2 and path is None:
             grayR = cv2.cvtColor(frameR, cv2.COLOR_BGR2GRAY)
             blurR = cv2.bilateralFilter(grayR, 5, 75, 75)
-            threshR = cv2.adaptiveThreshold(blurR,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
+            threshR = cv2.adaptiveThreshold(blurR,1,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
             imgOutputR, cR = vD.letterDetect(frameR)
             
         if path is not None:
             #REMINDER: MAKING CHANGES HERE WILL NOT EFFECT VICTIM DETECTION/KNN
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             blur = cv2.bilateralFilter(gray, 5, 75, 75)
-            thresh = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
+            thresh = cv2.adaptiveThreshold(blur,1,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
             imgOutput, c = vD.letterDetect(frame)
     
     
@@ -146,15 +146,15 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
             cv2.imshow("pathImage",frame)
         if fullDetect:
             if numberOfCams == 1 or numberOfCams == 2 and path is None:
-                cv2.imshow("threshL", threshL)
+                cv2.imshow("threshL", threshL*255)
                 if imgOutputL is not None:
                     cv2.imshow("imgOutputL", imgOutputL*255)
             if numberOfCams == 2 and path is None:
-                cv2.imshow("threshR", threshR)
+                cv2.imshow("threshR", threshR*255)
                 if imgOutputR is not None:
                     cv2.imshow("imgOutputR", imgOutputR*255)
             if path is not None:
-                cv2.imshow("thresh", thresh)
+                cv2.imshow("thresh", thresh*255)
                 if imgOutput is not None:
                     cv2.imshow("imgOutput", imgOutput*255)
     

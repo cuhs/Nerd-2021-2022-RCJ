@@ -10,9 +10,6 @@ class Detection:
         self.Debug = False
         self.size = 30
         self.KNN = KNN.KNN()
-        self.count = 1
-        #self.fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        #self.out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('M','J','P','G'), 20, ( 160,128*2))
         
     def setDebugMode(self, mode):
         self.Debug = mode
@@ -28,7 +25,6 @@ class Detection:
             
             for c in contour:
                 rect = cv2.minAreaRect(c)
-               #print(rect[1][0]/rect[1][1])
                 if(rect[1][0]/(rect[1][1] if rect[1][1] != 0 else 0.001) < 2.5 and rect[1][0]/(rect[1][1] if rect[1][1] else 0.001) > 0.3):
                     contour = c
                     break
@@ -73,10 +69,8 @@ class Detection:
                 imgOutput = cv2.warpPerspective(mask, matrix, (self.size, self.size))
 
                 imgOutput = np.flip(np.rot90(imgOutput), 0)
-                
-                #th, im_th = cv2.threshold(imgOutput, 128, 1, cv2.THRESH_BINARY)
-                                            
-                return imgOutput//128, center
+                                                            
+                return imgOutput, center
             
         return None, None
 
@@ -84,7 +78,7 @@ class Detection:
     def letterDetect(self, frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         blur = cv2.bilateralFilter(gray, 5, 75,75)
-        mask  = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 59,11)
+        mask  = cv2.adaptiveThreshold(blur, 1, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 59,11)
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         imgOutput, center = self.getLetter(frame,contours, mask)
         
@@ -97,14 +91,27 @@ class Detection:
 
     # check for letters with KNN
     def KNN_finish(self, imgOutput, center, hDist, sDist, uDist):
-        distArr = []
+        bestMatch = [None, 901, None]
         if imgOutput is not None:
             for x in range(4):
                 result, dist = self.KNN.classify(imgOutput)
-                distArr.append(dist)
-                if (dist <= hDist and result == 'H') or (dist <= sDist and result == 'S') or (dist <= uDist and result == 'U'):
-                    return result, center
+                if dist < bestMatch[1]:
+                    bestMatch[0] = result
+                    bestMatch[1] = dist
+                    bestMatch[2] = np.copy(imgOutput)
                 imgOutput = np.rot90(imgOutput)
+                
+            imgOutput = cv2.flip(bestMatch[2],1)
+            
+            result, dist = self.KNN.classify(imgOutput)
+            
+            if dist < bestMatch[1]:
+                bestMatch[0] = result
+                bestMatch[1] = dist
+                bestMatch[2] = np.copy(imgOutput)
+            
+            if (dist <= hDist and result == 'H') or (dist <= sDist and result == 'S') or (dist <= uDist and result == 'U'):
+                return bestMatch[0], center #returns result and center
             
         return None, None
 
