@@ -7,7 +7,7 @@ import letterDetection
 
 #CONFIG----------------------------------------
  
-numberOfCams = 2 #number of camera to run
+numberOfCams = 1 #number of camera to run
 cap = [None,None] #left, right
 victimDetect = True #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
