@@ -266,14 +266,14 @@ bool goForwardPID(int dist) {
     }
     prev_count = ports[LEFT].count;
     
-    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.25, 0.005, 0));
+    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0, 0.005, 0));
     //speeds up more if the robot is on a speed bump
     int angIncrease = 0;
     if(isOnSpeedBump())
       angIncrease = 40;
 
-    ports[RIGHT].setMotorSpeed(fix + 30 + angIncrease);
-    ports[LEFT].setMotorSpeed(fix + 30 + angIncrease);
+    ports[RIGHT].setMotorSpeed(fix + 160 + angIncrease);
+    ports[LEFT].setMotorSpeed(fix + 160 + angIncrease);
 
   }
   //sends messages to the StereoPi if a silver tile was detected
