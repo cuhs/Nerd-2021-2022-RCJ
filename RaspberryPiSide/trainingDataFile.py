@@ -12,10 +12,10 @@ letter_count = {'H':0,'S':0,'U':0}
 
 main = letterDetection.Detection()
 
-directory = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/saveVictims"
+directory = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/pastSaveVictims"
+ 
 
-
-with open("KNN/labels7.txt", 'w') as labels, open ("KNN/features7.txt", 'w') as features:
+with open("KNN/labels8.txt", 'w') as labels, open ("KNN/features8.txt", 'w') as features:
 
     for filename in os.listdir(directory):    
         

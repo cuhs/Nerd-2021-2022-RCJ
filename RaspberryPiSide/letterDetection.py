@@ -31,6 +31,11 @@ class Detection:
                 contour = None
 
             if contour is not None and cv2.contourArea(contour) > 0:
+                
+                cv2.fillPoly(mask, [contour], 1)
+                #cv2.imshow("MASKHERE", mask*255)
+                #cv2.waitKey(0)
+                
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
                 
@@ -79,7 +84,7 @@ class Detection:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         #blur = cv2.bilateralFilter(gray, 5, 75,75)
         blur = cv2.GaussianBlur(gray,(5,5),0)
-        mask  = cv2.adaptiveThreshold(blur, 1, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11,5)
+        mask  = cv2.adaptiveThreshold(blur, 1, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 19,4)
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         imgOutput, center = self.getLetter(frame,contours, mask)
         
@@ -110,8 +115,7 @@ class Detection:
                 bestMatch[0] = result
                 bestMatch[1] = dist
                 bestMatch[2] = np.copy(imgOutput)
-            
-            if (dist <= hDist and result == 'H') or (dist <= sDist and result == 'S') or (dist <= uDist and result == 'U'):
+            if (bestMatch[1] <= hDist and bestMatch[0] == 'H') or (bestMatch[1] <= sDist and bestMatch[0] == 'S') or (bestMatch[1] <= uDist and bestMatch[0] == 'U'):
                 return bestMatch[0], center #returns result and center
             
         return None, None
