@@ -6,6 +6,11 @@
 #include "motors.h"
 #include "IMU.h"
 #include "rescueServo.h"
+#include "new_global_vars.h"
+
+#define RIGHT_TOF 0
+#define LEFT_TOF 1
+#define FRONT_TOF 2
 
 void sendWallValues(int frontDist, int rightDist, int leftDist);
 void setupSensors2();

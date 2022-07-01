@@ -9,9 +9,9 @@ void setupTCSSensors() {
   pinMode(TCSLEDpin, OUTPUT);
   digitalWrite(TCSLEDpin, HIGH);
   if (tcs.begin()) {
-    Serial3.println("Found sensor");
+    SERIAL3_PRINTLN("Found sensor")
   } else {
-    Serial3.println("No TCS34725 found ... check your connections");
+    SERIAL3_PRINTLN("No TCS34725 found ... check your connections")
     while (1);
   }
 }
@@ -26,13 +26,13 @@ void getValues() {
   colorTemp = tcs.calculateColorTemperature_dn40(r, g, b, c);
   lux = tcs.calculateLux(r, g, b);
 
-//  Serial3.print("Color Temp: "); Serial3.print(colorTemp, DEC); Serial3.print(" K - ");
-//  Serial3.print("Lux: "); Serial3.print(lux, DEC); Serial3.print(" - ");
-//  Serial3.print("R: "); Serial3.print(r, DEC); Serial3.print(" ");
-//  Serial3.print("G: "); Serial3.print(g, DEC); Serial3.print(" ");
-//  Serial3.print("B: "); Serial3.print(b, DEC); Serial3.print(" ");
-//  Serial3.print("C: "); Serial3.print(c, DEC); Serial3.print(" ");
-//  Serial3.println(" ");
+//  SERIAL3_PRINT("Color Temp: "); SERIAL3_PRINT(colorTemp, DEC); SERIAL3_PRINT(" K - ");
+//  SERIAL3_PRINT("Lux: "); SERIAL3_PRINT(lux, DEC); SERIAL3_PRINT(" - ");
+//  SERIAL3_PRINT("R: "); SERIAL3_PRINT(r, DEC); SERIAL3_PRINT(" ");
+//  SERIAL3_PRINT("G: "); SERIAL3_PRINT(g, DEC); SERIAL3_PRINT(" ");
+//  SERIAL3_PRINT("B: "); SERIAL3_PRINT(b, DEC); SERIAL3_PRINT(" ");
+//  SERIAL3_PRINT("C: "); SERIAL3_PRINT(c, DEC); SERIAL3_PRINT(" ");
+//  SERIAL3_PRINTLN(" ");
   delay(20);
 }
 
@@ -41,17 +41,17 @@ bool detectBlack(bool shouldM) {
   uint16_t r, g, b, c, lux;
   tcs.getRawData(&r, &g, &b, &c);
   lux = tcs.calculateLux(r, g, b);
-//  Serial3.print("lux: ");
-//  Serial3.println(lux);
+//  SERIAL3_PRINT("lux: ");
+//  SERIAL3_PRINTLN(lux);
   if (lux <= 1 && c <5) { //lux value changed
     if(shouldM){
       Serial2.write('m');
     }
     Serial2.write(';');
     Serial2.write('b');
-    //sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
+    //sendWallValues(getSensorReadings(FRONT_TOF), getSensorReadings(RIGHT_TOF), getSensorReadings(LEFT_TOF));
     //Serial2.write(';');
-    //Serial3.println("Saw Black");
+    //SERIAL3_PRINTLN("Saw Black");
     return true;
   }
   return false;

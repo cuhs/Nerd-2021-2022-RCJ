@@ -2,7 +2,6 @@
 
 VL53L0X lox;//Right: 0 Left: 1 Front: 2
 VL53L0X sensor[numSensors];
-int frontTof = 0;
 
 //function to send wall values to the pi
 void sendWallValues(int frontDist, int rightDist, int leftDist) {
@@ -17,15 +16,15 @@ void sendWallValues(int frontDist, int rightDist, int leftDist) {
     walls[0] = '1';
 
   // for debugging
-  Serial3.print("[");
+  SERIAL3_PRINT("[")
   for (int i = 0; i < 3; i++) {
-    Serial3.print(walls[i]);
+    SERIAL3_PRINT(walls[i])
     if (i != 4)
-      Serial3.print(", "); //for formatting purposes, no technical meaning
+      SERIAL3_PRINT(", ") //for formatting purposes, no technical meaning
     else
-      Serial3.print("]");
+      SERIAL3_PRINT("]")
   }
-  Serial3.println();
+  SERIAL3_PRINTLN("")
 
   delay(1);
   Serial2.write(walls, 3);
@@ -35,7 +34,7 @@ void sendWallValues(int frontDist, int rightDist, int leftDist) {
 //max is eight sensors allowed, sets up ToF sensors
 void setupSensors2() {
   if (numSensors > 8) {
-    Serial3.println("Max number of sensors!");
+    SERIAL3_PRINTLN("Max number of sensors!")
     return;
   }
   for (int i = 0; i < numSensors; i++) {
@@ -43,8 +42,8 @@ void setupSensors2() {
     sensor[i].setTimeout(500);
     if (!sensor[i].init())
     {
-      Serial3.print("Failed to detect and initalize sensor: ");
-      Serial3.println(i);
+      SERIAL3_PRINT("Failed to detect and initalize sensor: ")
+      SERIAL3_PRINTLN(i)
       while (1) {}
     }
     sensor[i].startContinuous();
@@ -53,7 +52,7 @@ void setupSensors2() {
 
 //aligns the robot if there is a wall in front to 5cm from the wall
 int alignFront(bool b) {
-  int frontDist = getSensorReadings(2);
+  int frontDist = getSensorReadings(FRONT_TOF);
   int minimumDist = 25;
   int motorEncUse = LEFT;
   int initEncCount = ports[motorEncUse].count;
@@ -66,7 +65,7 @@ int alignFront(bool b) {
       victim();
       ports[RIGHT].setMotorSpeed(-100);
       ports[LEFT].setMotorSpeed(-100);
-      frontDist = getSensorReadings(2);
+      frontDist = getSensorReadings(FRONT_TOF);
     }
     
     //go forward
@@ -74,7 +73,7 @@ int alignFront(bool b) {
       victim();
       ports[RIGHT].setMotorSpeed(100);
       ports[LEFT].setMotorSpeed(100);
-      frontDist = getSensorReadings(2);
+      frontDist = getSensorReadings(FRONT_TOF);
     }
   }
   ports[RIGHT].setMotorSpeed(0);

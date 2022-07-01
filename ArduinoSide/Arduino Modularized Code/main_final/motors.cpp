@@ -10,7 +10,7 @@ bool goForwardTilesPID(int tiles) {
 
 //moving forward function for if the robot is on a ramp or stairs - 'u' for up, 'd' for down
 int rampMoveForward(char dir) {
-  Serial3.println("in rampMoveForward");
+  SERIAL3_PRINTLN("in rampMoveForward")
   int motorSpeed = 0;
   int motorEncUse = LEFT;
   //sets motorSpeed and finishedRamp based on if it is down or up
@@ -30,7 +30,7 @@ int rampMoveForward(char dir) {
   int itCt = 0;
 
   //moves forward until the robot is on a ramp - used when the StereoPi tells the Arduino there is a ramp ahead
-  while (isOnRamp() == 0 && getSensorReadings(2) > 5) {
+  while (isOnRamp() == 0 && getSensorReadings(FRONT_TOF) > 5) {
       ports[LEFT].setMotorSpeed(motorSpeed);
       ports[RIGHT].setMotorSpeed(motorSpeed);
     if(Serial2.available()) Serial2.read();
@@ -39,7 +39,7 @@ int rampMoveForward(char dir) {
   //moves forward until the robot is not on the ramp
   euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int target = getDirection(euler.x());
-  while (notStable() && getSensorReadings(2) > 5) {
+  while (notStable() && getSensorReadings(FRONT_TOF) > 5) {
     ports[LEFT].setMotorSpeed(motorSpeed);
     ports[RIGHT].setMotorSpeed(motorSpeed);
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -71,7 +71,7 @@ void plainGoForward(int dist, int motorSpeed){
   int motorEncUse = LEFT;
   int initEnc = ports[motorEncUse].count;
   double enc = ((360 / (D * PI)) * dist) + initEnc;
-  while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5)) {
+  while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(FRONT_TOF) > 5)) {
     ports[RIGHT].setMotorSpeed(motorSpeed);
     ports[LEFT].setMotorSpeed(motorSpeed);
     int ramp = isOnRamp();
@@ -105,7 +105,7 @@ void moveBackwards(int initEnc){
     if (ports[LEFT].count == prev_count && !stalling) {
       endTime = millis();
       if (endTime - startTime > 1000) {
-        Serial3.println("STALLING");
+        SERIAL3_PRINTLN("STALLING")
         stalling = true;
       }
     }
@@ -145,7 +145,7 @@ bool goForwardPID(int dist) {
 
   //calculate amount of encoders needed to move forward
   double enc = ((360 / (D * PI)) * dist);
-  while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(2) > 5) && !stalling) {
+  while ((abs(ports[motorEncUse].count) < enc) && (getSensorReadings(FRONT_TOF) > 5) && !stalling) {
     //tests for victims
     victim();
     //sees if the robot is on a ramp
@@ -227,7 +227,7 @@ bool goForwardPID(int dist) {
       totCt++;
     //sends m if it hasn't yet and if the robot is 50% done with going forward
     if(shouldSendM && abs(ports[motorEncUse].count)>=(5*enc)/10){
-      Serial3.println("Sending m");
+      SERIAL3_PRINTLN("Sending m")
       shouldSendM = false;
       delay(1);
       Serial2.write('m');
@@ -260,7 +260,7 @@ bool goForwardPID(int dist) {
     if (ports[LEFT].count == prev_count && !stalling) {
       endTime = millis();
       if (endTime - startTime > 1000) {
-        Serial3.println("STALLING");
+        SERIAL3_PRINTLN("STALLING")
         stalling = true;
       }
     }
@@ -286,7 +286,7 @@ bool goForwardPID(int dist) {
   }
   delay(10);
   if(isSilver){
-    Serial3.print("sending t");
+    SERIAL3_PRINT("sending t")
     Serial2.write(';');
     Serial2.write('t');
   }

@@ -12,7 +12,7 @@ void initIMU() {
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_IMUPLUS))
   {
     /* There was a problem detecting the BNO055 ... check your connections */
-    Serial3.print("Ooops, no BNO055 detected .pp.. Check your wiring or I2C ADDR!");
+    SERIAL3_PRINT("Ooops, no BNO055 detected .pp.. Check your wiring or I2C ADDR!")
     while (1);
   }
 
@@ -23,7 +23,7 @@ void initIMU() {
 
 //resets the IMU - currently not in use
 void reset() {
-  Serial3.println("Resetting.");
+  SERIAL3_PRINTLN("Resetting.")
   digitalWrite(resetPinIMU, HIGH);
   digitalWrite(resetPinIMU, LOW);
 
@@ -100,7 +100,7 @@ void displayIMU() {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   while (true) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    Serial3.println((int)euler.x());
+    SERIAL3_PRINTLN((int)euler.x())
   }
 }
 
@@ -175,7 +175,7 @@ void turnAbs(int degree) {
     if (ports[LEFT].count == prev_count && !stalling) {
       endTime = millis();
       if (endTime - startTime > 1000 && isNearTarget((int)euler.x(), targetDir)) {
-        Serial3.println("STALLING");
+        SERIAL3_PRINTLN("STALLING")
         stalling = true;
       }
     }
@@ -195,7 +195,7 @@ void turnAbs(int degree) {
       fix -= 80;
     ports[RIGHT].setMotorSpeed(-fix);
     ports[LEFT].setMotorSpeed(fix);
-    //Serial3.println(euler.x());
+    //SERIAL3_PRINTLN(euler.x());
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
@@ -229,18 +229,18 @@ void turnAbsNoVictim(int degree) {
       error = 360 + error;
 
     if (ports[LEFT].count == prev_count && !checking) {
-      //Serial3.println("set start time");
+      //SERIAL3_PRINTLN("set start time");
       startTime = millis();
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
-      //Serial3.println("checking false");
+      //SERIAL3_PRINTLN("checking false");
       checking = false;
     }
     if (ports[LEFT].count == prev_count && !stalling) {
-      //Serial3.println("motors might be stalling");
+      //SERIAL3_PRINTLN("motors might be stalling");
       endTime = millis();
       if (endTime - startTime > 1000 && isNearTarget((int)euler.x(), targetDir)) {
-        Serial3.println("STALLING");
+        SERIAL3_PRINTLN("STALLING")
         stalling = true;
       }
     }
@@ -251,14 +251,14 @@ void turnAbsNoVictim(int degree) {
       fix += 60;
     else
       fix -= 60;
-    //    Serial3.print(fix);
-    //    Serial3.print("\tEuler: ");
-    //    Serial3.print(euler.x());
-    //    Serial3.print("\terror: ");
-    //    Serial3.println(error);
+    //    SERIAL3_PRINT(fix);
+    //    SERIAL3_PRINT("\tEuler: ");
+    //    SERIAL3_PRINT(euler.x());
+    //    SERIAL3_PRINT("\terror: ");
+    //    SERIAL3_PRINTLN(error);
     ports[RIGHT].setMotorSpeed(-fix);
     ports[LEFT].setMotorSpeed(fix);
-    //Serial3.println(euler.x());
+    //SERIAL3_PRINTLN(euler.x());
   }
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);

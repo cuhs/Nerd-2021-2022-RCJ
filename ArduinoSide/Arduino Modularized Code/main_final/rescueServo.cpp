@@ -13,7 +13,7 @@ void turnTo(int dir) {
 
 //wiggles to make sure the rescue kit goes in and comes out correctly - flashes the LED while wiggling
 void wiggle(int angle, int wiggleAmt, int rVal, int gVal, int bVal) { //1200 ms
-  //Serial3.println("In wiggle");
+  //SERIAL3_PRINTLN("In wiggle");
   bool isOn = false;
   for (int i = 1; i < wiggleAmt; i++) {
     if(i%2==1){
@@ -24,7 +24,7 @@ void wiggle(int angle, int wiggleAmt, int rVal, int gVal, int bVal) { //1200 ms
     myservo.write(angle + i);
     delay(100);
   }
-  //Serial3.println("Done wiggle");
+  //SERIAL3_PRINTLN("Done wiggle");
 }
 
 
@@ -106,77 +106,79 @@ void victim() {
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
-    Serial3.print("Victim Message Received: ");
-    Serial3.println(incoming_byte);
+    SERIAL3_PRINT("Victim Message Received: ")
+    SERIAL3_PRINTLN(incoming_byte)
     //makes sure the robot is close enough to a wall when a victim is detected
-    if (!stringchr("YGHSUyghsu", incoming_byte) || (stringchr("yghsu", incoming_byte) && getSensorReadings(1) < 25) || (stringchr("YGHSU", incoming_byte) && getSensorReadings(0) < 25)) { //if letter is uppercase
+    bool isLeftVictim = stringchr("yghsu", incoming_byte);
+    bool isRightVictim = stringchr("YGHSU", incoming_byte);
+    if (!isLeftVictim && !isRightVictim || isLeftVictim && getSensorReadings(LEFT_TOF) < 25 || isRightVictim && getSensorReadings(RIGHT_TOF) < 25) { //if letter is uppercase
       //drops kits and flashes LED if victim is detected
       switch (incoming_byte) {
         case 'Y': // 1 kit
-          Serial3.println("red/yellow");
+          SERIAL3_PRINTLN("red/yellow")
           RGB_color(255, 0, 0, 1, 'R'); // Red
           break;
 
         case 'G': // 0 kits
-          Serial3.println("green");
+          SERIAL3_PRINTLN("green")
           RGB_color(0, 255, 0, 0, 'R'); // Green
           break;
 
         case 'H': // 3 kits
-          Serial3.println("H");
+          SERIAL3_PRINTLN("H")
           RGB_color(0, 0, 255, 3, 'R'); // Blue
           break;
 
         //turn left
         case 'S': // 2 kits
-          Serial3.println("S");
+          SERIAL3_PRINTLN("S")
           RGB_color(0, 255, 255, 2, 'R'); // Cyan
           break;
 
         //turn right
         case 'U': // 0 kits
-          Serial3.println("U");
+          SERIAL3_PRINTLN("U")
           RGB_color(255, 0, 255, 0, 'R'); // Magenta
           break;
         case 'y': // 1 kit
-          Serial3.println("red/yellow");
+          SERIAL3_PRINTLN("red/yellow")
           RGB_color(255, 0, 0, 1, 'L'); // Red
           break;
 
         case 'g': // 0 kits
-          Serial3.println("green");
+          SERIAL3_PRINTLN("green")
           RGB_color(0, 255, 0, 0, 'L'); // Green
           break;
 
         case 'h': // 3 kits
-          Serial3.println("H");
+          SERIAL3_PRINTLN("H")
           RGB_color(0, 0, 255, 3, 'L'); // Blue
           break;
 
         //turn left
         case 's': // 2 kits
-          Serial3.println("S");
+          SERIAL3_PRINTLN("S")
           RGB_color(0, 255, 255, 2, 'L'); // Cyan
           break;
 
         //turn right
         case 'u': // 0 kits
-          Serial3.println("U");
+          SERIAL3_PRINTLN("U")
           RGB_color(255, 0, 255, 0, 'R'); // Magenta
           break;
         case '}':
-          Serial3.println("}");
+          SERIAL3_PRINTLN("}")
           if(finishedRamp==1)
             Serial2.write('u');
           else if(finishedRamp==2)
             Serial2.write('d');
           finishedRamp=0;
           delay(15);
-          sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
+          sendWallValues(getSensorReadings(FRONT_TOF), getSensorReadings(RIGHT_TOF), getSensorReadings(LEFT_TOF));
           break;
         default:
-          Serial3.print("#2 hmmm wut is this: ");
-          Serial3.println(incoming_byte);
+          SERIAL3_PRINT("#2 hmmm wut is this: ")
+          SERIAL3_PRINTLN(incoming_byte)
       }
     }
   }
@@ -188,141 +190,4 @@ bool stringchr(const char *s, char c){
     if(s[i]==c) return true;
   }
   return false;
-}
-
-//unused alternate victim function
-void victimForward(int percentage) {
-  if (!isHeat) {
-    doHeatVictim(getHeatSensorReadings('L'), getHeatSensorReadings('R'));
-  }
-
-  if (Serial2.available()) {
-    delay(1);
-    char incoming_byte = Serial2.read();
-    delay(1);
-    Serial3.print("Victim Message Received: ");
-    Serial3.println(incoming_byte);
-    
-    if (!stringchr("YGHSUyghsu", incoming_byte) || (stringchr("yghsu", incoming_byte) && getSensorReadings(1) < 35) || (stringchr("YGHSU", incoming_byte) && getSensorReadings(0) < 35)) { //if letter is uppercase
-      if(stringchr("YGHSU\0", incoming_byte)){
-        int distRight = getSensorReadings(0); 
-        Serial3.print("sending the pi pre-victim values: ");
-        Serial3.print(distRight/10 + '0');
-        Serial3.print(distRight%10 + '0');
-        Serial3.print(percentage/10 + '0');
-        Serial3.println(percentage%10 + '0');
-        Serial2.write(distRight/10 + '0');
-        Serial2.write(distRight%10 + '0');
-        Serial2.write(percentage/10 + '0');
-        Serial2.write(percentage%10 + '0');
-      }else if(stringchr("yghsu\0", incoming_byte)){
-        int distLeft = getSensorReadings(1);
-        Serial3.print("sending the pi pre-victim values: ");
-        Serial3.print(distLeft/10 + '0');
-        Serial3.print(distLeft%10 + '0');
-        Serial3.print(percentage/10 + '0');
-        Serial3.println(percentage%10 + '0');
-        Serial2.write(distLeft/10 + '0');
-        Serial2.write(distLeft%10 + '0');
-        Serial2.write(percentage/10 + '0');
-        Serial2.write(percentage%10 + '0');
-      }else{
-        Serial3.print("incoming_byte: ");
-        Serial3.print(incoming_byte);
-      }
-      switch (incoming_byte) {
-        case 'Y': // 1 kit
-          Serial3.println("red/yellow");
-          while(!Serial2.available());
-          if(Serial2.read()=='y')
-            RGB_color(255, 0, 0, 1, 'R'); // Red
-          //dropKits('R', 1);
-          break;
-
-        case 'G': // 0 kits
-          Serial3.println("green");
-          while(!Serial2.available());
-          if(Serial2.read()=='y')
-          RGB_color(0, 255, 0, 0, 'R'); // Green
-          break;
-
-        case 'H': // 3 kits
-          Serial3.println("H");
-          while(!Serial2.available());
-          if(Serial2.read()=='y')
-          RGB_color(0, 0, 255, 3, 'R'); // Blue
-          //dropKits('R', 3);
-          break;
-
-        //turn left
-        case 'S': // 2 kits
-          Serial3.println("S");
-          while(!Serial2.available());
-          if(Serial2.read()=='y')
-          RGB_color(0, 255, 255, 2, 'R'); // Cyan
-          //dropKits('R', 2);
-          break;
-
-        //turn right
-        case 'U': // 0 kits
-          Serial3.println("U");
-          while(!Serial2.available());
-          if(Serial2.read()=='y')
-          RGB_color(255, 0, 255, 0, 'R'); // Magenta
-          break;
-        case 'y': // 1 kit
-          Serial3.println("red/yellow");
-          while(!Serial2.available());
-          if(Serial2.read()=='y')
-          RGB_color(255, 0, 0, 1, 'L'); // Red
-          //dropKits('L', 1);
-          break;
-
-        case 'g': // 0 kits
-          Serial3.println("green");
-          while(!Serial2.available());
-          if(Serial2.read()=='y')
-          RGB_color(0, 255, 0, 0, 'L'); // Green
-          break;
-
-        case 'h': // 3 kits
-          Serial3.println("H");
-          while(!Serial2.available());
-          if(Serial2.read()=='y')
-          RGB_color(0, 0, 255, 3, 'L'); // Blue
-          //dropKits('L', 3);
-          break;
-
-        //turn left
-        case 's': // 2 kits
-          Serial3.println("S");
-          while(!Serial2.available());
-          if(Serial2.read()=='y')
-          RGB_color(0, 255, 255, 2, 'L'); // Cyan
-          //dropKits('L', 2);
-          break;
-
-        //turn right
-        case 'u': // 0 kits
-          Serial3.println("U");
-          while(!Serial2.available());
-          if(Serial2.read()=='y')
-          RGB_color(255, 0, 255, 0, 'R'); // Magenta
-          break;
-        case '}':
-          Serial3.println("}");
-          if(finishedRamp==1)
-            Serial2.write('u');
-          else if(finishedRamp==2)
-            Serial2.write('d');
-          finishedRamp=0;
-          delay(15);
-          sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
-          break;
-        default:
-          Serial3.print("#2 hmmm wut is this: ");
-          Serial3.println(incoming_byte);
-      }
-    }
-  }
 }

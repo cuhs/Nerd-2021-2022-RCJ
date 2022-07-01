@@ -10,7 +10,7 @@
 //N E S W --> South always 0
 void setup() {
   delay(100);
-  Serial3.begin(9600);
+  SERIAL3_BEGIN
   Serial2.begin(9600);
   Wire.begin();
   ports[LEFT].setMotorSpeed(0);
@@ -25,23 +25,23 @@ void setup() {
   ports[RIGHT].backwards = true;
 
 
-  Serial3.println("--------------------STARTING NOW--------------------");
+  SERIAL3_PRINTLN("--------------------STARTING NOW--------------------")
   setupSensors2();
   initIMU();
   delay(1000);
-  Serial3.println('a');
+  SERIAL3_PRINTLN('a')
   Serial2.write('a');
   while(!Serial2.available());
   char c = Serial2.read();
   if(c=='a'){
     turnAbsNoVictim(90);
-    if(getSensorReadings(0)<20)
+    if(getSensorReadings(RIGHT_TOF)<20)
       Serial2.write('1');
     else
       Serial2.write('0');
     turnAbsNoVictim(0);
   }
-  sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
+  sendWallValues(getSensorReadings(FRONT_TOF), getSensorReadings(RIGHT_TOF), getSensorReadings(LEFT_TOF));
 }
 
 void loop() {
@@ -50,10 +50,12 @@ void loop() {
     delay(1);
     char incoming_byte = Serial2.read();
     delay(1);
-    Serial3.print("Message detected: ");
-    Serial3.println(incoming_byte);
+    SERIAL3_PRINT("Message detected: ")
+    SERIAL3_PRINTLN(incoming_byte)
     //make sure that if a victim is detected, it is within 25 cm from the robot
-    if (!stringchr("YGHSUyghsu", incoming_byte) || (stringchr("yghsu", incoming_byte) && getSensorReadings(1) < 25) || (stringchr("YGHSU", incoming_byte) && getSensorReadings(0) < 25)) { //if letter is uppercase
+    bool isLeftVictim = stringchr("yghsu", incoming_byte);
+    bool isRightVictim = stringchr("YGHSU", incoming_byte);
+    if (!isLeftVictim && !isRightVictim || isLeftVictim && getSensorReadings(LEFT_TOF) < 25 || isRightVictim && getSensorReadings(RIGHT_TOF) < 25) { //if letter is uppercase
     switch (incoming_byte) {
       case '{':
         break;
@@ -76,12 +78,12 @@ void loop() {
         delay(1);
         Serial2.read();
         delay(1);
-        if(triangulation(getSensorReadings(1), getSensorReadings(0))){
+        if(triangulation(getSensorReadings(LEFT_TOF), getSensorReadings(RIGHT_TOF))){
         alignFront();
         delay(1);
         Serial2.write(';');
         delay(1);
-        Serial3.println(';');
+        SERIAL3_PRINTLN(';')
         }
         break;
         
@@ -95,7 +97,7 @@ void loop() {
         delay(1);
         Serial2.write(';');
         delay(1);
-        Serial3.println(';');
+        SERIAL3_PRINTLN(';')
         break;
 
       case 'R'://turn right
@@ -108,82 +110,82 @@ void loop() {
         delay(1);
         Serial2.write(';');
         delay(1);
-        Serial3.println(';');        
+        SERIAL3_PRINTLN(';')        
         break;
         
       case '}'://pi wants wall values to be sent from the arduino
-        Serial3.println("}");
+        SERIAL3_PRINTLN("}")
         if(finishedRamp==1)
           Serial2.write('u');
         else if(finishedRamp==2)
           Serial2.write('d');
         finishedRamp=0;
         delay(15);
-        sendWallValues(getSensorReadings(2), getSensorReadings(0), getSensorReadings(1));
+        sendWallValues(getSensorReadings(FRONT_TOF), getSensorReadings(RIGHT_TOF), getSensorReadings(LEFT_TOF));
         break;
       //victim messages
       case 'Y': // 1 kit
-        Serial3.println("red/yellow");
+        SERIAL3_PRINTLN("red/yellow")
         RGB_color(255, 0, 0, 1, 'R'); // Red
         //dropKits('R', 1);
         break;
 
       case 'G': // 0 kits
-        Serial3.println("green");
+        SERIAL3_PRINTLN("green")
         RGB_color(0, 255, 0, 0, 'R'); // Green
         break;
 
       case 'H': // 3 kits
-        Serial3.println("H");
+        SERIAL3_PRINTLN("H")
         RGB_color(0, 0, 255, 3, 'R'); // Blue
         //dropKits('R', 3);
         break;
 
       //turn left
       case 'S': // 2 kits
-        Serial3.println("S");
+        SERIAL3_PRINTLN("S")
         RGB_color(0, 255, 255, 2, 'R'); // Cyan
         //dropKits('R', 2);
         break;
 
       //turn right
       case 'U': // 0 kits
-        Serial3.println("U");
+        SERIAL3_PRINTLN("U")
         RGB_color(255, 0, 255, 0, 'R'); // Magenta
         break;
       case 'y': // 1 kit
-        Serial3.println("red/yellow");
+        SERIAL3_PRINTLN("red/yellow")
         RGB_color(255, 0, 0, 1, 'L'); // Red
         //dropKits('L', 1);
         break;
 
       case 'g': // 0 kits
-        Serial3.println("green");
+        SERIAL3_PRINTLN("green")
         RGB_color(0, 255, 0, 0, 'L'); // Green
         break;
 
       case 'h': // 3 kits
-        Serial3.println("H");
+        SERIAL3_PRINTLN("H")
         RGB_color(0, 0, 255, 3, 'L'); // Blue
         //dropKits('L', 3);
         break;
 
       //turn left
       case 's': // 2 kits
-        Serial3.println("S");
+        SERIAL3_PRINTLN("S")
         RGB_color(0, 255, 255, 2, 'L'); // Cyan
         //dropKits('L', 2);
         break;
 
       //turn right
       case 'u': // 0 kits
-        Serial3.println("U");
+        SERIAL3_PRINTLN("U")
         RGB_color(255, 0, 255, 0, 'R'); // Magenta
         break;
         
       default:
-        Serial3.print("hmmm wut is this: ");
-        Serial3.println(incoming_byte);
+        SERIAL3_PRINT("hmmm wut is this: ")
+        SERIAL3_PRINTLN(incoming_byte)
         break;
     }
     }
