@@ -5,7 +5,7 @@ MegaPiPort ports[] = { {PORT1B, 18, 31}, {PORT2B, 19, 38}, {PORT3B, 3, 49}, {POR
 
 //goes forward a certain amount of tiles
 bool goForwardTilesPID(int tiles) {
-  return goForwardPID(tiles * 30);
+  return goForwardPID(tiles * 28);
 }
 
 //moving forward function for if the robot is on a ramp or stairs - 'u' for up, 'd' for down
@@ -154,7 +154,7 @@ bool goForwardPID(int dist) {
       int beforeEnc = (ports[motorEncUse].count*D*PI)/360;
       int amtOfRamp = rampMoveForward('u');
       //if the horizontal distance travelled is less than 40, we determine that the robot went on stairs and not a ramp - we make it go forward until it goes down the stairs and then sends how many tiles it went
-      if(amtOfRamp<40 && amtOfRamp >3){
+      if(amtOfRamp<55 && amtOfRamp >5){
         amtOfRamp += rampMoveForward('d');
         if(amtOfRamp%30>=15)
           amtOfRamp+=30;
@@ -167,13 +167,17 @@ bool goForwardPID(int dist) {
 
         //no ramp
         finishedRamp = 0;
+        return true;
+      }else if(amtOfRamp <= 5){
+        finishedRamp = 0;
+      }else{
+        return true;
       }
-      return true;
     } else if (onRamp == 2) {
       //see above comments for onRamp == 1(going down instead of going up)
       int beforeEnc = (D*PI*ports[motorEncUse].count)/360;
       int amtOfRamp = rampMoveForward('d');
-      if(amtOfRamp<40 && amtOfRamp > 3){
+      if(amtOfRamp<55 && amtOfRamp > 5){
         delay(1);
         Serial2.write('s');
         if(amtOfRamp%30>=15)
@@ -183,14 +187,17 @@ bool goForwardPID(int dist) {
         Serial2.write((char)(amtOfRamp/30)+'0');
         
         finishedRamp = 0;
+        return true;
+      }else if(amtOfRamp <= 5){
+        finishedRamp = 0;
+      }else{
+        return true;
       }
-      return true;
     }
     whatTile = 0;
     bool onSB = isOnSpeedBump();
-    if(!onSB)
-      whatTile = detectTiles();
-    if (whatTile == 1) {
+    whatTile = detectTiles();
+    if (whatTile == 1 && !onSB) {
       //detected black - sends m if no m was sent yet, then semicolon and 'b'
       if(shouldSendM){
         Serial2.write('m');
@@ -202,7 +209,7 @@ bool goForwardPID(int dist) {
       Serial2.read();
       delay(1);
       return false;
-    }else if(whatTile==2 && abs(ports[motorEncUse].count)>=(6*enc)/10 && !checking){// speed bump - turns slightly to make sure it is silver and not speed bump
+    }else if(whatTile==2 && !onSB && abs(ports[motorEncUse].count)>=(6*enc)/10 && !checking){
       //checks to make sure seeing silver is not a misdetection - turns 25 degrees to the right and to the left, if at least one more of those situations detect silver, it is a silver tile
 //      seesSilver = true;
 //      tcaselect(7);
@@ -272,8 +279,8 @@ bool goForwardPID(int dist) {
     if(isOnSpeedBump())
       angIncrease = 40;
 
-    ports[RIGHT].setMotorSpeed(fix + 160 + angIncrease);
-    ports[LEFT].setMotorSpeed(fix + 160 + angIncrease);
+    ports[RIGHT].setMotorSpeed(fix + 125 + angIncrease);
+    ports[LEFT].setMotorSpeed(fix + 125 + angIncrease);
 
   }
   //sends messages to the StereoPi if a silver tile was detected
