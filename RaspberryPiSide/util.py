@@ -64,6 +64,12 @@ hsv_upper = {
      2: (90, 220, 180)  #160 for [1]
 }
 
+letterDist = {
+    'H': 125,
+    'S': 165,
+    'U': 150
+    }
+
 # adjust which position is facing true north
 # getting sensorData[N] will get north,
 # this adjusts it to true north, and all other directions

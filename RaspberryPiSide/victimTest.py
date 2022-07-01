@@ -7,11 +7,11 @@ import letterDetection
 
 #CONFIG----------------------------------------
  
-numberOfCams = 1 #number of camera to run
+numberOfCams = 2 #number of camera to run
 cap = [None,None] #left, right
-victimDetect = True #true --> tests victim detection, false --> runs camera feed
+victimDetect = False #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
-fullDetect = False #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
+fullDetect = True #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 oneCamEverythingDetect = False #Will show everything as letterDetection class sees, to use shut down victimDetect, full Detect, and showFrames, set cams to 1
 saveVictim = False
 width = 160 #camera width
@@ -23,7 +23,7 @@ showCenter = False #true to show center of the victim, only works if victimDetec
 pathVI = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages"
 path = pathVI + "/Fri May 20 18:53:19 2022/u-Fri May 20 18:56:06 2022.png" #set to None if not testing an image
 path = None
-threshParam = [59,11]
+threshParam = [11,5] #23,3
 
 #CONFIG_END------------------------------------
 

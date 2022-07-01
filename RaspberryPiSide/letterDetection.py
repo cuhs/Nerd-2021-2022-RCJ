@@ -77,8 +77,9 @@ class Detection:
     # process frame and return letter from getLetter
     def letterDetect(self, frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        blur = cv2.bilateralFilter(gray, 5, 75,75)
-        mask  = cv2.adaptiveThreshold(blur, 1, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 59,11)
+        #blur = cv2.bilateralFilter(gray, 5, 75,75)
+        blur = cv2.GaussianBlur(gray,(5,5),0)
+        mask  = cv2.adaptiveThreshold(blur, 1, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11,5)
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         imgOutput, center = self.getLetter(frame,contours, mask)
         
@@ -145,7 +146,7 @@ class Detection:
     def rightDetectFinal(self,ret,frame):
         if ret > 0:
             imgOutput, center = self.letterDetect(frame)
-            letter, letter_center  = self.KNN_finish(imgOutput, center, 125, 165, 150) #image, center, H, S, U
+            letter, letter_center  = self.KNN_finish(imgOutput, center, util.letterDist['H'], util.letterDist['S'], util.letterDist['U']) #image, center, H, S, U
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
             return letter, letter_center, color, color_center
         return None, None, None, None
@@ -154,7 +155,7 @@ class Detection:
     def leftDetectFinal(self,ret,frame):
         if ret > 0:
             imgOutput, center = self.letterDetect(frame)
-            letter, letter_center  = self.KNN_finish(imgOutput, center, 125, 165, 150) #image, center, H, S, U
+            letter, letter_center  = self.KNN_finish(imgOutput, center, util.letterDist['H'], util.letterDist['S'], util.letterDist['U']) #image, center, H, S, U
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
             return letter, letter_center, color, color_center
         return None, None, None, None
