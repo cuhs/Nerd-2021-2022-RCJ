@@ -67,7 +67,7 @@ hsv_upper = {
 letterDist = {
     'H': 125,
     'S': 165,
-    'U': 150
+    'U': 145
     }
 
 # adjust which position is facing true north
