@@ -20,7 +20,7 @@ monitorDimensions = (1024, 600)  # (x, y, width, height)
 
 importantDebug = False  # important print statements, overrides other settings
 BFSDebug = False  # print statements for maze traversal
-victimDebug = True  # shows camera feeds
+victimDebug = False  # shows camera feeds
 saveVictimDebug = True  # saves victim images if found
 serialDebug = True  # prints serial IO
 saveVideoDebug = False  # first lets see if it works
@@ -34,7 +34,7 @@ cameraCount = 2  # number of cameras, cam0 is left, cam1 is right. if only one c
 cameraWidth = 160  # width of camera feed for both cameras 160
 cameraHeight = 128  # height of camera feed for both cameras 128
 cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads
-cameraCutR = [0, 128, 5, 155]  # right slicing to ignore treads
+cameraCutR = [0, 123, 0, 152]  # right slicing to ignore treads
 
 manualCheckpointLoading = False  # load back to last checkpoint when 'c' is pressed
 

@@ -4,6 +4,7 @@ import letterDetection
 
 cap = cv2.VideoCapture(0)
 
+#ATTENTION: Alter to fit desired frame size
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 160)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 128)
 
@@ -18,14 +19,15 @@ main = letterDetection.Detection()
 
 print("start")
 
-
-with open("KNN/labels4.txt", 'w') as labels, open ("KNN/features4.txt", 'w') as features:
+#ATTENTION: CREATE NEW TEXT FILES IN THE KNN FOLDER, DO NOT OVERWRITE ALREADY EXISTING FILES UNLESS YOU MEAN IT
+with open("KNN/labels10.txt", 'w') as labels, open ("KNN/features10.txt", 'w') as features:
 
 
     while(cap.isOpened):
         
         ret, frame = cap.read()
         
+        #ATTENTION: Specific slices do not matter as long as they do not interfere with the contour detection
         frame = frame[:,:150]
         
         if(ret > 0):

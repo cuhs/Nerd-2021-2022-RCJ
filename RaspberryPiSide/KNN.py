@@ -20,6 +20,6 @@ class KNN:
         lowestDist = distance[:, 0]
         result = chr(result[0][0])
         
-        print("Distance: " + str(lowestDist))
+        #print("Distance: " + str(lowestDist) + result)
         
         return result, lowestDist

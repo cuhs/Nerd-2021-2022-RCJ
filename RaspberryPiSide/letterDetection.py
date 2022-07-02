@@ -47,13 +47,12 @@ class Detection:
                     
                     frameTemp = np.copy(frame)
                     maskTemp = cv2.cvtColor(mask,cv2.COLOR_GRAY2BGR)
-                    #cv2.drawContours(frameTemp, [box], 0, (255,255,0),2)
-                    #cv2.circle(frame, (int(rect[0][0]), int(rect[0][1])), 2, (255,255,0),-1)
+                    cv2.drawContours(frameTemp, [box], 0, (255,255,0),2)
+                    cv2.circle(frameTemp, (int(rect[0][0]), int(rect[0][1])), 2, (255,255,0),-1)
                     #cv2.imshow("frame", frame)
                     #imgOutputTemp = cv2.resize(imgOutput,(128,150))
                     #imgOutputTemp = cv2.cvtColor(imgOutputTemp, cv2.COLOR_GRAY2BGR)\
-                    combine = cv2.vconcat([frameTemp, maskTemp])
-                    print(combine.shape)
+                    combine = cv2.vconcat([frameTemp, maskTemp*255])
                     cv2.imshow("combine", combine)
                     #self.out.write(combine)
                     
@@ -115,6 +114,7 @@ class Detection:
                 bestMatch[0] = result
                 bestMatch[1] = dist
                 bestMatch[2] = np.copy(imgOutput)
+            print("best" + str(bestMatch[1]) + bestMatch[0])
             if (bestMatch[1] <= hDist and bestMatch[0] == 'H') or (bestMatch[1] <= sDist and bestMatch[0] == 'S') or (bestMatch[1] <= uDist and bestMatch[0] == 'U'):
                 return bestMatch[0], center #returns result and center
             
@@ -152,6 +152,8 @@ class Detection:
             imgOutput, center = self.letterDetect(frame)
             letter, letter_center  = self.KNN_finish(imgOutput, center, util.letterDist['H'], util.letterDist['S'], util.letterDist['U']) #image, center, H, S, U
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
+            if letter == 'U' and (letter_center < 10 or letter_center > frame.shape[1]-10):
+                return None, None, color, color_center
             return letter, letter_center, color, color_center
         return None, None, None, None
     
@@ -161,6 +163,8 @@ class Detection:
             imgOutput, center = self.letterDetect(frame)
             letter, letter_center  = self.KNN_finish(imgOutput, center, util.letterDist['H'], util.letterDist['S'], util.letterDist['U']) #image, center, H, S, U
             color, color_center = self.colorDetectHSV(frame, util.hsv_lower, util.hsv_upper)
+            if letter == 'U' and (letter_center < 10 or letter_center > frame.shape[1]-10):
+                return None, None, color, color_center
             return letter, letter_center, color, color_center
         return None, None, None, None
     

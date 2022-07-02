@@ -6,7 +6,7 @@ import letterDetection
 
 
 #CONFIG----------------------------------------
- 
+  
 numberOfCams = 1 #number of camera to run
 cap = [None,None] #left, right
 victimDetect = True #true --> tests victim detection, false --> runs camera feed
@@ -17,11 +17,11 @@ saveVictim = False
 width = 160 #camera width
 height = 128 #camera height
 cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads, height then width
-cameraCutR = [0, 128, 5, 155]  # right slicing to ignore treads, height then width
+cameraCutR = [0, 123, 0, 152]  # right slicing to ignore treads, height then width
 checkFPS = False #true to check frames per second
 showCenter = False #true to show center of the victim, only works if victimDetect is true
 pathVI = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages"
-path = pathVI + "/Fri May 20 18:53:19 2022/u-Fri May 20 18:56:06 2022.png" #set to None if not testing an image
+path = pathVI + "/Fri Jul  1 10:34:42 2022/u-Fri Jul  1 10:36:29 2022.png" #set to None if not testing an image
 path = None
 threshParam = [19,4] #23,3
 
@@ -29,7 +29,7 @@ threshParam = [19,4] #23,3
 
 
 def initCams():
-    if numberOfCams == 1 or numberOfCams == 2 and path is None:
+    if (numberOfCams == 1 or numberOfCams == 2) and path is None:
         cap[0] = cv2.VideoCapture(0)
         cap[0].set(cv2.CAP_PROP_FRAME_WIDTH, width)
         cap[0].set(cv2.CAP_PROP_FRAME_HEIGHT, height)
@@ -46,7 +46,7 @@ initCams()
 
 while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (numberOfCams == 2 and cap[1].isOpened()):
     
-    if numberOfCams == 1 or numberOfCams == 2 and path is None:
+    if (numberOfCams == 1 or numberOfCams == 2) and path is None:
         retL, frameL = cap[0].read()
         frameL = frameL[cameraCutL[0]:cameraCutL[1],cameraCutL[2]:cameraCutL[3]]
     if numberOfCams == 2 and path is None:
@@ -60,7 +60,7 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
         startTime = time.time()
         
     if victimDetect:
-        if numberOfCams == 1 or numberOfCams == 2 and path is None:
+        if (numberOfCams == 1 or numberOfCams == 2) and path is None:
             letterL, letterCL, colorL, colorCL = vD.leftDetectFinal(retL, frameL)
             if letterL is not None:
                 print("Left Camera: Letter is " + str(letterL) + " at x-position " + str(np.int0(letterCL)))
@@ -106,7 +106,7 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
                 print("Path: No color detected")
 
     if fullDetect:
-        if numberOfCams == 1 or numberOfCams == 2 and path is None:
+        if (numberOfCams == 1 or numberOfCams == 2) and path is None:
             grayL = cv2.cvtColor(frameL, cv2.COLOR_BGR2GRAY)
             blurL = cv2.bilateralFilter(grayL, 5, 75, 75)
             threshL = cv2.adaptiveThreshold(blurL,1,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
@@ -136,7 +136,7 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
         
 
     if showFrames:
-        if numberOfCams == 1 or numberOfCams == 2 and path is None:
+        if (numberOfCams == 1 or numberOfCams == 2) and path is None:
             if retL > 0:
                 cv2.imshow("frameL", frameL)
         if numberOfCams == 2 and path is None:
@@ -145,7 +145,7 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
         if path is not None:
             cv2.imshow("pathImage",frame)
         if fullDetect:
-            if numberOfCams == 1 or numberOfCams == 2 and path is None:
+            if (numberOfCams == 1 or numberOfCams == 2) and path is None:
                 cv2.imshow("threshL", threshL*255)
                 if imgOutputL is not None:
                     cv2.imshow("imgOutputL", imgOutputL*255)
@@ -171,7 +171,7 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
     if saveVictim and numberOfCams == 1:
         if cv2.waitKey(1) == ord(' '):
             print("Do you like this image?")
-            #cv2.imshow("image_mask",imgOutputL*255)
+            cv2.imshow("image_mask",imgOutputL*255)
             letter = cv2.waitKey(0)
             cv2.destroyAllWindows()
             if letter == ord('y'):
