@@ -158,8 +158,8 @@ void turnAbs(int degree) {
     } else if (error < -180)
       error = 360 + error;
 
-    //sends 'm' if the robot is 70% done with its turn
-    if(shouldSendM && abs(error)<=(7*abs(startingError))/10){
+    //sends 'm' if the robot is 50% done with its turn
+    if(shouldSendM && abs(error)>=(5*abs(startingError))/10){
       shouldSendM = false;
       delay(1);
       Serial2.write('m');

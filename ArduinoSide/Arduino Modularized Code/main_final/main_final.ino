@@ -180,7 +180,7 @@ void loop() {
       //turn right
       case 'u': // 0 kits
         SERIAL3_PRINTLN("U")
-        RGB_color(255, 0, 255, 0, 'R'); // Magenta
+        RGB_color(255, 0, 255, 0, 'L'); // Magenta
         break;
         
       default:

@@ -109,62 +109,82 @@ void victim() {
     SERIAL3_PRINT("Victim Message Received: ")
     SERIAL3_PRINTLN(incoming_byte)
     //makes sure the robot is close enough to a wall when a victim is detected
-    bool isLeftVictim = stringchr("yghsu", incoming_byte);
-    bool isRightVictim = stringchr("YGHSU", incoming_byte);
-    if (!isLeftVictim && !isRightVictim || isLeftVictim && getSensorReadings(LEFT_TOF) < 25 || isRightVictim && getSensorReadings(RIGHT_TOF) < 25) { //if letter is uppercase
+    //bool isLeftVictim = stringchr("yghsu", incoming_byte);
+    //bool isRightVictim = stringchr("YGHSU", incoming_byte);
+    //if (!isLeftVictim && !isRightVictim || isLeftVictim && getSensorReadings(LEFT_TOF) < 25 || isRightVictim && getSensorReadings(RIGHT_TOF) < 25) { //if letter is uppercase
       //drops kits and flashes LED if victim is detected
-      switch (incoming_byte) {
+      switch (incoming_byte) {//put getSensorReadings in each case
         case 'Y': // 1 kit
-          SERIAL3_PRINTLN("red/yellow")
-          RGB_color(255, 0, 0, 1, 'R'); // Red
+          if(getSensorReadings(RIGHT_TOF) < 25){
+            SERIAL3_PRINTLN("red/yellow")
+            RGB_color(255, 0, 0, 1, 'R'); // Red
+          }
           break;
 
         case 'G': // 0 kits
-          SERIAL3_PRINTLN("green")
-          RGB_color(0, 255, 0, 0, 'R'); // Green
+          if(getSensorReadings(RIGHT_TOF) < 25){
+            SERIAL3_PRINTLN("green")
+            RGB_color(0, 255, 0, 0, 'R'); // Green
+          }
           break;
 
         case 'H': // 3 kits
-          SERIAL3_PRINTLN("H")
-          RGB_color(0, 0, 255, 3, 'R'); // Blue
+          if(getSensorReadings(RIGHT_TOF) < 25){
+            SERIAL3_PRINTLN("H")
+            RGB_color(0, 0, 255, 3, 'R'); // Blue
+          }
           break;
 
         //turn left
         case 'S': // 2 kits
-          SERIAL3_PRINTLN("S")
-          RGB_color(0, 255, 255, 2, 'R'); // Cyan
+          if(getSensorReadings(RIGHT_TOF) < 25){
+            SERIAL3_PRINTLN("S")
+            RGB_color(0, 255, 255, 2, 'R'); // Cyan
+          }
           break;
 
         //turn right
         case 'U': // 0 kits
-          SERIAL3_PRINTLN("U")
-          RGB_color(255, 0, 255, 0, 'R'); // Magenta
+          if(getSensorReadings(RIGHT_TOF) < 25){
+            SERIAL3_PRINTLN("U")
+            RGB_color(255, 0, 255, 0, 'R'); // Magenta
+          }
           break;
         case 'y': // 1 kit
-          SERIAL3_PRINTLN("red/yellow")
-          RGB_color(255, 0, 0, 1, 'L'); // Red
+          if(getSensorReadings(LEFT_TOF) < 25){
+            SERIAL3_PRINTLN("red/yellow")
+            RGB_color(255, 0, 0, 1, 'L'); // Red
+          }
           break;
 
         case 'g': // 0 kits
-          SERIAL3_PRINTLN("green")
-          RGB_color(0, 255, 0, 0, 'L'); // Green
+          if(getSensorReadings(LEFT_TOF) < 25){
+            SERIAL3_PRINTLN("green")
+            RGB_color(0, 255, 0, 0, 'L'); // Green
+          }
           break;
 
         case 'h': // 3 kits
-          SERIAL3_PRINTLN("H")
-          RGB_color(0, 0, 255, 3, 'L'); // Blue
+          if(getSensorReadings(LEFT_TOF) < 25){
+            SERIAL3_PRINTLN("H")
+            RGB_color(0, 0, 255, 3, 'L'); // Blue
+          }
           break;
 
         //turn left
         case 's': // 2 kits
-          SERIAL3_PRINTLN("S")
-          RGB_color(0, 255, 255, 2, 'L'); // Cyan
+          if(getSensorReadings(LEFT_TOF) < 25){
+            SERIAL3_PRINTLN("S")
+            RGB_color(0, 255, 255, 2, 'L'); // Cyan
+          }
           break;
 
         //turn right
         case 'u': // 0 kits
+        if(getSensorReadings(LEFT_TOF) < 25){
           SERIAL3_PRINTLN("U")
-          RGB_color(255, 0, 255, 0, 'R'); // Magenta
+          RGB_color(255, 0, 255, 0, 'L'); // Magenta
+         }
           break;
         case '}':
           SERIAL3_PRINTLN("}")
@@ -180,7 +200,7 @@ void victim() {
           SERIAL3_PRINT("#2 hmmm wut is this: ")
           SERIAL3_PRINTLN(incoming_byte)
       }
-    }
+    
   }
 }
 

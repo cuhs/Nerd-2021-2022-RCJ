@@ -17,7 +17,7 @@ int detectTiles(){
   ams.startMeasurement();
   bool rdy=false;
   while(!rdy){
-    delay(5);
+    delay(1);
     rdy = ams.dataReady();
   }
   ams.readRawValues(sensorValues);
