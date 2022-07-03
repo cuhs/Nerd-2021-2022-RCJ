@@ -134,6 +134,7 @@ bool goForwardPID(int dist) {
   int fix = 0;
   bool whatToReturn = true;
   int whatTile = 0;
+  int angIncrease = 0;
 
   //used to determine if a silver tile is detected and differentiate between false identifications
   bool seesSilver = false;
@@ -275,12 +276,12 @@ bool goForwardPID(int dist) {
     
     fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0, 0.005, 0));
     //speeds up more if the robot is on a speed bump
-    int angIncrease = 0;
     if(isOnSpeedBump())
-      angIncrease = 40;
+      angIncrease = 150;
 
     ports[RIGHT].setMotorSpeed(fix + 125 + angIncrease);
     ports[LEFT].setMotorSpeed(fix + 125 + angIncrease);
+    angIncrease = 0;
 
   }
   //sends messages to the StereoPi if a silver tile was detected
