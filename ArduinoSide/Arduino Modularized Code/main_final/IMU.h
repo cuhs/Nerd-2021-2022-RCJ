@@ -23,6 +23,7 @@ void displayIMU();
 void turnRight(int);
 bool isNearTarget(int, int);
 bool isOnSpeedBump();
+bool shouldSpeedUp();
 
 extern int resetPinIMU;
 extern Adafruit_BNO055 bno;

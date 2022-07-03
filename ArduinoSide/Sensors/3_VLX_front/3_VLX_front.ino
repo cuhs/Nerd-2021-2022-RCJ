@@ -24,7 +24,7 @@ void setup()
   sensor[0].setTimeout(500);
   if (!sensor[0].init())
   {
-    Serial3.println("Failed to detect and initialize sensor!");
+    Serial3.println("Failed to detect and initialize sensor 0");
     while (1) {}
   }
   sensor[0].startContinuous();
@@ -32,7 +32,7 @@ void setup()
   sensor[1].setTimeout(500);
   if (!sensor[1].init())
   {
-    Serial3.println("Failed to detect and initialize sensor!");
+    Serial3.println("Failed to detect and initialize sensor 1");
     while (1) {}
   }
   sensor[1].startContinuous();
@@ -40,7 +40,7 @@ void setup()
   sensor[2].setTimeout(500);
   if (!sensor[2].init())
   {
-    Serial3.println("Failed to detect and initialize sensor!");
+    Serial3.println("Failed to detect and initialize sensor 2");
     while (1) {}
   }
   sensor[2].startContinuous();

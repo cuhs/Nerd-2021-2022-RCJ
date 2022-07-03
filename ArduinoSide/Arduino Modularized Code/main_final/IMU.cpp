@@ -369,3 +369,11 @@ bool isOnSpeedBump() {
     return true;
   return false;
 }
+
+bool shouldSpeedUp() {
+  tcaselect(7);
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  if (euler.y() > 5)
+    return true;
+  return false;
+}
