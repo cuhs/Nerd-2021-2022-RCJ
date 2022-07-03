@@ -33,7 +33,7 @@ void setup() {
   Serial2.write('a');
   while(!Serial2.available());
   char c = Serial2.read();
-  if(c=='a'){
+  if(c=='y' || c=='a'){
     turnAbsNoVictim(90);
     if(getSensorReadings(RIGHT_TOF)<20)
       Serial2.write('1');

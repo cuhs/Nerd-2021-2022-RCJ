@@ -56,24 +56,60 @@ int alignFront(bool b) {
   int minimumDist = 25;
   int motorEncUse = LEFT;
   int initEncCount = ports[motorEncUse].count;
+
+  //variables used for stall detection
+  unsigned long startTime;
+  unsigned long endTime;
+  int prev_count = 0;
+  bool stalling = false;
+  bool checking = false;
+  
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
 
-  if (frontDist < minimumDist) {
+  if (frontDist < minimumDist && !stalling) {
     //go back
     while (frontDist < 5) {
       victim();
       ports[RIGHT].setMotorSpeed(-100);
       ports[LEFT].setMotorSpeed(-100);
       frontDist = getSensorReadings(FRONT_TOF);
+    if (ports[LEFT].count == prev_count && !checking) {
+      startTime = millis();
+      checking = true;
+    } else if (ports[LEFT].count != prev_count) {
+      checking = false;
+    }
+    if (ports[LEFT].count == prev_count && !stalling) {
+      endTime = millis();
+      if (endTime - startTime > 1000) {
+        SERIAL3_PRINTLN("STALLING")
+        stalling = true;
+      }
+    }
+    prev_count = ports[LEFT].count;
     }
     
     //go forward
-    while (frontDist > 5) {
+    while (frontDist > 5 && !stalling) {
       victim();
       ports[RIGHT].setMotorSpeed(100);
       ports[LEFT].setMotorSpeed(100);
       frontDist = getSensorReadings(FRONT_TOF);
+    if (ports[LEFT].count == prev_count && !checking) {
+      startTime = millis();
+      checking = true;
+    } else if (ports[LEFT].count != prev_count) {
+      checking = false;
+    }
+    if (ports[LEFT].count == prev_count && !stalling) {
+      endTime = millis();
+      if (endTime - startTime > 1000) {
+        SERIAL3_PRINTLN("STALLING")
+        stalling = true;
+      }
+    }
+    prev_count = ports[LEFT].count;
     }
   }
   ports[RIGHT].setMotorSpeed(0);

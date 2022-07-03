@@ -10,5 +10,5 @@ extern "C" {
 }
 void tcaselect(uint8_t i);
 
-extern static uint8_t lastPort = 20;
+extern uint8_t lastPort;
 #endif

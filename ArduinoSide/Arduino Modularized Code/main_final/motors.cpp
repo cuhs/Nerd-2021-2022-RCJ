@@ -5,7 +5,7 @@ MegaPiPort ports[] = { {PORT1B, 18, 31}, {PORT2B, 19, 38}, {PORT3B, 3, 49}, {POR
 
 //goes forward a certain amount of tiles
 bool goForwardTilesPID(int tiles) {
-  return goForwardPID(tiles * 28);
+  return goForwardPID(tiles * 30);
 }
 
 //moving forward function for if the robot is on a ramp or stairs - 'u' for up, 'd' for down
@@ -270,7 +270,7 @@ bool goForwardPID(int dist) {
       if (endTime - startTime > 1000) {
         SERIAL3_PRINTLN("STALLING")
         stalling = true;
-      }else if(endTime - startTime > 100){
+      }else if(endTime - startTime > 750){
         angIncrease = 150;
       }
     }
@@ -280,7 +280,6 @@ bool goForwardPID(int dist) {
     //speeds up more if the robot is on a speed bump
     if(isOnSpeedBump())
       angIncrease = 150;
-
     ports[RIGHT].setMotorSpeed(fix + 30 + angIncrease);
     ports[LEFT].setMotorSpeed(fix + 30 + angIncrease);
     angIncrease = 0;
