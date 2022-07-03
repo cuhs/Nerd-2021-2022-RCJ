@@ -270,17 +270,19 @@ bool goForwardPID(int dist) {
       if (endTime - startTime > 1000) {
         SERIAL3_PRINTLN("STALLING")
         stalling = true;
+      }else if(endTime - startTime > 100){
+        angIncrease = 150;
       }
     }
     prev_count = ports[LEFT].count;
     
-    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0, 0.005, 0));
+    fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.25, 0.005, 0));
     //speeds up more if the robot is on a speed bump
     if(isOnSpeedBump())
       angIncrease = 150;
 
-    ports[RIGHT].setMotorSpeed(fix + 125 + angIncrease);
-    ports[LEFT].setMotorSpeed(fix + 125 + angIncrease);
+    ports[RIGHT].setMotorSpeed(fix + 30 + angIncrease);
+    ports[LEFT].setMotorSpeed(fix + 30 + angIncrease);
     angIncrease = 0;
 
   }
