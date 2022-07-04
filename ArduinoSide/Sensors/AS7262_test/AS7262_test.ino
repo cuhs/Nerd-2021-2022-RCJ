@@ -88,6 +88,7 @@ void loop() {
   uint8_t y=sensorValues[AS726x_YELLOW];
   uint8_t o=sensorValues[AS726x_ORANGE];
   uint8_t r=sensorValues[AS726x_RED];
+  uint8_t rrange = maxSix(v,b,g,y,o,r)-minSix(v,b,g,y,o,r);
   if(maxSix(v,b,g,y,o,r)<500){
   Serial3.print(" Violet:"); Serial3.print(v); Serial3.print(" ");
   Serial3.print(" Blue:"); Serial3.print(b); Serial3.print(" ");
@@ -95,9 +96,10 @@ void loop() {
   Serial3.print(" Yellow:"); Serial3.print(y);Serial3.print(" ");
   Serial3.print(" Orange:"); Serial3.print(o); Serial3.print(" ");
   Serial3.print(" Red:"); Serial3.print(r); Serial3.print(" ");
-  Serial3.print(" Avg:"); Serial3.println((v+b+g+y+o+r)/5);
+  Serial3.print(" Avg:"); Serial3.print((v+b+g+y+o+r)/5); Serial3.print(" ");
+  Serial3.print(" range:"); Serial3.println(rrange);
   }
-//printRange();
+  //printRange();
 //detectTiles();
 }
 

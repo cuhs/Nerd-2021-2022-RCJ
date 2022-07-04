@@ -279,7 +279,7 @@ bool goForwardPID(int dist) {
     
     fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.2, 0.005, 0));
     //speeds up more if the robot is on a speed bump
-    if(shouldSpeedUp())
+    if(isOnSpeedBump())
       angIncrease = 150;
     ports[RIGHT].setMotorSpeed(fix + 30 + angIncrease);
     ports[LEFT].setMotorSpeed(fix + 30 + angIncrease);

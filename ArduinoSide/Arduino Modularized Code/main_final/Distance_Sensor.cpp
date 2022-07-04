@@ -19,10 +19,11 @@ void sendWallValues(int frontDist, int rightDist, int leftDist) {
   SERIAL3_PRINT("[")
   for (int i = 0; i < 3; i++) {
     SERIAL3_PRINT(walls[i])
-    if (i != 4)
+    if (i != 4){
       SERIAL3_PRINT(", ") //for formatting purposes, no technical meaning
-    else
+    }else{
       SERIAL3_PRINT("]")
+    }
   }
   SERIAL3_PRINTLN("")
 

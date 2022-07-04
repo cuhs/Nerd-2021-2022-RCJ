@@ -182,12 +182,6 @@ void turnAbs(int degree) {
 
     //if the limit switch is pressed in, goes back slightly before finishing the turn
     prev_count = ports[LEFT].count;
-    char c = obstacleDetect();
-    if(c != '0'){
-      int motorEncUse = LEFT;
-      ports[motorEncUse].count=0;      
-      moveBackwards((-360 / (D * PI)) * 3);
-    }
     fix = (int)(PID(error, pastError, integral, 2, 0.005, 0));
     if (fix > 0)
       fix += 80;

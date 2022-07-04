@@ -199,6 +199,7 @@ void victim() {
         default:
           SERIAL3_PRINT("#2 hmmm wut is this: ")
           SERIAL3_PRINTLN(incoming_byte)
+          break;
       }
     
   }
