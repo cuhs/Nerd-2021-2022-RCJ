@@ -64,7 +64,7 @@ def reset():
     IO.vD = letterDetection.Detection()
 
     # setup input from file or serial
-    IO.setupInput(config.inputMode)
+    return IO.setupInput(config.inputMode)
 
 def init():
     if config.mazeSideLen % 2 != 0 or not(4 <= config.mazeSideLen <= 100):
@@ -243,7 +243,9 @@ def loadCheckpoint(checkpoint):
     # reset to start if no previous checkpoints have been loaded
     if checkpoint == -1:
         reset()
+        backWall = util.getBackWall()
         util.maze[util.floor][util.tile] = util.getWalls()
+        util.maze[util.floor][util.tile][util.oppositeDir(util.direction)] = backWall
     else:
         # retrieve saved maze from file
         info, savedMaze = IO.readMaze(IO.saveFile("r"))
@@ -265,6 +267,7 @@ def loadCheckpoint(checkpoint):
         # blink LED and wait for startup
         if config.inputMode == 2:
             IO.setupInput(config.inputMode)
+            IO.sendSerial('n')
 
         # get walls on startup
         util.maze[util.floor][util.tile] = util.getWalls()

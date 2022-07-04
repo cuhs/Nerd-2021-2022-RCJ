@@ -231,3 +231,13 @@ def victimInPreviousTile(cmFromWall, victimPosition, cmMoved):
     if config.importantDebug or config.victimDebug:
         print("\t\t\t\t\t\t\t\tcmFromCamera: " + cmFromCamera)
     return -15 < cmFromCamera + cmMoved < 15
+
+def getBackWall():
+    if config.importantDebug or config.BFSDebug:
+        print("GETTING BACK WALL")
+    backWall = IO.startupTurn()
+    while backWall == 'a':
+        backWall = IO.startupTurn()
+        print("INVALID BACK WALL, GOT RESET 'a' INSTEAD")
+    print("BACKWALL: " + backWall)
+    return backWall

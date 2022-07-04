@@ -114,7 +114,6 @@ class Detection:
                 bestMatch[0] = result
                 bestMatch[1] = dist
                 bestMatch[2] = np.copy(imgOutput)
-            print("best" + str(bestMatch[1]) + bestMatch[0])
             if (bestMatch[1] <= hDist and bestMatch[0] == 'H') or (bestMatch[1] <= sDist and bestMatch[0] == 'S') or (bestMatch[1] <= uDist and bestMatch[0] == 'U'):
                 return bestMatch[0], center #returns result and center
             

@@ -21,11 +21,7 @@ class AThread(QThread if config.runMode else object):
 
         # initialize, (calls reset)
         BFS.init()
-        backWall = IO.startupTurn()
-        while backWall == 'a':
-            BFS.init()
-            backWall = IO.startupTurn()
-        util.maze[util.floor][util.tile][util.oppositeDir(util.direction)] = backWall
+        backWall = util.getBackWall()
 
         if config.importantDebug:
             print("Setup Finished, Running...")
@@ -33,6 +29,7 @@ class AThread(QThread if config.runMode else object):
         # set start tile walls
         inputWalls = util.getWalls()
         util.maze[util.floor][util.tile] = inputWalls
+        util.maze[util.floor][util.tile][util.oppositeDir(util.direction)] = backWall
 
         # calculate next tile
         nextTile, nextFloor = BFS.nextTile(util.tile, util.floor)
