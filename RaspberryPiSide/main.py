@@ -21,7 +21,8 @@ class AThread(QThread if config.runMode else object):
 
         # initialize, (calls reset)
         BFS.init()
-        backWall = util.getBackWall()
+        if config.inputMode == 2:
+            backWall = util.getBackWall()
 
         if config.importantDebug:
             print("Setup Finished, Running...")
@@ -29,7 +30,8 @@ class AThread(QThread if config.runMode else object):
         # set start tile walls
         inputWalls = util.getWalls()
         util.maze[util.floor][util.tile] = inputWalls
-        util.maze[util.floor][util.tile][util.oppositeDir(util.direction)] = backWall
+        if config.inputMode == 2:
+            util.maze[util.floor][util.tile][util.oppositeDir(util.direction)] = backWall
 
         # calculate next tile
         nextTile, nextFloor = BFS.nextTile(util.tile, util.floor)
@@ -83,7 +85,6 @@ class AThread(QThread if config.runMode else object):
                             util.direction = util.turnLeft(util.direction, True)
                         if config.runMode:
                             display.updateLabels(cDir=util.direction)
-                            print(util.direction)
                     else:
                         if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath:
                             util.turnRight(util.direction, True)
@@ -106,7 +107,7 @@ class AThread(QThread if config.runMode else object):
                             didTurn = False
 
                             while victimMsg != ';':
-                                BFS.searchForVictims(False)
+                                BFS.searchForVictims(False, "R" if util.tile + util.adjTiles[util.dirToRight(util.direction)] == nextTileInPath else "L", didTurn)
                                 victimMsg = IO.getNextSerialByte()
 
                                 if victimMsg == 'a':
@@ -195,7 +196,7 @@ class AThread(QThread if config.runMode else object):
                             wentForward = False
 
                             while victimMsg != ';':
-                                BFS.searchForVictims(True)
+                                BFS.searchForVictims(True, didForward=wentForward)
                                 victimMsg = IO.getNextSerialByte()
 
                                 if victimMsg == 'a':
