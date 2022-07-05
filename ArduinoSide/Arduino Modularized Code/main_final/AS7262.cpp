@@ -1,4 +1,5 @@
 #include "AS7262.h"
+#include "TCS.h"
 uint16_t sensorValues[AS726x_NUM_CHANNELS];
 Adafruit_AS726x ams;
 
@@ -8,6 +9,7 @@ void setupLightSensors(){
     SERIAL3_PRINTLN("could not connect to sensor! Please check your wiring.")
     while(1);
   }
+  setupTCSSensors();
   ams.drvOn();
 }
 
@@ -31,7 +33,7 @@ int detectTiles(){
   int range = findRange(v,b,g,y,o,r);
   if(range>500)
     return 0;
-  if(range<=50 && avg <=50){
+  if(detectBlack()){
     //sendWallValues(getSensorReadings(FRONT_TOF), getSensorReadings(RIGHT_TOF), getSensorReadings(LEFT_TOF));
     //Serial2.write(';');
     //SERIAL3_PRINTLN("Saw Black");
