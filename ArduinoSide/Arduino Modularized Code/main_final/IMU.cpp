@@ -359,7 +359,7 @@ bool notStable() {
 bool isOnSpeedBump() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  if (euler.y() > 3)
+  if (euler.y() > 3 || abs(euler.z()) > 3)
     return true;
   return false;
 }
