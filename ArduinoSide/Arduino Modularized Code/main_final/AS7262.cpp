@@ -9,8 +9,9 @@ void setupLightSensors(){
     SERIAL3_PRINTLN("could not connect to sensor! Please check your wiring.")
     while(1);
   }
-  setupTCSSensors();
   ams.drvOn();
+  setupTCSSensors();
+  
 }
 
 //detects if there is a silver or black tile - returns 1 if a black tile is detected, 2 for silver tile, and 0 if none are detected

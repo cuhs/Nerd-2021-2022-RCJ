@@ -197,6 +197,7 @@ bool goForwardPID(int dist) {
     }
     whatTile = 0;
     bool onSB = isOnSpeedBump();
+    if(onSB) angIncrease = 150;
     whatTile = detectTiles();
     if (whatTile == 1 && !onSB && !checking) {
       //detected black - sends m if no m was sent yet, then semicolon and 'b'
@@ -270,7 +271,7 @@ bool goForwardPID(int dist) {
       if (endTime - startTime > 1000) {
         SERIAL3_PRINTLN("STALLING")
         stalling = true;
-      }else if(endTime - startTime > 750){
+      }else if(endTime - startTime > 500){
         angIncrease = 150;
         SERIAL3_PRINTLN("Stall increase speed")
       }
@@ -279,8 +280,6 @@ bool goForwardPID(int dist) {
     
     fix = (int)(PID(enc - abs(ports[motorEncUse].count), pastError, integral, 0.2, 0.005, 0));
     //speeds up more if the robot is on a speed bump
-    if(isOnSpeedBump())
-      angIncrease = 150;
     ports[RIGHT].setMotorSpeed(fix + 30 + angIncrease);
     ports[LEFT].setMotorSpeed(fix + 30 + angIncrease);
     angIncrease = 0;
