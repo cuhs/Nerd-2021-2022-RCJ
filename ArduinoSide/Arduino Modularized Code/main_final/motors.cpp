@@ -235,7 +235,7 @@ bool goForwardPID(int dist) {
     if(abs(ports[motorEncUse].count)>=(6*enc)/10 && !checking && !onSB)
       totCt++;
     //sends m if it hasn't yet and if the robot is 50% done with going forward
-    if(shouldSendM && abs(ports[motorEncUse].count)>=(5*enc)/10){
+    if(shouldSendM && abs(ports[motorEncUse].count)>=(6*enc)/10){
       SERIAL3_PRINTLN("Sending m")
       shouldSendM = false;
       delay(1);

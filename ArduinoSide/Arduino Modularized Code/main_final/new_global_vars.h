@@ -6,7 +6,7 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 
-#define SERIAL3_DEBUGGING  // comment out to disable debugging
+//#define SERIAL3_DEBUGGING  // comment out to disable debugging
 
 #ifdef SERIAL3_DEBUGGING
 #define SERIAL3_PRINT(str) Serial3.print(str);
@@ -15,7 +15,7 @@
 #else
 #define SERIAL3_PRINT(...)
 #define SERIAL3_PRINTLN(...)
-#define SERIAL3_BEGIN(...)
+#define SERIAL3_BEGIN
 #endif
 
 extern int finishedRamp;
