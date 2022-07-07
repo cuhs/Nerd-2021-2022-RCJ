@@ -290,7 +290,7 @@ bool goForwardPID(int dist) {
 
   }
   //sends messages to the StereoPi if a silver tile was detected
-  if((double)(silvCt)/totCt>0.3){
+  if((double)(silvCt)/totCt>0.4){
     isSilver = true;
     whatToReturn = false;
   }else{
