@@ -141,7 +141,10 @@ void turnAbs(int degree) {
   int error = targetDir - curDir;
   double pastError = 0;
   int startingError = error;
-
+  SERIAL3_PRINT("curDir: ")
+  SERIAL3_PRINTLN(curDir)
+  SERIAL3_PRINT("targetDir: ")
+  SERIAL3_PRINTLN(targetDir)
   //variable used to determine when the arduino should send an 'm' to the pi
   bool shouldSendM = true;
   while (abs(error) >= 3 && !stalling) {
@@ -332,15 +335,9 @@ int isOnRamp() {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   //if(frontTof>50) return 0;
   if (euler.y() < -15) {
-    int ang = euler.x();
-    if(getDirection(ang, 9)!=-1)
-      turnAbsNoVictim(getDirection(ang));
     return 2;
   }
   else if (euler.y() > 15) {
-    int ang = euler.x();
-    if(getDirection(ang, 9)!=-1)
-      turnAbsNoVictim(getDirection(ang));
     return 1;
   }
   return 0;

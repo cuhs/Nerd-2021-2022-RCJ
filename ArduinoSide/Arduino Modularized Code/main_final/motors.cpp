@@ -25,6 +25,7 @@ int rampMoveForward(char dir) {
   //variables used to calculated distance travelled
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  turnAbsNoVictim(getDirection(euler.x()));
   int startingEnc = ports[motorEncUse].count;
   int avgAng = 0;
   int itCt = 0;
@@ -155,7 +156,7 @@ bool goForwardPID(int dist) {
       int beforeEnc = (ports[motorEncUse].count*D*PI)/360;
       int amtOfRamp = rampMoveForward('u');
       //if the horizontal distance travelled is less than 40, we determine that the robot went on stairs and not a ramp - we make it go forward until it goes down the stairs and then sends how many tiles it went
-      if(amtOfRamp<55 && amtOfRamp >5){
+      if(amtOfRamp<75 && amtOfRamp >5){
         amtOfRamp += rampMoveForward('d');
         if(amtOfRamp%30>=15)
           amtOfRamp+=30;
@@ -163,6 +164,7 @@ bool goForwardPID(int dist) {
           amtOfRamp += beforeEnc;
         delay(1);
         //tells pi that there was stairs, sends tiles travelled on stairs
+        SERIAL3_PRINT("Stairs")
         Serial2.write('s');
         Serial2.write((char)(amtOfRamp/30)+'0');
 
@@ -172,13 +174,14 @@ bool goForwardPID(int dist) {
       }else if(amtOfRamp <= 5){
         finishedRamp = 0;
       }else{
+        SERIAL3_PRINT("ramp")
         return true;
       }
     } else if (onRamp == 2) {
       //see above comments for onRamp == 1(going down instead of going up)
       int beforeEnc = (D*PI*ports[motorEncUse].count)/360;
       int amtOfRamp = rampMoveForward('d');
-      if(amtOfRamp<55 && amtOfRamp > 5){
+      if(amtOfRamp<75 && amtOfRamp > 5){
         delay(1);
         Serial2.write('s');
         if(amtOfRamp%30>=15)
@@ -186,12 +189,13 @@ bool goForwardPID(int dist) {
         if(shouldSendM)
           amtOfRamp += beforeEnc;
         Serial2.write((char)(amtOfRamp/30)+'0');
-        
+        SERIAL3_PRINT("stairs")
         finishedRamp = 0;
         return true;
       }else if(amtOfRamp <= 5){
         finishedRamp = 0;
       }else{
+        SERIAL3_PRINTLN("ramp");
         return true;
       }
     }

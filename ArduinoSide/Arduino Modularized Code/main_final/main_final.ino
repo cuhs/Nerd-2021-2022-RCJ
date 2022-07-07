@@ -24,7 +24,6 @@ void setup() {
 
   ports[RIGHT].backwards = true;
 
-
   SERIAL3_PRINTLN("--------------------STARTING NOW--------------------")
   setupSensors2();
   initIMU();
