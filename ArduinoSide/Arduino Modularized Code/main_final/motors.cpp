@@ -215,7 +215,7 @@ bool goForwardPID(int dist) {
       Serial2.read();
       delay(1);
       return false;
-    }else if(whatTile==2 && !onSB && abs(ports[motorEncUse].count)>=(6*enc)/10 && !checking){
+    }else if(whatTile==2 && !onSB && abs(ports[motorEncUse].count)>=(5*enc)/10 && !checking){
       //checks to make sure seeing silver is not a misdetection - turns 25 degrees to the right and to the left, if at least one more of those situations detect silver, it is a silver tile
 //      seesSilver = true;
 //      tcaselect(7);
@@ -236,10 +236,10 @@ bool goForwardPID(int dist) {
 //      }       
         silvCt++;
     }
-    if(abs(ports[motorEncUse].count)>=(6*enc)/10 && !checking && !onSB)
+    if(abs(ports[motorEncUse].count)>=(5*enc)/10 && !checking && !onSB)
       totCt++;
     //sends m if it hasn't yet and if the robot is 50% done with going forward
-    if(shouldSendM && abs(ports[motorEncUse].count)>=(6*enc)/10){
+    if(shouldSendM && abs(ports[motorEncUse].count)>=(5*enc)/10){
       SERIAL3_PRINTLN("Sending m")
       shouldSendM = false;
       delay(1);
