@@ -139,6 +139,7 @@ def setupSerial():
 def getNextSerialByte():
     if config.runMode:
         display.updateLabels(status="inWaiting")
+    time.sleep(0.1)
     msg = ser.read().decode("ascii", "ignore")
     
     while not(msg in ('d', 'u', ';', 'a', 'b', 'x', 'X', 'm', 's', 't') or msg.isdigit()):
@@ -148,6 +149,7 @@ def getNextSerialByte():
             print("MESSAGE RECEIVED & IGNORED: " + msg)
             
         msg = ser.read().decode("ascii", "ignore")
+        time.sleep(0.1)
 
     if config.runMode:
         display.updateLabels(receiveData=msg)

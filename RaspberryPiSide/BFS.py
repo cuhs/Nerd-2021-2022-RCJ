@@ -308,9 +308,10 @@ def searchForVictims(goingForward, turnDirection=None, didTurn=False, didForward
 
             vTile = tileOfVictim(LVic, LVicX, didForward) if goingForward else util.tile
             vDirection = util.dirToLeft(util.direction) if goingForward else directionOfVictim(LVic, LVicX, turnDirection, didTurn)
-            if not util.maze[util.floor][vTile][vDirection + util.nVictim]:
+            if (vDirection is not None) and (vTile is not None) and (not util.maze[util.floor][vTile][vDirection + util.nVictim]):
                 if config.importantDebug or config.serialDebug or config.victimDebug:
                     print("\t\t\t\t\t\t\tNEW VICTIM ON LEFT: " + LVic)
+                util.maze[util.floor][vTile][vDirection + util.nVictim] = ord(LVic)
                 IO.sendData(config.inputMode, LVic)
                 if config.saveVictimDebug:
                     saveVictim(LVic)
@@ -325,7 +326,7 @@ def searchForVictims(goingForward, turnDirection=None, didTurn=False, didForward
             if RLV or RCV:
                 RVic = RLV if RLV else RCV
                 RVicX = RLX if RLV else RCX
-                RVic = RVic.lower()
+                RVic = RVic.upper()
 
                 if config.runMode:
                     display.updateLabels(RVictim=RVic)
@@ -333,10 +334,11 @@ def searchForVictims(goingForward, turnDirection=None, didTurn=False, didForward
                     print("\t\t\t\t\t\tVICTIM ON RIGHT: " + RVic)
 
                 vTile = tileOfVictim(RVic, RVicX, didForward) if goingForward else util.tile
-                vDirection = util.dirToLeft(util.direction) if goingForward else directionOfVictim(RVic, RVicX, turnDirection, didTurn)
-                if not util.maze[util.floor][vTile][vDirection + util.nVictim]:
+                vDirection = util.dirToRight(util.direction) if goingForward else directionOfVictim(RVic, RVicX, turnDirection, didTurn)
+                if (vDirection is not None) and (vTile is not None) and (not util.maze[util.floor][vTile][vDirection + util.nVictim]):
                     if config.importantDebug or config.serialDebug or config.victimDebug:
                         print("\t\t\t\t\t\t\tNEW VICTIM ON RIGHT: " + RVic)
+                    util.maze[util.floor][vTile][vDirection + util.nVictim] = ord(RVic)
                     IO.sendData(config.inputMode, RVic)
                     if config.saveVictimDebug:
                         saveVictim(RVic)
@@ -345,31 +347,42 @@ def tileOfVictim(cVictim, cPos, wentForward):
     cDirection = util.dirToLeft(util.direction) if cVictim.islower() else util.dirToRight(util.direction)
     backTile = util.goBackward(util.tile) if wentForward else util.tile
     frontTile = util.tile if wentForward else util.goBackward(util.tile)
-
+    
     # check if both tiles have possible walls for victims
-    checkPosition = util.maze[util.floor][backTile][cDirection] and (util.maze[util.floor][frontTile][cDirection] and util.maze[util.floor][frontTile][util.visited])
+    checkPosition = util.maze[util.floor][backTile][cDirection] and (util.maze[util.floor][frontTile][cDirection] if util.maze[util.floor][frontTile][util.visited] else True)
     if not checkPosition:
+        print("no two walls")
         if util.maze[util.floor][backTile][cDirection]:
+            print("back")
             return backTile
+        print("front")
         return frontTile
 
     # calculate percentage forward of victim
     if cVictim.islower():
-        cPos //= (config.cameraCutL[3] - config.cameraCutL[2])
+        cPos = (cPos / (config.cameraCutL[3] - config.cameraCutL[2])) * 100
     else:
-        cPos = 100 - (cPos // (config.cameraCutR[3] - config.cameraCutR[2]))
+        cPos = 100 - ((cPos / (config.cameraCutR[3] - config.cameraCutR[2])) * 100)
+        
+    print("\tpos:" + str(cPos))
 
     # victim likely in next/previous tile, ignore
-    if (wentForward and cPos > 90) or (not wentForward and cPos < 10):
+    if (wentForward and cPos > 95) or (not wentForward and cPos < 5):
+        print("\t\tnot in bounds")
         return None
 
     # use victim position to determine tile
     if wentForward:
-        if cPos < 20:
+        print("\t\t\twent forward")
+        if cPos < 10:
+            print("\t\t\t\tback")
             return backTile
+        print("\t\t\t\tfront")
         return frontTile
-    if cPos > 80:
+    if cPos > 85:
+        print("\t\t\t\tfront")
         return frontTile
+    print("\t\t\t\tback")
     return backTile
 
 def directionOfVictim(cVictim, cPos, turnDirection, didTurn):
@@ -380,15 +393,18 @@ def directionOfVictim(cVictim, cPos, turnDirection, didTurn):
     # check if both directions have possible walls
     checkPosition = util.maze[util.floor][util.tile][startCamDirection] and util.maze[util.floor][util.tile][endCamDirection]
     if not checkPosition:
+        print("no two walls")
         if util.maze[util.floor][util.tile][startCamDirection]:
+            print("start")
             return startCamDirection
+        print("end")
         return endCamDirection
 
     # calculate percentage forward of victim
     if cVictim.islower():
-        cPos //= (config.cameraCutL[3] - config.cameraCutL[2])
+        cPos = (cPos / (config.cameraCutL[3] - config.cameraCutL[2])) * 100
     else:
-        cPos = 100 - (cPos // (config.cameraCutR[3] - config.cameraCutR[2]))
+        cPos = 100 - ((cPos / (config.cameraCutR[3] - config.cameraCutR[2])) * 100)
 
     # victim likely in next/previous tile, ignore
     if (didTurn and cPos > 90) or (not didTurn and cPos < 10):
@@ -396,11 +412,16 @@ def directionOfVictim(cVictim, cPos, turnDirection, didTurn):
 
     # use victim position to determine direction
     if didTurn:
-        if cPos < 20:
+        print("DIDTURN")
+        if cPos < 40:
+            print("start")
             return startCamDirection
+        print("end")
         return endCamDirection
     if cPos > 80:
+        print("end")
         return endCamDirection
+    print("start")
     return startCamDirection
 
 def saveVictim(victim):

@@ -231,9 +231,11 @@ class AThread(QThread if config.runMode else object):
                                     if wentForward:
                                         util.tile = util.goBackward(util.tile)
                                     wentForward = False
-
+                                    
+                                    util.maze[util.floor][util.tile][util.visited] = True
                                     for i in range(stairTiles):
                                         util.tile = util.goForward(util.tile, False)
+                                        util.maze[util.floor][util.tile][util.visited] = True
 
                                         util.maze[util.floor][util.tile][util.dirToLeft(util.direction)] = True
                                         if util.tileExists(util.tile + util.adjTiles[util.dirToLeft(util.direction)]):
@@ -305,7 +307,7 @@ class AThread(QThread if config.runMode else object):
         if config.importantDebug:
             print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((time.time() - IO.startTime) * 1000, '.2f') + "ms ")
         if config.showDisplay:
-            display.showMaze(display.img if config.showDisplay else display.resetImg(util.maze), util.maze, None, util.floor, None, 0)
+            display.showMaze(display.img if config.showDisplay else display.resetImg(util.maze), util.maze, None, util.floor, None, 0 if config.inputMode == 1 else 1)
 
         # stop all cameras/windows
         #if config.inputMode == 2:
