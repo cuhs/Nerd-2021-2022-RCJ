@@ -65,7 +65,7 @@ void dropKits(char dir, int amt, int rVal, int gVal, int bVal) {
     }
   }
   myservo.write(C_angle);
-  wiggle(C_angle, 5, rVal, gVal, bVal); //1200ms
+  wiggle(C_angle, 9, rVal, gVal, bVal); //1200ms
   myservo.detach();
 }
 
