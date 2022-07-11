@@ -174,6 +174,7 @@ void turnAbs(int degree) {
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
       checking = false;
+      startTime = millis();
     }
     if (ports[LEFT].count == prev_count && !stalling) {
       endTime = millis();
@@ -232,6 +233,7 @@ void turnAbsNoVictim(int degree) {
     } else if (ports[LEFT].count != prev_count) {
       //SERIAL3_PRINTLN("checking false");
       checking = false;
+      startTime = millis();
     }
     if (ports[LEFT].count == prev_count && !stalling) {
       //SERIAL3_PRINTLN("motors might be stalling");
@@ -356,7 +358,7 @@ bool notStable() {
 bool isOnSpeedBump() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  if (euler.y() > 3 || abs(euler.z()) > 2)
+  if (euler.y() > 4 || abs(euler.z()) > 4)
     return true;
   return false;
 }

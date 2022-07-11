@@ -102,6 +102,7 @@ void moveBackwards(int initEnc){
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
       checking = false;
+      startTime = millis();
     }
     if (ports[LEFT].count == prev_count && !stalling) {
       endTime = millis();
@@ -201,9 +202,12 @@ bool goForwardPID(int dist) {
     }
     whatTile = 0;
     bool onSB = isOnSpeedBump();
-    if(onSB) angIncrease = 150;
+    if(onSB){ 
+      angIncrease = 150;
+      SERIAL3_PRINTLN("Speed increase on SB");
+    }
     whatTile = detectTiles();
-    if (whatTile == 1 && !onSB && !checking) {
+    if (whatTile == 1 && !checking) {
       //detected black - sends m if no m was sent yet, then semicolon and 'b'
       if(shouldSendM){
         Serial2.write('m');
@@ -269,6 +273,7 @@ bool goForwardPID(int dist) {
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
       checking = false;
+      startTime = millis();
     }
     if (ports[LEFT].count == prev_count && !stalling) {
       endTime = millis();
@@ -277,6 +282,7 @@ bool goForwardPID(int dist) {
         stalling = true;
       }else if(endTime - startTime > 500){
         angIncrease = 150;
+        SERIAL3_PRINTLN("Speed up stall");
         SERIAL3_PRINTLN("Stall increase speed")
       }
     }

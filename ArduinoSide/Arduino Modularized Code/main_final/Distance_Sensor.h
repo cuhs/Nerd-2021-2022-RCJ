@@ -7,6 +7,7 @@
 #include "IMU.h"
 #include "rescueServo.h"
 #include "new_global_vars.h"
+#include "TCS.h"
 
 #define RIGHT_TOF 0
 #define LEFT_TOF 1

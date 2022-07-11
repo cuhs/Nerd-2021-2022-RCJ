@@ -68,7 +68,7 @@ int alignFront(bool b) {
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
 
-  if (frontDist < minimumDist && !stalling) {
+  if (frontDist < minimumDist && !stalling && !detectBlack()) {
     //go back
     while (frontDist < 5) {
       victim();
@@ -80,6 +80,7 @@ int alignFront(bool b) {
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
       checking = false;
+      startTime = millis();
     }
     if (ports[LEFT].count == prev_count && !stalling) {
       endTime = millis();
@@ -92,7 +93,7 @@ int alignFront(bool b) {
     }
     
     //go forward
-    while (frontDist > 5 && !stalling) {
+    while (frontDist > 5 && !stalling && !detectBlack()) {
       victim();
       ports[RIGHT].setMotorSpeed(100);
       ports[LEFT].setMotorSpeed(100);
@@ -102,6 +103,7 @@ int alignFront(bool b) {
       checking = true;
     } else if (ports[LEFT].count != prev_count) {
       checking = false;
+      startTime = millis();
     }
     if (ports[LEFT].count == prev_count && !stalling) {
       endTime = millis();
