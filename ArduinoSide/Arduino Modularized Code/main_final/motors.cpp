@@ -157,20 +157,23 @@ bool goForwardPID(int dist) {
       int beforeEnc = (ports[motorEncUse].count*D*PI)/360;
       int amtOfRamp = rampMoveForward('u');
       //if the horizontal distance travelled is less than 40, we determine that the robot went on stairs and not a ramp - we make it go forward until it goes down the stairs and then sends how many tiles it went
-      if(amtOfRamp<75 && amtOfRamp >5){
-        amtOfRamp += rampMoveForward('d');
+      if(amtOfRamp<65 && amtOfRamp >5){
+        //amtOfRamp += rampMoveForward('d');
         if(amtOfRamp%30>=15)
           amtOfRamp+=30;
-        if(shouldSendM)
-          amtOfRamp += beforeEnc;
+        //if(shouldSendM)
+        amtOfRamp += beforeEnc;
         delay(1);
         //tells pi that there was stairs, sends tiles travelled on stairs
-        SERIAL3_PRINT("Stairs")
+        SERIAL3_PRINT("Stairs ")
+        SERIAL3_PRINTLN(amtOfRamp/30);
         Serial2.write('s');
+        if(amtOfRamp/30 > 0) amtOfRamp -= 30;
         Serial2.write((char)(amtOfRamp/30)+'0');
 
         //no ramp
         finishedRamp = 0;
+        if(amtOfRamp/30==0) continue;
         return true;
       }else if(amtOfRamp <= 5){
         finishedRamp = 0;
@@ -182,16 +185,19 @@ bool goForwardPID(int dist) {
       //see above comments for onRamp == 1(going down instead of going up)
       int beforeEnc = (D*PI*ports[motorEncUse].count)/360;
       int amtOfRamp = rampMoveForward('d');
-      if(amtOfRamp<75 && amtOfRamp > 5){
+      if(amtOfRamp<65 && amtOfRamp > 5){
         delay(1);
         Serial2.write('s');
         if(amtOfRamp%30>=15)
           amtOfRamp+=30;
-        if(shouldSendM)
-          amtOfRamp += beforeEnc;
+        //if(shouldSendM)
+        amtOfRamp += beforeEnc;
+        if(amtOfRamp/30 >0) amtOfRamp -=30;
         Serial2.write((char)(amtOfRamp/30)+'0');
-        SERIAL3_PRINT("stairs")
+        SERIAL3_PRINT("stairs ")
+        SERIAL3_PRINTLN(amtOfRamp/30);
         finishedRamp = 0;
+        if(amtOfRamp/30==0) continue;
         return true;
       }else if(amtOfRamp <= 5){
         finishedRamp = 0;
