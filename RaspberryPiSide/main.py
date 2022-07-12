@@ -310,8 +310,8 @@ class AThread(QThread if config.runMode else object):
         # print out entire path the robot took traversing the maze and how long the algorithm took
         if config.importantDebug:
             print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((time.time() - IO.startTime) * 1000, '.2f') + "ms ")
-        if config.showDisplay or True:
-            display.showMaze(display.img if config.showDisplay else display.resetImg(util.maze), util.maze, None, util.floor, None, 0 if config.inputMode == 1 else 0)
+        if config.showDisplay:
+            display.showMaze(display.img if config.showDisplay else display.resetImg(util.maze), util.maze, None, util.floor, None, 0 if config.inputMode == 1 else 1)
 
         # stop all cameras/windows
         #if config.inputMode == 2:
