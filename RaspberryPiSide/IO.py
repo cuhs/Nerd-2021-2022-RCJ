@@ -3,9 +3,9 @@ import config
 import serial
 import time
 import letterDetection
-
 import display
 import util
+
 if config.inputMode == 2:
     import RPi.GPIO as GPIO
 
@@ -178,9 +178,17 @@ def getSerialData():
             msg = getNextSerialByte()
             if msg == 'a':
                 return msg
+            util.rampTileCount = int(msg) - 2
+            msg = getNextSerialByte()
+            if msg == 'a':
+                return msg
         # ramp going down
         elif msg == 'd':
             walls[util.tileType] = 4
+            msg = getNextSerialByte()
+            if msg == 'a':
+                return msg
+            util.rampTileCount = int(msg) - 2
             msg = getNextSerialByte()
             if msg == 'a':
                 return msg

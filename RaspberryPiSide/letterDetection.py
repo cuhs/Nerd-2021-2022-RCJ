@@ -130,16 +130,14 @@ class Detection:
             if len(contours) > 0:
                 contours = max(contours, key=cv2.contourArea)
 
-                if cv2.contourArea(contours) > 210: #210
+                if 275 < cv2.contourArea(contours): #210
                     rect = cv2.minAreaRect(contours)
                     center = rect[0][0]
                     if i == 0 or i == 2:
                         return "Y", center
-                        # packages = 1
 
                     elif i == 1:
                         return "G", center
-                        # packages = 0
                     else:
                         return None, None
         return None, None

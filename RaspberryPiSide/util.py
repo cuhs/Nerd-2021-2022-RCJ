@@ -17,9 +17,6 @@ class Dir(Enum):
     S = 2
     W = 3
 
-# neighboring tiles as: N E S W, to get neighbor do: Tile + adjTiles[0] for tile north of Tile
-adjTiles = [-config.mazeSideLen, 1, config.mazeSideLen, -1]
-
 # tile states are true NESW for getting walls, and vis for checking if visited
 # maze[tile][5] -> return visited. 0 = not visited, 1 = visited.
 visited = 4
@@ -38,6 +35,9 @@ tileType = 9
 # length of attributes for each tile, for maze & array creation
 tileLen = 10
 
+# neighboring tiles as: N E S W, to get neighbor do: Tile + adjTiles[0] for tile north of Tile
+adjTiles = [-config.mazeSideLen, 1, config.mazeSideLen, -1]
+
 maze = None
 tile = None
 floor = None
@@ -45,6 +45,7 @@ direction = None
 parent = None
 path = None
 pathLen = None
+rampTileCount = None
 rampMap = {}
 
 # home/starting tile and floor
@@ -53,22 +54,22 @@ startFloor = (config.floorCount - 1) // 2
 
 # hsv ranges for color victims
 hsv_lower = {
-    0: (140, 140, 105),
+    0: (140, 140, 75),
     1: (55, 80, 50),
-    2: (0, 105, 120)
+    2: (10, 105, 120)
 }
 
 hsv_upper = {
-     0: (180, 205, 165),
-     1: (80, 160, 135),
-     2: (90, 220, 180)  #160 for [1]
+     0: (180, 255, 165),
+     1: (80, 255, 135),
+     2: (90, 240, 180)  #160 for [1]
 }
 
 letterDist = {
-    'H': 150,
+    'H': 160,
     'S': 200,
-    'U': 145
-    }
+    'U': 155
+}
 
 # adjust which position is facing true north
 # getting sensorData[N] will get north,
