@@ -169,7 +169,7 @@ bool goForwardPID(int dist) {
       int beforeEnc = (ports[motorEncUse].count*D*PI)/360;
       int amtOfRamp = rampMoveForward('u');
       //if the horizontal distance travelled is less than 40, we determine that the robot went on stairs and not a ramp - we make it go forward until it goes down the stairs and then sends how many tiles it went
-      if(amtOfRamp<65 && amtOfRamp >5){
+      /*if(amtOfRamp<65 && amtOfRamp >5){
         //amtOfRamp += rampMoveForward('d');
         //if(shouldSendM)
         amtOfRamp += beforeEnc;
@@ -187,7 +187,7 @@ bool goForwardPID(int dist) {
         finishedRamp = 0;
         if(amtOfRamp/30==0) continue;
         return true;
-      }else if(amtOfRamp <= 5){
+      }else */if(amtOfRamp <= 5){
         finishedRamp = 0;
       }else{
         
@@ -203,7 +203,7 @@ bool goForwardPID(int dist) {
       //see above comments for onRamp == 1(going down instead of going up)
       int beforeEnc = (D*PI*ports[motorEncUse].count)/360;
       int amtOfRamp = rampMoveForward('d');
-      if(amtOfRamp<65 && amtOfRamp > 5){
+      /*if(amtOfRamp<65 && amtOfRamp > 5){
         delay(1);
         Serial2.write('s');
         
@@ -218,7 +218,7 @@ bool goForwardPID(int dist) {
         finishedRamp = 0;
         if(amtOfRamp/30==0) continue;
         return true;
-      }else if(amtOfRamp <= 5){
+      }else */if(amtOfRamp <= 5){
         finishedRamp = 0;
       }else{
         
