@@ -163,7 +163,7 @@ def saveCheckpoint():
         print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
 
     # save maze to file
-    IO.writeMaze(IO.saveFile("a"), str(util.tile) + IO.directions[util.direction] + str(util.floor), util.maze[0], True)
+    IO.writeMaze(IO.saveFile("a"), IO.directions[util.direction] + str(util.floor) + str(util.rampMap), util.maze[0], True)
     for i in range(1, config.floorCount):
         IO.writeMaze(IO.saveFile("a"), "", util.maze[i], False)
     return util.tile
@@ -185,8 +185,9 @@ def handleSpecialTiles(walls, previousCheckpoint):
 
         # add tile to ramp mappings
         if (util.tile, util.floor) not in util.rampMap:
-            util.rampMap[util.tile, util.floor] = util.startTile, util.floor + rampAdjust
-            util.rampMap[util.startTile, util.floor + rampAdjust] = util.tile, util.floor
+            util.rampMap[util.tile, util.floor] = util.tile + (util.adjTiles[util.direction] * util.rampTileCount), util.floor + rampAdjust
+            util.rampMap[util.tile + (util.adjTiles[util.direction] * util.rampTileCount), util.floor + rampAdjust] = util.tile, util.floor
+        util.rampTileCount = None
 
         if config.importantDebug or config.BFSDebug:
             print("\t\tTILE, FLOOR: " + str(util.tile) + ", " + str(util.floor) + " is a ramp tile")
@@ -252,16 +253,14 @@ def loadCheckpoint(checkpoint):
         # retrieve saved maze from file
         info, savedMaze = IO.readMaze(IO.saveFile("r"))
 
-        # make sure file is up-to-date
-        if checkpoint != int(info[:-2]):
-            raise ValueError("Checkpoint Mismatch")
-
         # reset maze, tile, and direction
         util.maze = np.copy(savedMaze)
         util.tile = checkpoint
-        util.floor = int(info[-1])
-        util.direction = util.Dir[info[-2]].value
+        util.floor = int(info[1])
+        util.direction = util.Dir[info[0]].value
         util.parent = {}
+        util.rampMap = ast.literal_eval(info[2:])
+        util.rampTileCount = None
         display.img = display.resetImg(util.maze)
         if config.importantDebug or config.BFSDebug:
             print("\tCheckpoint Loaded:\n\t\tTile: " + str(util.tile) + "\n\t\tDirection: " + str(util.direction))
@@ -309,12 +308,12 @@ def searchForVictims(goingForward, turnDirection=None, didTurn=False, didForward
             vTile = tileOfVictim(LVic, LVicX, didForward) if goingForward else util.tile
             vDirection = util.dirToLeft(util.direction) if goingForward else directionOfVictim(LVic, LVicX, turnDirection, didTurn)
             if (vDirection is not None) and (vTile is not None) and (not util.maze[util.floor][vTile][vDirection + util.nVictim]):
+                if config.saveVictimDebug:
+                    saveVictim(LVic)
                 if config.importantDebug or config.serialDebug or config.victimDebug:
                     print("\t\t\t\t\t\t\tNEW VICTIM ON LEFT: " + LVic)
                 util.maze[util.floor][vTile][vDirection + util.nVictim] = ord(LVic)
                 IO.sendData(config.inputMode, LVic)
-                if config.saveVictimDebug:
-                    saveVictim(LVic)
 
         # check if searching is needed on right camera
         if config.cameraCount == 2:
@@ -336,26 +335,30 @@ def searchForVictims(goingForward, turnDirection=None, didTurn=False, didForward
                 vTile = tileOfVictim(RVic, RVicX, didForward) if goingForward else util.tile
                 vDirection = util.dirToRight(util.direction) if goingForward else directionOfVictim(RVic, RVicX, turnDirection, didTurn)
                 if (vDirection is not None) and (vTile is not None) and (not util.maze[util.floor][vTile][vDirection + util.nVictim]):
+                    if config.saveVictimDebug:
+                        saveVictim(RVic)
                     if config.importantDebug or config.serialDebug or config.victimDebug:
                         print("\t\t\t\t\t\t\tNEW VICTIM ON RIGHT: " + RVic)
                     util.maze[util.floor][vTile][vDirection + util.nVictim] = ord(RVic)
                     IO.sendData(config.inputMode, RVic)
-                    if config.saveVictimDebug:
-                        saveVictim(RVic)
 
 def tileOfVictim(cVictim, cPos, wentForward):
     cDirection = util.dirToLeft(util.direction) if cVictim.islower() else util.dirToRight(util.direction)
     backTile = util.goBackward(util.tile) if wentForward else util.tile
     frontTile = util.tile if wentForward else util.goBackward(util.tile)
     
+    # i disagree with this wholeheartedly
+    if util.maze[util.floor][backTile][cDirection + util.nVictim] == ord(cVictim) or util.maze[util.floor][frontTile][cDirection + util.nVictim] == ord(cVictim):
+        return None
+    
     # check if both tiles have possible walls for victims
     checkPosition = util.maze[util.floor][backTile][cDirection] and (util.maze[util.floor][frontTile][cDirection] if util.maze[util.floor][frontTile][util.visited] else True)
     if not checkPosition:
-        print("no two walls")
+        #print("no two walls")
         if util.maze[util.floor][backTile][cDirection]:
-            print("back")
+            #print("back")
             return backTile
-        print("front")
+        #print("front")
         return frontTile
 
     # calculate percentage forward of victim
@@ -364,25 +367,18 @@ def tileOfVictim(cVictim, cPos, wentForward):
     else:
         cPos = 100 - ((cPos / (config.cameraCutR[3] - config.cameraCutR[2])) * 100)
         
-    print("\tpos:" + str(cPos))
+    #print("\tpos:" + str(cPos))
 
     # victim likely in next/previous tile, ignore
-    if (wentForward and cPos > 95) or (not wentForward and cPos < 5):
-        print("\t\tnot in bounds")
+    if (wentForward and cPos < 40) or (not wentForward and cPos > 60):
+        #print("\t\tnot in bounds")
         return None
 
     # use victim position to determine tile
     if wentForward:
-        print("\t\t\twent forward")
-        if cPos < 10:
-            print("\t\t\t\tback")
-            return backTile
-        print("\t\t\t\tfront")
+        #print("\t\t\t\tfront")
         return frontTile
-    if cPos > 85:
-        print("\t\t\t\tfront")
-        return frontTile
-    print("\t\t\t\tback")
+    #print("\t\t\t\tback")
     return backTile
 
 def directionOfVictim(cVictim, cPos, turnDirection, didTurn):
@@ -390,14 +386,18 @@ def directionOfVictim(cVictim, cPos, turnDirection, didTurn):
     startCamDirection = util.dirToLeft(startDirection) if cVictim.islower() else util.dirToRight(startDirection)
     endCamDirection = util.dirToLeft(startCamDirection) if turnDirection == "L" else util.dirToRight(startCamDirection)
 
+    # i disagree with this wholeheartedly
+    if util.maze[util.floor][util.tile][startCamDirection + util.nVictim] == ord(cVictim) or util.maze[util.floor][util.tile][endCamDirection + util.nVictim] == ord(cVictim):
+        return None
+
     # check if both directions have possible walls
     checkPosition = util.maze[util.floor][util.tile][startCamDirection] and util.maze[util.floor][util.tile][endCamDirection]
     if not checkPosition:
-        print("no two walls")
+        #print("no two walls")
         if util.maze[util.floor][util.tile][startCamDirection]:
             print("start")
             return startCamDirection
-        print("end")
+        #print("end")
         return endCamDirection
 
     # calculate percentage forward of victim
@@ -412,16 +412,16 @@ def directionOfVictim(cVictim, cPos, turnDirection, didTurn):
 
     # use victim position to determine direction
     if didTurn:
-        print("DIDTURN")
+        #print("DIDTURN")
         if cPos < 40:
-            print("start")
+            #print("start")
             return startCamDirection
-        print("end")
+        #print("end")
         return endCamDirection
     if cPos > 80:
-        print("end")
+        #print("end")
         return endCamDirection
-    print("start")
+    #print("start")
     return startCamDirection
 
 def saveVictim(victim):

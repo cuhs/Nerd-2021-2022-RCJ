@@ -7,11 +7,11 @@ import letterDetection
 
 #CONFIG----------------------------------------
   
-numberOfCams = 2 #number of camera to run
+numberOfCams = 1 #number of camera to run
 cap = [None,None] #left, right
-victimDetect = True #true --> tests victim detection, false --> runs camera feed
+victimDetect = False #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
-fullDetect = True #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
+fullDetect = False #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 oneCamEverythingDetect = False #Will show everything as letterDetection class sees, to use shut down victimDetect, full Detect, and showFrames, set cams to 1
 saveVictim = False
 width = 160 #camera width
@@ -21,7 +21,7 @@ cameraCutR = [0, 123, 0, 152]  # right slicing to ignore treads, height then wid
 checkFPS = False #true to check frames per second
 showCenter = False #true to show center of the victim, only works if victimDetect is true
 pathVI = "/home/pi/Documents/Nerd-2021-2022/Nerd-2021-2022-RCJ/RaspberryPiSide/IOFiles/victimImages"
-path = pathVI + "/Fri Jul  1 10:34:42 2022/u-Fri Jul  1 10:36:29 2022.png" #set to None if not testing an image
+path = pathVI + "/Thu Jul  7 17:01:03 2022/U-Thu Jul  7 17:01:31 2022.png" #set to None if not testing an image
 path = None
 threshParam = [19,4] #23,3
 
@@ -108,20 +108,20 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
     if fullDetect:
         if (numberOfCams == 1 or numberOfCams == 2) and path is None:
             grayL = cv2.cvtColor(frameL, cv2.COLOR_BGR2GRAY)
-            blurL = cv2.bilateralFilter(grayL, 5, 75, 75)
+            blurL = cv2.GaussianBlur(grayL,(5,5),0)
             threshL = cv2.adaptiveThreshold(blurL,1,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
             imgOutputL, cL = vD.letterDetect(frameL) 
             
         if numberOfCams == 2 and path is None:
             grayR = cv2.cvtColor(frameR, cv2.COLOR_BGR2GRAY)
-            blurR = cv2.bilateralFilter(grayR, 5, 75, 75)
+            blurR = cv2.GaussianBlur(grayR,(5,5),0)
             threshR = cv2.adaptiveThreshold(blurR,1,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
             imgOutputR, cR = vD.letterDetect(frameR)
             
         if path is not None:
             #REMINDER: MAKING CHANGES HERE WILL NOT EFFECT VICTIM DETECTION/KNN
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            blur = cv2.bilateralFilter(gray, 5, 75, 75)
+            blur = cv2.GaussianBlur(gray,(5,5),0)
             thresh = cv2.adaptiveThreshold(blur,1,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY_INV,threshParam[0],threshParam[1])
             imgOutput, c = vD.letterDetect(frame)
     

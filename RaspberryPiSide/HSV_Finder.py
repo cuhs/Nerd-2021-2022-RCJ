@@ -8,7 +8,7 @@ def nothing(x):
 
 # Initializing the webcam feed.
 
-cap = cv2.VideoCapture(-1)
+cap = cv2.VideoCapture(1)
 #cap.release()
 #quit()
 cap.set(3,1280)

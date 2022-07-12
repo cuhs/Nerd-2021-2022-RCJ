@@ -2,7 +2,7 @@ import cv2
 import time
 import BFS
 import display
-from BFS import util
+from BFS import util  
 from util import IO
 from util import config
 if config.inputMode == 2:
@@ -129,7 +129,11 @@ class AThread(QThread if config.runMode else object):
                                     if config.importantDebug or config.victimDebug or config.serialDebug:
                                         print("\t\t\t\tHEAT VICTIM RECEIVED ON " + "LEFT" if victimMsg == 'x' else "RIGHT")
                                     heatDirection = util.dirToLeft(util.direction) if victimMsg == 'x' else util.dirToRight(util.direction)
-                                    if not util.maze[util.floor][util.tile][util.nVictim + heatDirection]:
+                                    validHeat = True
+                                    for i in range(len(util.Dir)):
+                                        if util.maze[util.floor][util.tile][util.nVictim + i] in ('x', 'X'):
+                                            validHeat = False
+                                    if validHeat:
                                         IO.sendSerial('y')
                                         util.maze[util.floor][util.tile][util.nVictim + heatDirection] = ord(victimMsg)
                                     else:
@@ -203,7 +207,7 @@ class AThread(QThread if config.runMode else object):
                                     loadingCheckpoint = True
                                     break
 
-                                if victimMsg == 'm':
+                                if victimMsg == 'm' and not wentForward:
                                     util.tile = util.goForward(util.tile, False)
                                     if config.runMode:
                                         display.updateLabels(cTile=util.tile, cFloor=util.floor)
@@ -223,7 +227,7 @@ class AThread(QThread if config.runMode else object):
 
                                 elif victimMsg == 's':
                                     stairTiles = int(IO.getNextSerialByte())
-                                    if stairTiles < 2:
+                                    if stairTiles < 1:
                                         continue
 
                                     if config.importantDebug or config.serialDebug or config.BFSDebug:
@@ -306,8 +310,8 @@ class AThread(QThread if config.runMode else object):
         # print out entire path the robot took traversing the maze and how long the algorithm took
         if config.importantDebug:
             print("\nTotal Path: " + str(IO.sData) + "\nBFS Done! All tiles visited in: " + format((time.time() - IO.startTime) * 1000, '.2f') + "ms ")
-        if config.showDisplay:
-            display.showMaze(display.img if config.showDisplay else display.resetImg(util.maze), util.maze, None, util.floor, None, 0 if config.inputMode == 1 else 1)
+        if config.showDisplay or True:
+            display.showMaze(display.img if config.showDisplay else display.resetImg(util.maze), util.maze, None, util.floor, None, 0 if config.inputMode == 1 else 0)
 
         # stop all cameras/windows
         #if config.inputMode == 2:
