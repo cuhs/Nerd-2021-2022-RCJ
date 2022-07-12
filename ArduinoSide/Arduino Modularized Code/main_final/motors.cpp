@@ -2,14 +2,16 @@
 
 char message[4] = {'a', 'a', 'a', 'a'};
 MegaPiPort ports[] = { {PORT1B, 18, 31}, {PORT2B, 19, 38}, {PORT3B, 3, 49}, {PORT4B, 2, A1}};
+int rampTilesWent = 0;
 
 //goes forward a certain amount of tiles
 bool goForwardTilesPID(int tiles) {
-  return goForwardPID(tiles * 30);
+  return goForwardPID(tiles * 28);
 }
 
 //moving forward function for if the robot is on a ramp or stairs - 'u' for up, 'd' for down
 int rampMoveForward(char dir) {
+  int allAngles[30] = {0};
   SERIAL3_PRINTLN("in rampMoveForward")
   int motorSpeed = 0;
   int motorEncUse = LEFT;
@@ -27,14 +29,14 @@ int rampMoveForward(char dir) {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   turnAbsNoVictim(getDirection(euler.x()));
   int startingEnc = ports[motorEncUse].count;
-  int avgAng = 0;
-  int itCt = 0;
+  //int avgAng = 0;
+  //int itCt = 0;
 
   //moves forward until the robot is on a ramp - used when the StereoPi tells the Arduino there is a ramp ahead
   while (isOnRamp() == 0 && getSensorReadings(FRONT_TOF) > 5) {
       ports[LEFT].setMotorSpeed(motorSpeed);
       ports[RIGHT].setMotorSpeed(motorSpeed);
-    if(Serial2.available()) Serial2.read();
+    //if(Serial2.available()) Serial2.read();
   }
 
   //moves forward until the robot is not on the ramp
@@ -46,13 +48,14 @@ int rampMoveForward(char dir) {
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     //increments avgAng and itCt in order to later calculate average angle
     int ca = euler.y();
-    if(abs(ca)>15){
-      avgAng += ca;
-      ++itCt;
+    if(abs(ca)>15 && abs(ca)<30){
+      /*avgAng += ca;
+      ++itCt;*/
+      allAngles[ca]++;
     }
 
     //if any victims are detected, get rid of them because there shouldn't be victims on a ramp
-    if(Serial2.available()) Serial2.read();
+    //if(Serial2.available()) Serial2.read();
   }
 
   //calculate cm travelled on the ramp
@@ -60,9 +63,17 @@ int rampMoveForward(char dir) {
   ports[LEFT].setMotorSpeed(0);
   ports[RIGHT].setMotorSpeed(0);
   //calculate average angled
-  avgAng = avgAng/itCt;
+  //avgAng = avgAng/itCt;
+  int angUse = 0;
+  int calcAng = 0;
+  for(int i = 15; i < 30; i++){
+    if(allAngles[i] > angUse){
+      angUse = allAngles[i];
+      calcAng = i;
+    }
+  }
   //calculate horizontal distance in cm travelled
-  amountTravelled = amountTravelled*cos((abs(avgAng)*PI)/180);
+  amountTravelled = amountTravelled*cos((abs(calcAng)*PI)/180);
   amountTravelled += alignFront(true);
   return amountTravelled;
 }
@@ -119,6 +130,7 @@ void moveBackwards(int initEnc){
 
 bool goForwardPID(int dist) {
   //variables used for stall detection
+  isHeat = false;
   unsigned long startTime;
   unsigned long endTime;
   int prev_count = 0;
@@ -159,10 +171,10 @@ bool goForwardPID(int dist) {
       //if the horizontal distance travelled is less than 40, we determine that the robot went on stairs and not a ramp - we make it go forward until it goes down the stairs and then sends how many tiles it went
       if(amtOfRamp<65 && amtOfRamp >5){
         //amtOfRamp += rampMoveForward('d');
-        if(amtOfRamp%30>=15)
-          amtOfRamp+=30;
         //if(shouldSendM)
         amtOfRamp += beforeEnc;
+        if(amtOfRamp%30>=15)
+          amtOfRamp+=30;
         delay(1);
         //tells pi that there was stairs, sends tiles travelled on stairs
         SERIAL3_PRINT("Stairs ")
@@ -178,6 +190,12 @@ bool goForwardPID(int dist) {
       }else if(amtOfRamp <= 5){
         finishedRamp = 0;
       }else{
+        
+        //if(shouldSendM)
+        amtOfRamp += beforeEnc;
+        if(amtOfRamp%30>=15)
+          amtOfRamp+=30;
+        rampTilesWent = amtOfRamp/30;
         SERIAL3_PRINT("ramp")
         return true;
       }
@@ -188,10 +206,11 @@ bool goForwardPID(int dist) {
       if(amtOfRamp<65 && amtOfRamp > 5){
         delay(1);
         Serial2.write('s');
-        if(amtOfRamp%30>=15)
-          amtOfRamp+=30;
+        
         //if(shouldSendM)
         amtOfRamp += beforeEnc;
+        if(amtOfRamp%30>=15)
+          amtOfRamp+=30;
         if(amtOfRamp/30 >0) amtOfRamp -=30;
         Serial2.write((char)(amtOfRamp/30)+'0');
         SERIAL3_PRINT("stairs ")
@@ -202,6 +221,12 @@ bool goForwardPID(int dist) {
       }else if(amtOfRamp <= 5){
         finishedRamp = 0;
       }else{
+        
+        //if(shouldSendM)
+        amtOfRamp += beforeEnc;
+        if(amtOfRamp%30>=15)
+          amtOfRamp+=30;
+        rampTilesWent = amtOfRamp/30;
         SERIAL3_PRINTLN("ramp");
         return true;
       }
@@ -286,7 +311,7 @@ bool goForwardPID(int dist) {
       if (endTime - startTime > 1000) {
         SERIAL3_PRINTLN("STALLING")
         stalling = true;
-      }else if(endTime - startTime > 500){
+      }else if(endTime - startTime > 700){
         angIncrease = 150;
         SERIAL3_PRINTLN("Speed up stall");
         SERIAL3_PRINTLN("Stall increase speed")

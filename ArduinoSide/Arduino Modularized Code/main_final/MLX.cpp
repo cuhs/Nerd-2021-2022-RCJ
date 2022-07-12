@@ -20,13 +20,16 @@ int getHeatSensorReadings(char side) {
 //detects heat victim if the object temperature is more than 4 degrees C more than the ambient temperature
 //writes a 'x' or 'X'(depending on if it is left or right) to the pi, which will send a 'y' if the heat victim was not yet detected
 void doHeatVictim(int leftTemp, int rightTemp) {
-  if (leftTemp > (int)mlx.readAmbientTempC() + 4) {
+  if (leftTemp > (int)mlx.readAmbientTempC() + 6) {
     delay(1);
     Serial2.write('x');
     delay(1);
     while(!Serial2.available());
     char c = Serial2.read();
+    Serial.println("Arduino sees heat");
     if(c=='y'){
+      isHeat = true;
+      Serial.println("Pi confirm heat");
       ports[LEFT].setMotorSpeed(0);
       ports[RIGHT].setMotorSpeed(0);
       //isHeat = true;
@@ -34,13 +37,16 @@ void doHeatVictim(int leftTemp, int rightTemp) {
     }
       //dropKits('L', 1);
   }
-  if (rightTemp > (int)mlx.readAmbientTempC() + 4) {
+  if (rightTemp > (int)mlx.readAmbientTempC() + 6) {
     delay(1);
     Serial2.write('X');
     delay(1);
    while(!Serial2.available());
     char c = Serial2.read();
+    Serial.println("Arduino sees heat");
     if(c=='y'){
+      isHeat = true;
+      Serial.println("Pi confirm heat");
       //isHeat = true;
       ports[LEFT].setMotorSpeed(0);
       ports[RIGHT].setMotorSpeed(0);

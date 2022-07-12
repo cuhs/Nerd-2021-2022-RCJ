@@ -11,6 +11,7 @@
 void setup() {
   delay(100);
   SERIAL3_BEGIN
+  Serial.begin(9600);
   Serial2.begin(9600);
   Wire.begin();
   ports[LEFT].setMotorSpeed(0);
@@ -114,10 +115,14 @@ void loop() {
         
       case '}'://pi wants wall values to be sent from the arduino
         SERIAL3_PRINTLN("}")
-        if(finishedRamp==1)
+        if(finishedRamp==1){
           Serial2.write('u');
-        else if(finishedRamp==2)
+          Serial2.write((char)rampTilesWent+'0');
+        }else if(finishedRamp==2){
           Serial2.write('d');
+          Serial2.write((char)rampTilesWent+'0');
+        }
+        rampTilesWent = 0;
         finishedRamp=0;
         delay(15);
         sendWallValues(getSensorReadings(FRONT_TOF), getSensorReadings(RIGHT_TOF), getSensorReadings(LEFT_TOF));

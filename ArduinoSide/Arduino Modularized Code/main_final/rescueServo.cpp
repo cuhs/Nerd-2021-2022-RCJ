@@ -71,6 +71,7 @@ void dropKits(char dir, int amt, int rVal, int gVal, int bVal) {
 
 //main dropping kits and flashing LED controller - stops the bot, flashes LED after dropping kits for enough time to make it a total of 5 seconds
 void RGB_color(int rVal, int gVal, int bVal, int rescueKits, char dir) {
+  Serial.println("RGB_COLOR");
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
   if (rescueKits == 0) {
@@ -97,8 +98,10 @@ void RGB_color(int rVal, int gVal, int bVal, int rescueKits, char dir) {
 
 //detects if the StereoPi sends a message indicating a victim detected or if the heat sensors detect a victim
 void victim() {
+  Serial3.println("in victim");
   //detect heat victim
   if (!isHeat) {
+    Serial3.println("testing for heat victim");
     doHeatVictim(getHeatSensorReadings('L'), getHeatSensorReadings('R'));
   }
   //wait for if the pi sends a message indicating a victim being detected

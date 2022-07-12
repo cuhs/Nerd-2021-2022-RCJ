@@ -191,6 +191,8 @@ void turnAbs(int degree) {
       fix += 80;
     else
       fix -= 80;
+    Serial.println("in TurnAbs");
+    
     ports[RIGHT].setMotorSpeed(-fix);
     ports[LEFT].setMotorSpeed(fix);
     //SERIAL3_PRINTLN(euler.x());
@@ -255,6 +257,7 @@ void turnAbsNoVictim(int degree) {
     //    SERIAL3_PRINT(euler.x());
     //    SERIAL3_PRINT("\terror: ");
     //    SERIAL3_PRINTLN(error);
+    Serial.println("doing turnAbsNoVictim");
     ports[RIGHT].setMotorSpeed(-fix);
     ports[LEFT].setMotorSpeed(fix);
     //SERIAL3_PRINTLN(euler.x());
@@ -271,7 +274,7 @@ bool triangulation(int left, int right) {
   int angle;
   int forwardCm;
   int currAngle;
-  int tileLength = 30;
+  int tileLength = 28;
   bool noBlack = true;
   //if no walls, turn to the nearest direction(0,90,180,270) and go forward without triangulation
   if (left > 20 && right > 20 || left + ROBOT_WIDTH + right <25) {
@@ -302,6 +305,7 @@ bool triangulation(int left, int right) {
     if (targetAng > 360) targetAng = targetAng % 360;
     if(targetAng < 0) targetAng = targetAng + 360;
     //does initial turn
+    Serial.println("triangulating");
     turnAbsNoVictim(targetAng);
     //goes forward the amount calculated above - returns true if there is no black tile detected and false if there is a black tile detected
     noBlack = goForwardPID(forwardCm);
@@ -358,7 +362,7 @@ bool notStable() {
 bool isOnSpeedBump() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  if (euler.y() > 4 || abs(euler.z()) > 4)
+  if (euler.y() > 4 || abs(euler.z()) > 4 && euler.y() >=2)
     return true;
   return false;
 }

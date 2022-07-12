@@ -70,7 +70,7 @@ int alignFront(bool b) {
 
   if (frontDist < minimumDist && !stalling && !detectBlack()) {
     //go back
-    while (frontDist < 5) {
+    while (frontDist < 3) {
       victim();
       ports[RIGHT].setMotorSpeed(-100);
       ports[LEFT].setMotorSpeed(-100);
@@ -93,7 +93,7 @@ int alignFront(bool b) {
     }
     
     //go forward
-    while (frontDist > 5 && !stalling && !detectBlack()) {
+    while (frontDist > 3 && !stalling && !detectBlack()) {
       victim();
       ports[RIGHT].setMotorSpeed(100);
       ports[LEFT].setMotorSpeed(100);
