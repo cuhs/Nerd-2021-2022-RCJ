@@ -91,10 +91,6 @@ class AThread(QThread if config.runMode else object):
                         else:
                             util.turnLeft(util.direction, True)
 
-                    # update checkpoint
-                    if util.isCheckpoint(util.maze[util.floor], util.tile):
-                        checkpoint = BFS.saveCheckpoint()
-
                     # send turns
                     IO.sendData(config.inputMode, IO.sData[util.pathLen:util.pathLen + 2])
                     if config.serialDebug:
@@ -182,10 +178,6 @@ class AThread(QThread if config.runMode else object):
                         util.tile = util.goForward(util.tile, not nextTileIsRampStart)
                     else:
                         util.goForward(util.tile, not nextTileIsRampStart)
-
-                # update checkpoint
-                if util.isCheckpoint(util.maze[util.floor], util.tile):
-                    checkpoint = BFS.saveCheckpoint()
 
                 # send next IO message
                 if not nextTileIsRampStart:

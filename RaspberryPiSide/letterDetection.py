@@ -129,8 +129,12 @@ class Detection:
             contours, hier = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             if len(contours) > 0:
                 contours = max(contours, key=cv2.contourArea)
-
-                if 275 < cv2.contourArea(contours): #210
+                
+                rect = cv2.minAreaRect(contours)
+                center = rect[0][1]
+                
+                
+                if 225 < cv2.contourArea(contours) or (cv2.contourArea(contours) > 50 and center > frame.shape[0]/4): #210
                     rect = cv2.minAreaRect(contours)
                     center = rect[0][0]
                     if i == 0 or i == 2:
