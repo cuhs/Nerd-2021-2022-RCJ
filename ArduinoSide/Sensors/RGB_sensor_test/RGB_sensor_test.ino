@@ -50,6 +50,9 @@ void loop() {
   Serial.print("C: ");
   Serial.print(c, DEC); Serial.print(" ");
   Serial.println();
+  if(lux==0 && c < 5){
+    while(true);
+  }
 //  Serial.print("r/g: ");
 //  Serial.print((double)r/g);
 //  Serial.print(" r/b: ");

@@ -13,8 +13,8 @@
 #define SERIAL3_PRINTLN(str) Serial3.println(str);
 #define SERIAL3_BEGIN Serial3.begin(9600);
 #else
-#define SERIAL3_PRINT(str) Serial.print(str);
-#define SERIAL3_PRINTLN(str) Serial.println(str);
+#define SERIAL3_PRINT(...)
+#define SERIAL3_PRINTLN(...)
 #define SERIAL3_BEGIN 
 #endif
 

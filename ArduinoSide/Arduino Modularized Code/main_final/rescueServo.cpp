@@ -71,7 +71,11 @@ void dropKits(char dir, int amt, int rVal, int gVal, int bVal) {
 
 //main dropping kits and flashing LED controller - stops the bot, flashes LED after dropping kits for enough time to make it a total of 5 seconds
 void RGB_color(int rVal, int gVal, int bVal, int rescueKits, char dir) {
-  Serial.println("RGB_COLOR");
+  //Serial.println("RGB_COLOR");
+  /*tcaselect(7);
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  turnAbsNoVictim(getDirection(euler.x()));*/
+  
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
   if (rescueKits == 0) {

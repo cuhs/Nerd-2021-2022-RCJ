@@ -1,0 +1,29 @@
+ SILVER MISDETECT
+Violet:139  Blue:118  Green:202  Yellow:227  Orange:15  Red:144  Avg:169  range:212
+ Violet:150  Blue:39  Green:13  Yellow:11  Orange:17  Red:254  Avg:96  range:243
+ Violet:140  Blue:28  Green:241  Yellow:239  Orange:248  Red:242  Avg:227  range:220
+Violet:148  Blue:27  Green:233  Yellow:215  Orange:227  Red:215  Avg:213  range:206
+Violet:143  Blue:8  Green:16  Yellow:254  Orange:12  Red:239  Avg:134  range:246
+Violet:109  Blue:238  Green:17  Yellow:12  Orange:22  Red:244  Avg:128  range:232
+Violet:153  Blue:18  Green:253  Yellow:225  Orange:243  Red:218  Avg:222  range:235
+Violet:236  Blue:159  Green:26  Yellow:35  Orange:20  Red:131  Avg:121  range:216
+
+REGULAR
+Violet:134  Blue:66  Green:139  Yellow:147  Orange:136  Red:47  Avg:133  range:100
+Violet:140  Blue:70  Green:140  Yellow:153  Orange:137  Red:46  Avg:137  range:107
+Violet:129  Blue:64  Green:135  Yellow:148  Orange:131  Red:44  Avg:130  range:104
+Violet:132  Blue:68  Green:138  Yellow:149  Orange:133  Red:46  Avg:133  range:103
+Violet:131  Blue:67  Green:133  Yellow:144  Orange:128  Red:44  Avg:129  range:100
+
+SILVER
+Violet:224  Blue:96  Green:115  Yellow:99  Orange:98  Red:52  Avg:136  range:172
+Violet:231  Blue:90  Green:122  Yellow:105  Orange:102  Red:49  Avg:139  range:182
+Violet:228  Blue:87  Green:110  Yellow:99  Orange:89  Red:58  Avg:134  range:170
+Violet:112  Blue:46  Green:234  Yellow:240  Orange:213  Red:34  Avg:175  range:206
+Violet:205  Blue:32  Green:84  Yellow:72  Orange:59  Red:18  Avg:94  range:187
+ Violet:254  Blue:31  Green:150  Yellow:124  Orange:112  Red:20  Avg:138  range:234
+Violet:223  Blue:50  Green:131  Yellow:105  Orange:99  Red:16  Avg:124  range:207
+
+
+
+

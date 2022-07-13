@@ -90,6 +90,8 @@ void loop() {
   uint8_t r=sensorValues[AS726x_RED];
   uint8_t rrange = maxSix(v,b,g,y,o,r)-minSix(v,b,g,y,o,r);
   if(maxSix(v,b,g,y,o,r)<500){
+  if(rrange > 170 && r < 100) Serial.println("Silver detected");
+  else{
   Serial.print(" Violet:"); Serial.print(v); Serial.print(" ");
   Serial.print(" Blue:"); Serial.print(b); Serial.print(" ");
   Serial.print(" Green:"); Serial.print(g); Serial.print(" ");
@@ -98,6 +100,8 @@ void loop() {
   Serial.print(" Red:"); Serial.print(r); Serial.print(" ");
   Serial.print(" Avg:"); Serial.print((v+b+g+y+o+r)/5); Serial.print(" ");
   Serial.print(" range:"); Serial.println(rrange);
+  
+  }
   }
   //printRange();
 //detectTiles();

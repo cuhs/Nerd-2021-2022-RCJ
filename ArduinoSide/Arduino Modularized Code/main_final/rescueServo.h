@@ -4,6 +4,7 @@
 #include "new_global_vars.h"
 #include "motors.h"
 #include "MLX.h"
+#include "IMU.h"
 
 extern Servo myservo;  // create servo object to control a servo
 extern const int R_angle;

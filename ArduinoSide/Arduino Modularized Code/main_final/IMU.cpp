@@ -129,6 +129,7 @@ void turnAbs(int degree) {
   int prev_count = 0;
   bool stalling = false;
   bool checking = false;
+  int stallSpeedUp = 1;
 
   //variables used for PID turning
   tcaselect(7);
@@ -181,6 +182,15 @@ void turnAbs(int degree) {
       if (endTime - startTime > 1000 && isNearTarget((int)euler.x(), targetDir)) {
         SERIAL3_PRINTLN("STALLING")
         stalling = true;
+      }else if(endTime - startTime > 1000){
+        stallSpeedUp = 3;
+        Serial.println("first stall speed");
+      }else if(endTime - startTime >1500){
+        stallSpeedUp = 150;
+        Serial.println("start second stall speed");
+        turnAbsNoVictim(curDir);
+        Serial.println("end turn second stall");
+        delay(50);
       }
     }
 
@@ -191,10 +201,13 @@ void turnAbs(int degree) {
       fix += 80;
     else
       fix -= 80;
-    Serial.println("in TurnAbs");
-    
-    ports[RIGHT].setMotorSpeed(-fix);
-    ports[LEFT].setMotorSpeed(fix);
+    //Serial.println("in TurnAbs");
+    Serial.print("right speed: ");
+    Serial.print(-1*fix*stallSpeedUp);
+    Serial.print(" left speed: ");
+    Serial.println(fix*stallSpeedUp);
+    ports[RIGHT].setMotorSpeed(-1*fix*stallSpeedUp);
+    ports[LEFT].setMotorSpeed(fix*stallSpeedUp);
     //SERIAL3_PRINTLN(euler.x());
   }
   ports[RIGHT].setMotorSpeed(0);
@@ -257,7 +270,7 @@ void turnAbsNoVictim(int degree) {
     //    SERIAL3_PRINT(euler.x());
     //    SERIAL3_PRINT("\terror: ");
     //    SERIAL3_PRINTLN(error);
-    Serial.println("doing turnAbsNoVictim");
+    //Serial.println("doing turnAbsNoVictim");
     ports[RIGHT].setMotorSpeed(-fix);
     ports[LEFT].setMotorSpeed(fix);
     //SERIAL3_PRINTLN(euler.x());
@@ -305,7 +318,7 @@ bool triangulation(int left, int right) {
     if (targetAng > 360) targetAng = targetAng % 360;
     if(targetAng < 0) targetAng = targetAng + 360;
     //does initial turn
-    Serial.println("triangulating");
+    //Serial.println("triangulating");
     turnAbsNoVictim(targetAng);
     //goes forward the amount calculated above - returns true if there is no black tile detected and false if there is a black tile detected
     noBlack = goForwardPID(forwardCm);
@@ -340,10 +353,10 @@ int isOnRamp() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   //if(frontTof>50) return 0;
-  if (euler.y() < -15) {
+  if (euler.y() < -18) {
     return 2;
   }
-  else if (euler.y() > 15) {
+  else if (euler.y() > 18) {
     return 1;
   }
   return 0;
@@ -362,7 +375,7 @@ bool notStable() {
 bool isOnSpeedBump() {
   tcaselect(7);
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  if (euler.y() > 4 || abs(euler.z()) > 4 && euler.y() >=2)
+  if (euler.y() > 3 || abs(euler.z()) > 3 && euler.y() >=2)
     return true;
   return false;
 }

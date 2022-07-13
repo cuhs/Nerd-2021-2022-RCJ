@@ -187,7 +187,7 @@ bool goForwardPID(int dist) {
         finishedRamp = 0;
         if(amtOfRamp/30==0) continue;
         return true;
-      }else */if(amtOfRamp <= 5){
+      }else */if(amtOfRamp <= 20){
         finishedRamp = 0;
       }else{
         
@@ -218,7 +218,7 @@ bool goForwardPID(int dist) {
         finishedRamp = 0;
         if(amtOfRamp/30==0) continue;
         return true;
-      }else */if(amtOfRamp <= 5){
+      }else */if(amtOfRamp <= 20){
         finishedRamp = 0;
       }else{
         
@@ -245,6 +245,9 @@ bool goForwardPID(int dist) {
       }
       Serial2.write(';');
       Serial2.write('b');
+      tcaselect(7);
+      imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+      turnAbsNoVictim(getDirection(euler.x(),9));
       moveBackwards(0);
       delay(1);
       Serial2.read();

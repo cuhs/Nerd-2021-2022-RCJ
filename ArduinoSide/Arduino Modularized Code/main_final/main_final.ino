@@ -11,7 +11,7 @@
 void setup() {
   delay(100);
   SERIAL3_BEGIN
-  Serial.begin(9600);
+  //Serial.begin(9600);
   Serial2.begin(9600);
   Wire.begin();
   ports[LEFT].setMotorSpeed(0);
@@ -30,6 +30,7 @@ void setup() {
   initIMU();
   delay(1000);
   SERIAL3_PRINTLN('a')
+  Serial.begin(9600);
   Serial2.write('a');
   while(!Serial2.available());
   char c = Serial2.read();

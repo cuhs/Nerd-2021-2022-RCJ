@@ -39,7 +39,7 @@ int detectTiles(){
     //Serial2.write(';');
     //SERIAL3_PRINTLN("Saw Black");
     return 1;
-  }else if(range >= 170){
+  }else if(range >= 170 && r<100){
     //sendWallValues(getSensorReadings(FRONT_TOF), getSensorReadings(RIGHT_TOF), getSensorReadings(LEFT_TOF));
     //Serial2.write(';');
     //SERIAL3_PRINTLN("Saw Silver");
