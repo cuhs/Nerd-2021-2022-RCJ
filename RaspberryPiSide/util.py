@@ -55,8 +55,8 @@ startFloor = (config.floorCount - 1) // 2
 # hsv ranges for color victims
 hsv_lower = {
     0: (140, 140, 75),
-    1: (55, 80, 50),
-    2: (10, 105, 120)
+    1: (55, 80, 25),
+    2: (10, 105, 85)
 }
 
 hsv_upper = {

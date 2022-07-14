@@ -1,19 +1,21 @@
 import cv2
 import numpy as np
 import KNN
+import util
 import time
 import letterDetection
 
 
 #CONFIG----------------------------------------
   
-numberOfCams = 1 #number of camera to run
+numberOfCams = 2 #number of camera to run
 cap = [None,None] #left, right
 victimDetect = False #true --> tests victim detection, false --> runs camera feed
 showFrames = True #true to see actual camera frames
 fullDetect = False #true to see mask, bounding box, will increase processing time by much (recommend to turn off victimDetect)
 oneCamEverythingDetect = False #Will show everything as letterDetection class sees, to use shut down victimDetect, full Detect, and showFrames, set cams to 1
 saveVictim = False
+colorDetect = False
 width = 160 #camera width
 height = 128 #camera height
 cameraCutL = [0, 128, 0, 150]  # left slicing to ignore treads, height then width
@@ -133,6 +135,9 @@ while (path is not None) or (numberOfCams == 1 and cap[0].isOpened()) or (number
         
     else:
         vD.setDebugMode(False)
+        
+    if colorDetect:
+        print(vD.colorDetectHSV(frameL, util.hsv_lower, util.hsv_upper)[0])
         
 
     if showFrames:

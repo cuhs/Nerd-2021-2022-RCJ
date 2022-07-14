@@ -159,7 +159,7 @@ def pathToTile(cTile, cFloor, tTile, tFloor):
 def saveCheckpoint():
     if config.runMode:
         display.updateLabels(status="Silver")
-    if config.importantDebug or config.BFSDebug:
+    if config.importantDebug or config.BFSDebug or True:
         print("\tTile " + str(util.tile) + " is a checkpoint tile, saving maze")
 
     # save maze to file
@@ -293,7 +293,12 @@ def searchForVictims(goingForward, turnDirection=None, didTurn=False, didForward
 
         # get letter and color victims
         # Left or Right, Letter or Color, Victim or Position
-        LLV, LLX, LCV, LCX = IO.vD.leftDetectFinal(IO.frame[0][0], IO.frame[0][1][config.cameraCutL[0]:config.cameraCutL[1],config.cameraCutL[2]:config.cameraCutL[3]])
+        try:
+            LLV, LLX, LCV, LCX = IO.vD.leftDetectFinal(IO.frame[0][0], IO.frame[0][1][config.cameraCutL[0]:config.cameraCutL[1],config.cameraCutL[2]:config.cameraCutL[3]])
+        except:
+            print("FUCK\nFUCK\nFUCK")
+            LLV = None
+            LCV = None
 
         if LLV or LCV:
             LVic = LLV if LLV else LCV
@@ -319,8 +324,12 @@ def searchForVictims(goingForward, turnDirection=None, didTurn=False, didForward
         if config.cameraCount == 2:
             # get letter and color victims
             # Left or Right, Letter or Color, Victim or X-position
-            RLV, RLX, RCV, RCX = IO.vD.rightDetectFinal(IO.frame[1][0], IO.frame[1][1][config.cameraCutR[0]:config.cameraCutR[1],config.cameraCutR[2]:config.cameraCutR[3]])
-
+            try:
+                RLV, RLX, RCV, RCX = IO.vD.rightDetectFinal(IO.frame[1][0], IO.frame[1][1][config.cameraCutR[0]:config.cameraCutR[1],config.cameraCutR[2]:config.cameraCutR[3]])
+            except:
+                print("FUCK\nFUCK\nFUCK")
+                RLV = None
+                RCV = None
             # send and record color victim
             if RLV or RCV:
                 RVic = RLV if RLV else RCV
@@ -376,9 +385,16 @@ def tileOfVictim(cVictim, cPos, wentForward):
 
     # use victim position to determine tile
     if wentForward:
+        # i disagree with this wholeheartedly (assumption)
+        for i in range(len(util.Dir)):
+            if util.maze[util.floor][frontTile][i + util.nVictim] == ord(cVictim):
+                return None
         #print("\t\t\t\tfront")
         return frontTile
     #print("\t\t\t\tback")
+    for i in range(len(util.Dir)):
+        if util.maze[util.floor][backTile][i + util.nVictim] == ord(cVictim):
+            return None
     return backTile
 
 def directionOfVictim(cVictim, cPos, turnDirection, didTurn):
@@ -386,18 +402,16 @@ def directionOfVictim(cVictim, cPos, turnDirection, didTurn):
     startCamDirection = util.dirToLeft(startDirection) if cVictim.islower() else util.dirToRight(startDirection)
     endCamDirection = util.dirToLeft(startCamDirection) if turnDirection == "L" else util.dirToRight(startCamDirection)
 
-    # i disagree with this wholeheartedly
-    if util.maze[util.floor][util.tile][startCamDirection + util.nVictim] == ord(cVictim) or util.maze[util.floor][util.tile][endCamDirection + util.nVictim] == ord(cVictim):
-        return None
+    # i disagree with this wholeheartedly (assumption)
+    for i in range(len(util.Dir)):
+        if util.maze[util.floor][util.tile][i + util.nVictim] == ord(cVictim):
+            return None
 
     # check if both directions have possible walls
     checkPosition = util.maze[util.floor][util.tile][startCamDirection] and util.maze[util.floor][util.tile][endCamDirection]
     if not checkPosition:
-        #print("no two walls")
         if util.maze[util.floor][util.tile][startCamDirection]:
-            print("start")
             return startCamDirection
-        #print("end")
         return endCamDirection
 
     # calculate percentage forward of victim
@@ -412,16 +426,11 @@ def directionOfVictim(cVictim, cPos, turnDirection, didTurn):
 
     # use victim position to determine direction
     if didTurn:
-        #print("DIDTURN")
-        if cPos < 40:
-            #print("start")
+        if cPos < 30:
             return startCamDirection
-        #print("end")
         return endCamDirection
     if cPos > 80:
-        #print("end")
         return endCamDirection
-    #print("start")
     return startCamDirection
 
 def saveVictim(victim):
