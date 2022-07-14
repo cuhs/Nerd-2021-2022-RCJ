@@ -54,7 +54,7 @@ void setupSensors2() {
 //aligns the robot if there is a wall in front to 5cm from the wall
 int alignFront(bool b) {
   int frontDist = getSensorReadings(FRONT_TOF);
-  int minimumDist = 25;
+  int minimumDist = 20;
   int motorEncUse = LEFT;
   int initEncCount = ports[motorEncUse].count;
 
@@ -64,10 +64,8 @@ int alignFront(bool b) {
   int prev_count = 0;
   bool stalling = false;
   bool checking = false;
-  
   ports[RIGHT].setMotorSpeed(0);
   ports[LEFT].setMotorSpeed(0);
-
   if (frontDist < minimumDist && !stalling && !detectBlack()) {
     //go back
     while (frontDist < 3) {

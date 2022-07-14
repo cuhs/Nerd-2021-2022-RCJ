@@ -20,7 +20,7 @@ int rampMoveForward(char dir) {
     motorSpeed = 150;
     finishedRamp = 1;
   } else if (dir == 'd') {
-    motorSpeed = 90;
+    motorSpeed = 90 ;
     finishedRamp = 2;
   }
 
@@ -189,6 +189,9 @@ bool goForwardPID(int dist) {
         return true;
       }else */if(amtOfRamp <= 20){
         finishedRamp = 0;
+        amtOfRamp += beforeEnc;
+        if(amtOfRamp>28)
+          moveBackwards(ports[motorEncUse].count-(amtOfRamp-28));
       }else{
         
         //if(shouldSendM)
@@ -220,6 +223,9 @@ bool goForwardPID(int dist) {
         return true;
       }else */if(amtOfRamp <= 20){
         finishedRamp = 0;
+        amtOfRamp += beforeEnc;
+        if(amtOfRamp>28)
+          moveBackwards(ports[motorEncUse].count-(amtOfRamp-28));
       }else{
         
         //if(shouldSendM)

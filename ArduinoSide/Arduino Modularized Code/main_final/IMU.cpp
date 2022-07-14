@@ -136,7 +136,7 @@ void turnAbs(int degree) {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   int dir[4] = {0, 90, 180, 270};
   int fix;
-  int curDir = euler.x();
+  int curDir = getDirection(euler.x());
   int targetDir = degree;
   double integral = 0.0;
   int error = targetDir - curDir;
@@ -198,9 +198,9 @@ void turnAbs(int degree) {
     prev_count = ports[LEFT].count;
     fix = (int)(PID(error, pastError, integral, 2, 0.005, 0));
     if (fix > 0)
-      fix += 80;
+      fix += 120;
     else
-      fix -= 80;
+      fix -= 120;
     //Serial.println("in TurnAbs");
     Serial.print("right speed: ");
     Serial.print(-1*fix*stallSpeedUp);
@@ -218,7 +218,7 @@ void turnAbs(int degree) {
 void turnAbsNoVictim(int degree) {
   unsigned long startTime;
   unsigned long endTime;
-
+  Serial.println("in turnAbsNoVictim");
   int prev_count = 0;
   bool stalling = false;
   bool checking = false;
@@ -231,6 +231,10 @@ void turnAbsNoVictim(int degree) {
   double integral = 0.0;
   int error = targetDir - curDir;
   double pastError = 0;
+  Serial.print("target: ");
+  Serial.print(targetDir);
+  Serial.print(" curDir: ");
+  Serial.println(curDir);
   while (abs(error) >= 2 && !stalling) {
     tcaselect(7);
     euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -270,7 +274,6 @@ void turnAbsNoVictim(int degree) {
     //    SERIAL3_PRINT(euler.x());
     //    SERIAL3_PRINT("\terror: ");
     //    SERIAL3_PRINTLN(error);
-    //Serial.println("doing turnAbsNoVictim");
     ports[RIGHT].setMotorSpeed(-fix);
     ports[LEFT].setMotorSpeed(fix);
     //SERIAL3_PRINTLN(euler.x());
